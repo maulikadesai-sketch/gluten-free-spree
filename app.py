@@ -113,6 +113,17 @@ CUSTOM_CSS = """
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Prevent black/blank screen while Streamlit loads on mobile */
+html, body {
+  background-color: #EBF1EC !important;
+  color: #1C2A1E !important;
+  -webkit-text-size-adjust: 100%;
+}
+.stApp, .main, [data-testid="stAppViewBlockContainer"] {
+  background-color: #EBF1EC !important;
+}
+iframe { background-color: #FFFFFF !important; }
+
 html, body, [data-testid="stAppViewContainer"] {
   background: var(--bg) !important;
   font-family: 'Outfit', sans-serif !important;
