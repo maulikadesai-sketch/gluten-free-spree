@@ -111,6 +111,44 @@ CUSTOM_CSS = """
   --r:        14px;
 }
 
+/* ── Dark mode: swap colors for users with dark system/browser theme ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:      #E8F0EA;
+    --ink-mid:  #C0D0C4;
+    --ink-soft: #99AB9E;
+    --bg:       #1A2B1E;
+    --bg2:      #15231A;
+    --border:   #2E4533;
+    --green:    #7CB87E;
+    --green-l:  #1E3323;
+    --amber:    #E09050;
+    --amber-l:  #2A2018;
+    --red-l:    #2A1818;
+    --red:      #E07070;
+    --card:     #1F3025;
+    --shadow:   0 8px 30px rgba(0,0,0,0.25);
+  }
+}
+
+/* Also handle Streamlit's own theme attribute */
+[data-theme="dark"] {
+    --ink:      #E8F0EA;
+    --ink-mid:  #C0D0C4;
+    --ink-soft: #99AB9E;
+    --bg:       #1A2B1E;
+    --bg2:      #15231A;
+    --border:   #2E4533;
+    --green:    #7CB87E;
+    --green-l:  #1E3323;
+    --amber:    #E09050;
+    --amber-l:  #2A2018;
+    --red-l:    #2A1818;
+    --red:      #E07070;
+    --card:     #1F3025;
+    --shadow:   0 8px 30px rgba(0,0,0,0.25);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* Prevent black/blank screen while Streamlit loads on mobile */
@@ -119,16 +157,38 @@ html, body {
   color: #1C2A1E !important;
   -webkit-text-size-adjust: 100%;
 }
-.stApp, .main, [data-testid="stAppViewBlockContainer"] {
-  background-color: #EBF1EC !important;
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #1A2B1E !important;
+    color: #E8F0EA !important;
+  }
 }
-iframe { background-color: #FFFFFF !important; }
+.stApp, .main, [data-testid="stAppViewBlockContainer"] {
+  background-color: var(--bg) !important;
+}
+iframe { background-color: var(--card) !important; }
 
 html, body, [data-testid="stAppViewContainer"] {
   background: var(--bg) !important;
   font-family: 'Outfit', sans-serif !important;
   color: var(--ink) !important;
 }
+
+/* Force ALL Streamlit text to follow our theme variables */
+[data-testid="stAppViewContainer"] p,
+[data-testid="stAppViewContainer"] span,
+[data-testid="stAppViewContainer"] div,
+[data-testid="stAppViewContainer"] label,
+[data-testid="stAppViewContainer"] li,
+[data-testid="stAppViewContainer"] h1,
+[data-testid="stAppViewContainer"] h2,
+[data-testid="stAppViewContainer"] h3,
+.stMarkdown, .stMarkdown p {
+  color: var(--ink) !important;
+}
+[data-testid="stExpander"] summary span { color: var(--ink) !important; }
+[data-testid="stMetricValue"] { color: var(--green) !important; }
+[data-testid="stMetricLabel"] p { color: var(--ink-soft) !important; }
 
 #MainMenu, footer { visibility: hidden; }
 /* Hide the header bar entirely — removes the broken "keyboard_double_" icon text */
@@ -712,7 +772,7 @@ with st.sidebar:
 st.markdown("""
 <div style='padding:0.5rem 0 1rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:#3D4F40; font-size:1.1rem; margin-top:2px;'>
+  <p style='color:var(--ink-mid); font-size:1.1rem; margin-top:2px;'>
     Culinary recreation for safe gluten-free dining.
   </p>
 </div>
@@ -732,7 +792,7 @@ with st.form("recipe_form", clear_on_submit=False):
         go = st.form_submit_button("✨ Recreate", type="primary", use_container_width=True)
 
 st.markdown(
-    "<p style='font-size:0.82rem;color:#6A7E6E;margin-top:5px;'>"
+    "<p style='font-size:0.82rem;color:var(--ink-soft);margin-top:5px;'>"
     "Trending: <em>Gyoza Dumplings · Yorkshire Pudding · Tempura · Sourdough Bread · Tiramisu</em></p>",
     unsafe_allow_html=True,
 )
