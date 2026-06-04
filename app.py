@@ -303,18 +303,22 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 /* Slider — force green track instead of red */
 [data-testid="stSlider"] { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
 [data-testid="stSlider"] > div { background: transparent !important; }
-[data-testid="stSlider"] [role="slider"] { background: var(--green) !important; }
+[data-testid="stSlider"] [role="slider"] { background: #1C2A1E !important; border-color: #1C2A1E !important; }
 [data-testid="stSlider"] [data-baseweb="slider"] { background: transparent !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: var(--green) !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: #1C2A1E !important; }
 /* Remove grey box from all slider parent wrappers */
 [data-testid="stSlider"] [data-baseweb="slider"] > div { background-color: transparent !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] > div > div { background-color: var(--border) !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div { background-color: var(--green) !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] > div > div { background-color: #CCD5CD !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div { background-color: #1C2A1E !important; }
 [data-testid="stElementContainer"]:has([data-testid="stSlider"]) { background: transparent !important; border: none !important; box-shadow: none !important; }
-[data-baseweb="slider"] div { background-color: var(--border) !important; }
-[data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: var(--green) !important; }
-[data-baseweb="slider"] [role="slider"] { background-color: var(--green) !important; border-color: var(--green) !important; }
-[data-testid="stSlider"] p { color: var(--ink) !important; }
+[data-baseweb="slider"] div { background-color: transparent !important; }
+[data-baseweb="slider"] div[role="progressbar"] { background-color: #CCD5CD !important; }
+[data-baseweb="slider"] div[role="progressbar"] > div { background-color: #1C2A1E !important; }
+[data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: #1C2A1E !important; }
+[data-baseweb="slider"] [role="slider"] { background-color: #1C2A1E !important; border-color: #1C2A1E !important; }
+[data-baseweb="slider"] [data-testid="stTickBar"] { background: transparent !important; }
+[data-baseweb="slider"] [data-testid="stTickBar"] > div { background: transparent !important; }
+[data-testid="stSlider"] p { color: var(--ink) !important; background: transparent !important; }
 
 /* Number input */
 [data-testid="stNumberInput"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
@@ -554,13 +558,22 @@ div.stFormSubmitButton > button p,
 
 /* ── Dynamic Layout Styles ── */
 [data-testid="stMetricValue"] {
-  font-size: 1.1rem !important;
+  font-size: 0.95rem !important;
   font-weight: 700 !important;
   color: var(--green) !important;
   white-space: normal !important;
   overflow: visible !important;
   text-overflow: unset !important;
   line-height: 1.3 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+[data-testid="stMetricValue"] div,
+[data-testid="stMetricValue"] span,
+[data-testid="stMetricValue"] p {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
 }
@@ -571,16 +584,15 @@ div.stFormSubmitButton > button p,
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 14px 12px;
   text-align: center;
   box-shadow: var(--shadow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
   overflow: visible !important;
   min-height: 90px;
 }
-[data-testid="stMetric"]:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(47,84,53,0.14); }
 [data-testid="stMetric"] > div { overflow: visible !important; }
-[data-testid="stMetric"] [data-testid="stMetricValue"] > div { overflow: visible !important; text-overflow: unset !important; }
+[data-testid="stMetric"] > div > div { overflow: visible !important; }
+[data-testid="stMetric"] > div > div > div { overflow: visible !important; text-overflow: unset !important; }
 
 /* Smooth hover on substitution & brand cards */
 .sub-card, .brands-panel { transition: transform 0.18s ease, box-shadow 0.18s ease; }
