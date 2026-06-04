@@ -114,39 +114,39 @@ CUSTOM_CSS = """
 /* ── Dark mode: swap colors for users with dark system/browser theme ── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink:      #E8F0EA;
-    --ink-mid:  #C0D0C4;
-    --ink-soft: #99AB9E;
-    --bg:       #1A2B1E;
-    --bg2:      #15231A;
-    --border:   #2E4533;
-    --green:    #7CB87E;
-    --green-l:  #1E3323;
-    --amber:    #E09050;
-    --amber-l:  #2A2018;
-    --red-l:    #2A1818;
-    --red:      #E07070;
-    --card:     #1F3025;
-    --shadow:   0 8px 30px rgba(0,0,0,0.25);
+    --ink:      #1C2A1E;
+    --ink-mid:  #3D4F40;
+    --ink-soft: #6A7E6E;
+    --bg:       #EBF1EC;
+    --bg2:      #DCE4DC;
+    --border:   #CCD5CD;
+    --green:    #2F5435;
+    --green-l:  #E2ECE5;
+    --amber:    #B26225;
+    --amber-l:  #FDF3EB;
+    --red-l:    #FCECEC;
+    --red:      #9E2A2B;
+    --card:     #FFFFFF;
+    --shadow:   0 8px 30px rgba(28,42,30,0.08);
   }
 }
 
 /* Also handle Streamlit's own theme attribute */
 [data-theme="dark"] {
-    --ink:      #E8F0EA;
-    --ink-mid:  #C0D0C4;
-    --ink-soft: #99AB9E;
-    --bg:       #1A2B1E;
-    --bg2:      #15231A;
-    --border:   #2E4533;
-    --green:    #7CB87E;
-    --green-l:  #1E3323;
-    --amber:    #E09050;
-    --amber-l:  #2A2018;
-    --red-l:    #2A1818;
-    --red:      #E07070;
-    --card:     #1F3025;
-    --shadow:   0 8px 30px rgba(0,0,0,0.25);
+    --ink:      #1C2A1E;
+    --ink-mid:  #3D4F40;
+    --ink-soft: #6A7E6E;
+    --bg:       #EBF1EC;
+    --bg2:      #DCE4DC;
+    --border:   #CCD5CD;
+    --green:    #2F5435;
+    --green-l:  #E2ECE5;
+    --amber:    #B26225;
+    --amber-l:  #FDF3EB;
+    --red-l:    #FCECEC;
+    --red:      #9E2A2B;
+    --card:     #FFFFFF;
+    --shadow:   0 8px 30px rgba(28,42,30,0.08);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -159,8 +159,8 @@ html, body {
 }
 @media (prefers-color-scheme: dark) {
   html, body {
-    background-color: #1A2B1E !important;
-    color: #E8F0EA !important;
+    background-color: #EBF1EC !important;
+    color: #1C2A1E !important;
   }
 }
 .stApp, .main, [data-testid="stAppViewBlockContainer"] {
