@@ -304,7 +304,13 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 [data-testid="stSlider"] { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
 [data-testid="stSlider"] > div { background: transparent !important; }
 [data-testid="stSlider"] [role="slider"] { background: var(--green) !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] { background: transparent !important; }
 [data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: var(--green) !important; }
+/* Remove grey box from all slider parent wrappers */
+[data-testid="stSlider"] [data-baseweb="slider"] > div { background-color: transparent !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] > div > div { background-color: var(--border) !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div { background-color: var(--green) !important; }
+[data-testid="stElementContainer"]:has([data-testid="stSlider"]) { background: transparent !important; border: none !important; box-shadow: none !important; }
 [data-baseweb="slider"] div { background-color: var(--border) !important; }
 [data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: var(--green) !important; }
 [data-baseweb="slider"] [role="slider"] { background-color: var(--green) !important; border-color: var(--green) !important; }
@@ -850,7 +856,6 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 # ─────────────────────────────────────────────
 with st.sidebar:
     st.markdown("<p style='font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:700;color:#1C2A1E;margin-bottom:2px;'>Gluten-Free Spree</p>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:0.8rem;color:#6A7E6E;margin-bottom:1rem;'>Your gluten-free recipe companion</p>", unsafe_allow_html=True)
     st.divider()
 
     # API key — loaded silently
@@ -882,7 +887,7 @@ st.markdown("""
 <div style='padding:0.5rem 0 1rem;'>
   <h1>Gluten-Free Spree</h1>
   <p style='color:var(--ink-mid); font-size:1.1rem; margin-top:2px;'>
-    Culinary recreation for safe gluten-free dining.
+    Your gluten-free recipe companion.
   </p>
 </div>
 """, unsafe_allow_html=True)
