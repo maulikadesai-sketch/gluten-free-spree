@@ -795,12 +795,14 @@ Process:
 6. For the brands_panel, list 3–5 actual certified gluten-free brands available in {country} that make the most critical substitution ingredients. For each brand include: name, what product, certification body (e.g. GFFS, NFCA, Coeliac UK), a brief note on where to buy, and "fully_gf" set to true if the brand is certified gluten-free, or false if the brand is NOT fully certified GF and may carry contamination risk (e.g. brands that also manufacture wheat products on the same line).
 7. Suggest 3 "also_try" naturally-GF dishes similar in flavour profile AND from the same cuisine family. \
 For example: if the dish is Indian, suggest other Indian GF dishes like dal tadka or rajma. \
-If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines randomly.
+If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines randomly. \
+IMPORTANT: The also_try dishes MUST also comply with all the user's dietary restrictions listed above.
 8. Suggest 3 "accompaniments" — side dishes, drinks, or extras that pair well with this dish. \
 CRITICAL: The accompaniments MUST be culturally and culinarily appropriate for the dish's cuisine. \
 For example: roti pairs with dal/raita/sabzi, NOT chicken sausage. Pasta pairs with garlic bread/salad, NOT naan. \
 Sushi pairs with miso soup/edamame, NOT coleslaw. Think about what a person from that cuisine's culture would \
-actually eat alongside this dish. Each accompaniment must itself be gluten-free or trivially made GF. \
+actually eat alongside this dish. Each accompaniment must itself be gluten-free AND comply with ALL the user's \
+dietary restrictions listed above (e.g. if the user is Vegan, no dairy/meat accompaniments). \
 Give name, type (e.g. "Side", "Drink", "Dessert", "Sauce", "Condiment"), and a short reason it pairs well.
 9. For EACH ingredient include a single relevant food "emoji" (e.g. 🥚 eggs, 🧈 butter, 🧄 garlic, 🍚 rice, 🧀 cheese). Use 🍽️ if nothing fits.
 10. For "calories_per_serving", keep it SHORT like "~420 kcal" (under 12 characters).
