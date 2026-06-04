@@ -782,7 +782,7 @@ Process:
 3. Write complete recipe with real quantities and clear steps.
 4. Flag ingredients that are NOT ALWAYS GF (soy sauce, oats, stock, baking powder, spice mixes).
 5. Mention cross-contamination risks.
-6. For the brands_panel, list 3–5 actual certified gluten-free brands available in {country} that make the most critical substitution ingredients. For each brand include: name, what product, certification body (e.g. GFFS, NFCA, Coeliac UK), and a brief note on where to buy.
+6. For the brands_panel, list 3–5 actual certified gluten-free brands available in {country} that make the most critical substitution ingredients. For each brand include: name, what product, certification body (e.g. GFFS, NFCA, Coeliac UK), a brief note on where to buy, and "fully_gf" set to true if the brand is certified gluten-free, or false if the brand is NOT fully certified GF and may carry contamination risk (e.g. brands that also manufacture wheat products on the same line).
 7. Suggest 3 "also_try" naturally-GF dishes similar in flavour profile AND from the same cuisine family. \
 For example: if the dish is Indian, suggest other Indian GF dishes like dal tadka or rajma. \
 If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines randomly.
@@ -819,7 +819,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   "ingredients": [{{"item": string, "amount": string, "swap": boolean, "note": string, "emoji": string}}],
   "steps": [string],
   "substitutions": [{{"original": string, "replacement": string, "ratio": string, "reason": string, "local_brands": string}}],
-  "brands_panel": [{{"brand": string, "product": string, "certification": string, "where_to_buy": string}}],
+  "brands_panel": [{{"brand": string, "product": string, "certification": string, "where_to_buy": string, "fully_gf": boolean}}],
   "check_labels": [string],
   "tips": [string],
   "storage_info": string,
@@ -835,14 +835,16 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 def generate_recipe(dish, api_key, model, country, dietary, base_servings=None, unit_system="Metric"):
     """Generate a recipe. Tries each fallback model before giving up."""
     dietary_note = ""
-    if dietary and dietary != "None":
-        dietary_note = f"""CRITICAL DIETARY RESTRICTION: The recipe MUST be {dietary}.
-This is a hard constraint — it overrides the original dish if there is a conflict.
-For example, if the user asks for "Chicken Tikka" but the dietary restriction is "Vegetarian",
+    dietary_str = ""
+    if dietary and len(dietary) > 0:
+        dietary_str = ", ".join(dietary)
+        dietary_note = f"""CRITICAL DIETARY RESTRICTIONS: The recipe MUST comply with ALL of these: {dietary_str}.
+These are hard constraints — they override the original dish if there is a conflict.
+For example, if the user asks for "Chicken Tikka" but the restrictions include "Vegetarian",
 you MUST replace the chicken with a vegetarian protein (e.g. paneer, tofu, chickpeas) and
 rename the dish accordingly (e.g. "Paneer Tikka" or "Vegetarian Tikka").
-NEVER include any ingredient that violates the {dietary} restriction.
-Double-check every single ingredient against the {dietary} requirement before including it."""
+NEVER include any ingredient that violates ANY of these restrictions: {dietary_str}.
+Double-check every single ingredient against ALL restrictions before including it."""
 
     system_prompt = SYSTEM_INSTRUCTION_TEMPLATE.format(
         country=country,
@@ -854,7 +856,7 @@ Double-check every single ingredient against the {dietary} requirement before in
     if base_servings:
         serving_note = f" Make the recipe for {base_servings} servings."
 
-    dietary_user_note = f" IMPORTANT: This must be {dietary}." if dietary and dietary != "None" else ""
+    dietary_user_note = f" IMPORTANT: This must comply with: {dietary_str}." if dietary_str else ""
 
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
@@ -1002,7 +1004,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
         else:
             country = "🇮🇳 India"
     with s_col2:
-        dietary = st.selectbox("🥗 Other Dietary Restriction", DIETARY_TAGS, index=0, key="dietary_select")
+        dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
     with s_col3:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
     with s_col4:
@@ -1037,7 +1039,7 @@ if go:
         st.stop()
 
     # Check cache first — same dish/settings returns instantly without API call
-    cache_key = f"{dish.strip()}|{country}|{dietary}|{servings}|{unit_sys}".lower()
+    cache_key = f"{dish.strip()}|{country}|{','.join(sorted(dietary))}|{servings}|{unit_sys}".lower()
     if "recipe_cache" not in st.session_state:
         st.session_state["recipe_cache"] = {}
 
@@ -1301,16 +1303,31 @@ if "recipe" in st.session_state:
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
             initials = "".join(w[0].upper() for w in b.get("brand", "?").split()[:2])
-            c_badge = f"<span class='brand-cert' style='color:#2F5435 !important;background:#E2ECE5 !important;border:1px solid #CCD5CD;'>{b.get('certification','')}</span>" if b.get('certification') else ""
+            is_fully_gf = b.get("fully_gf", True)
+
+            if is_fully_gf:
+                # Green — certified safe
+                logo_style = "color:#2F5435 !important;background:#E2ECE5 !important;"
+                badge_style = "color:#2F5435 !important;background:#E2ECE5 !important;border:1px solid #CCD5CD;"
+                card_style = ""
+            else:
+                # Amber — possible contamination risk
+                logo_style = "color:#7A4A1E !important;background:#FDF3EB !important;"
+                badge_style = "color:#7A4A1E !important;background:#FDF3EB !important;border:1px solid #F0CFA0;"
+                card_style = "border:2px solid #E8A84C !important;background:#FFFBF5 !important;"
+
+            c_badge = f"<span class='brand-cert' style='{badge_style}'>{b.get('certification','')}</span>" if b.get('certification') else ""
+            risk_label = "" if is_fully_gf else "<div style='font-size:0.72rem;color:#B26225;font-weight:600;margin-top:4px;'>⚠️ May not be fully GF — check label</div>"
             html = (
                 f"<div class='brand-item'>"
-                f"<div class='brand-logo-placeholder' style='color:#2F5435 !important;background:#E2ECE5 !important;'>{initials}</div>"
+                f"<div class='brand-logo-placeholder' style='{logo_style}'>{initials}</div>"
                 f"<div><div class='brand-name'>{b.get('brand','')} {c_badge}</div>"
                 f"<div class='brand-desc'><strong>{b.get('product','')}</strong><br>{b.get('where_to_buy','')}</div>"
+                f"{risk_label}"
                 f"</div></div>"
             )
             with bcols[i % 3]:
-                st.markdown(f"<div class='brands-panel'>{html}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='brands-panel' style='{card_style}'>{html}</div>", unsafe_allow_html=True)
 
     # ── CRITICAL LABEL ALERT TRACKER ──
     checks = recipe.get("check_labels") or []
