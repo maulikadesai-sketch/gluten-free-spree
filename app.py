@@ -1159,16 +1159,9 @@ if "recipe" in st.session_state:
     if naturally_gf:
         st.markdown("<div class='natural-box'>✅ This flavor blueprint is naturally gluten-free. Review potential contamination flags below.</div>", unsafe_allow_html=True)
 
-    # ── METRIC CONTROLS & DOWNLOADING ──
-    col_sc, col_cp = st.columns([3, 2])
-    with col_sc:
-        new_sv = st.slider("🍽️ Adjust Servings", 1, 20, int(cur_sv))
-        if new_sv != cur_sv:
-            st.session_state["current_servings"] = new_sv
-            st.rerun()
-    with col_cp:
-        recipe_text = recipe_to_text(recipe, cur_sv)
-        st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
+    # ── DOWNLOAD ──
+    recipe_text = recipe_to_text(recipe, cur_sv)
+    st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt")
 
     # ── NATIVE GLUTEN IDENTIFIED RISKS ──
     sources = recipe.get("gluten_sources") or []
@@ -1320,19 +1313,23 @@ if "recipe" in st.session_state:
                 logo_style = "color:#2F5435 !important;background:#E2ECE5 !important;"
                 badge_style = "color:#2F5435 !important;background:#E2ECE5 !important;border:1px solid #CCD5CD;"
                 card_style = ""
+                name_style = "color:#2F5435;"
+                desc_style = ""
             else:
-                # Amber — possible contamination risk
-                logo_style = "color:#7A4A1E !important;background:#FDF3EB !important;"
-                badge_style = "color:#7A4A1E !important;background:#FDF3EB !important;border:1px solid #F0CFA0;"
-                card_style = "border:2px solid #E8A84C !important;background:#FFFBF5 !important;"
+                # Amber — contamination risk, entire card amber-tinted
+                logo_style = "color:#7A4A1E !important;background:#FDEBD0 !important;border:1px solid #E8A84C;"
+                badge_style = "color:#7A4A1E !important;background:#FDEBD0 !important;border:1px solid #E8A84C;"
+                card_style = "border:2px solid #E8A84C !important;background:#FFF7ED !important;"
+                name_style = "color:#B26225;"
+                desc_style = "color:#7A4A1E;"
 
             c_badge = f"<span class='brand-cert' style='{badge_style}'>{b.get('certification','')}</span>" if b.get('certification') else ""
-            risk_label = "" if is_fully_gf else "<div style='font-size:0.72rem;color:#B26225;font-weight:600;margin-top:4px;'>⚠️ May not be fully GF — check label</div>"
+            risk_label = "" if is_fully_gf else "<div style='font-size:0.75rem;color:#B26225;font-weight:700;margin-top:6px;padding:4px 8px;background:#FDEBD0;border-radius:6px;border:1px solid #E8A84C;'>⚠️ Not fully GF — always check label</div>"
             html = (
                 f"<div class='brand-item'>"
                 f"<div class='brand-logo-placeholder' style='{logo_style}'>{initials}</div>"
-                f"<div><div class='brand-name'>{b.get('brand','')} {c_badge}</div>"
-                f"<div class='brand-desc'><strong>{b.get('product','')}</strong><br>{b.get('where_to_buy','')}</div>"
+                f"<div><div class='brand-name' style='{name_style}'>{b.get('brand','')} {c_badge}</div>"
+                f"<div class='brand-desc' style='{desc_style}'><strong>{b.get('product','')}</strong><br>{b.get('where_to_buy','')}</div>"
                 f"{risk_label}"
                 f"</div></div>"
             )
