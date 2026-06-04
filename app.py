@@ -86,7 +86,73 @@ COUNTRIES = [
     "🇻🇪 Venezuela", "🇻🇳 Vietnam", "🇾🇪 Yemen", "🇿🇲 Zambia", "🇿🇼 Zimbabwe",
 ]
 
-DIETARY_TAGS = ["None", "Vegan", "Vegetarian", "Dairy-Free", "Nut-Free", "Low-FODMAP", "Keto", "Paleo"]
+DIETARY_TAGS = [
+    "None",
+    # ── Lifestyle / Diet ──
+    "Vegetarian",
+    "Vegan",
+    "Pescatarian",
+    "Fruitarian",
+    "Raw Food",
+    "Keto",
+    "Paleo",
+    "Carnivore",
+    "Low-FODMAP",
+    "Whole30",
+    "AIP (Autoimmune Protocol)",
+    "Mediterranean",
+    "DASH (Heart-Healthy)",
+    "High-Protein",
+    "Low-Carb",
+    "Low-Fat",
+    "Low-Sodium",
+    "Low-Sugar / Diabetic-Friendly",
+    "Anti-Inflammatory",
+    "Low-Oxalate (Kidney-Friendly)",
+    "GERD-Friendly (Low Acid)",
+    "PKU (Low Phenylalanine)",
+    "Renal Diet",
+    # ── Religious / Cultural ──
+    "Halal",
+    "Kosher",
+    "Jain (No Onion/Garlic/Root Veg)",
+    "Sattvic",
+    "Buddhist Vegetarian",
+    # ── Top 14 Allergens (US FDA + EU) ──
+    "Dairy-Free",
+    "Lactose-Free",
+    "Egg-Free",
+    "Peanut-Free",
+    "Nut-Free (Tree Nuts)",
+    "Soy-Free",
+    "Fish-Free",
+    "Shellfish-Free",
+    "Sesame-Free",
+    "Mustard-Free",
+    "Celery-Free",
+    "Lupin-Free",
+    "Mollusk-Free",
+    # ── Other Allergies ──
+    "Corn-Free",
+    "Coconut-Free",
+    "Nightshade-Free",
+    "Legume-Free",
+    "Garlic-Free",
+    "Onion-Free",
+    "Citrus-Free",
+    "Berry-Free",
+    "Mushroom-Free",
+    "Alpha-Gal (No Red Meat)",
+    "Latex-Fruit Allergy (No Banana/Avocado/Kiwi)",
+    # ── Intolerances / Sensitivities ──
+    "Fructose-Free",
+    "Histamine-Free",
+    "Sulfite-Free",
+    "Salicylate-Free",
+    "MSG-Free / Glutamate-Free",
+    "Caffeine-Free",
+    "Alcohol-Free (In Cooking)",
+]
 
 # ─────────────────────────────────────────────
 # CSS - Sage Green Palette Makeover
@@ -926,7 +992,7 @@ st.markdown("""
 # ─────────────────────────────────────────────
 # Settings Panel — works on both desktop and mobile
 # ─────────────────────────────────────────────
-with st.expander("⚙️ Settings — Country, Diet & Servings", expanded=False):
+with st.expander("⚙️ Choose Your Specifications", expanded=False):
     s_col1, s_col2, s_col3, s_col4 = st.columns(4)
     with s_col1:
         country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
@@ -936,7 +1002,7 @@ with st.expander("⚙️ Settings — Country, Diet & Servings", expanded=False)
         else:
             country = "🇮🇳 India"
     with s_col2:
-        dietary = st.selectbox("🥗 Other Dietary Need", DIETARY_TAGS, index=0, key="dietary_select")
+        dietary = st.selectbox("🥗 Other Dietary Restriction", DIETARY_TAGS, index=0, key="dietary_select")
     with s_col3:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
     with s_col4:
