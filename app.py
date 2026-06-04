@@ -761,6 +761,16 @@ div.stFormSubmitButton > button p,
   display: inline-flex; align-items: center; gap: 6px;
 }
 .time-pill-icon { font-size: 1rem; }
+/* ── Multiselect tags — remove coral, make neutral ── */
+[data-baseweb="tag"] {
+  background-color: var(--green-l) !important;
+  color: #1C2A1E !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+}
+[data-baseweb="tag"] span { color: #1C2A1E !important; }
+[data-baseweb="tag"] svg { fill: #1C2A1E !important; }
+[data-baseweb="tag"]:hover { background-color: var(--border) !important; }
 </style>
 """
 
