@@ -20,8 +20,10 @@ API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 
 # Models to try in order. Each has its own separate free daily quota.
 FALLBACK_MODELS = [
-    "gemini-2.5-flash-lite",   # ~20/day free
-    "gemini-2.5-flash",        # ~250/day free
+    "gemini-2.5-flash-lite",   # primary
+    "gemini-2.5-flash",        # fallback 1
+    "gemini-2.5-pro",          # fallback 2 (50/day free)
+    "gemini-3.0-flash",        # fallback 3 (newer, may have higher quota)
 ]
 
 # ─────────────────────────────────────────────
@@ -952,9 +954,9 @@ if "recipe" in st.session_state:
     st.markdown(f"""
     <div class='recipe-hero'>
       <div class='recipe-hero-text'>
-        <div class='{badge_cls}'>{badge_txt}</div>
-        <h2>{title}</h2>
-        <div class='hero-sub'>{recipe.get('summary', '')}</div>
+        <div class='{badge_cls}' style='color:#fff !important;'>{badge_txt}</div>
+        <h2 style='color:#fff !important;'>{title}</h2>
+        <div class='hero-sub' style='color:rgba(255,255,255,0.85) !important;'>{recipe.get('summary', '')}</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1062,7 +1064,7 @@ if "recipe" in st.session_state:
     with col_right:
         st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
         steps_html = "".join(
-            f"<div class='step-block'><div class='step-n'>{idx}</div><div class='step-t'>{step}</div></div>"
+            f"<div class='step-block'><div class='step-n' style='color:#fff !important;'>{idx}</div><div class='step-t'>{step}</div></div>"
             for idx, step in enumerate(recipe.get("steps", []), 1)
         )
         st.markdown(
@@ -1165,10 +1167,10 @@ if "recipe" in st.session_state:
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
             initials = "".join(w[0].upper() for w in b.get("brand", "?").split()[:2])
-            c_badge = f"<span class='brand-cert'>{b.get('certification','')}</span>" if b.get('certification') else ""
+            c_badge = f"<span class='brand-cert' style='color:#fff !important;background:#2F5435 !important;'>{b.get('certification','')}</span>" if b.get('certification') else ""
             html = (
                 f"<div class='brand-item'>"
-                f"<div class='brand-logo-placeholder'>{initials}</div>"
+                f"<div class='brand-logo-placeholder' style='color:#fff !important;'>{initials}</div>"
                 f"<div><div class='brand-name'>{b.get('brand','')} {c_badge}</div>"
                 f"<div class='brand-desc'><strong>{b.get('product','')}</strong><br>{b.get('where_to_buy','')}</div>"
                 f"</div></div>"
