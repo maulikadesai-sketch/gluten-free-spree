@@ -329,9 +329,14 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 }
 /* The value label above the thumb */
 [data-baseweb="slider"] div[data-testid="stThumbValue"],
-[data-baseweb="slider"] [data-testid="stThumbValue"] {
+[data-baseweb="slider"] [data-testid="stThumbValue"],
+[data-baseweb="tooltip"],
+[data-baseweb="slider"] div[role="tooltip"],
+[data-baseweb="slider"] div[role="slider"] > div {
   background: transparent !important;
   color: var(--ink) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 /* Min/max labels (1 and 20) */
 [data-testid="stSlider"] [data-testid="stTickBar"],
