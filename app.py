@@ -936,7 +936,7 @@ with st.expander("⚙️ Settings — Country, Diet & Servings", expanded=False)
         else:
             country = "🇮🇳 India"
     with s_col2:
-        dietary = st.selectbox("🥗 Dietary Need", DIETARY_TAGS, index=0, key="dietary_select")
+        dietary = st.selectbox("🥗 Other Dietary Need", DIETARY_TAGS, index=0, key="dietary_select")
     with s_col3:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
     with s_col4:
