@@ -259,9 +259,83 @@ div.stButton > button:not([kind="primary"]):hover { border-color: var(--green) !
 div[data-testid="stTextInput"] input, div[data-testid="stSelectbox"] > div > div {
   border-radius: 10px !important;
   border-color: var(--border) !important;
-  background: var(--card) !important;
+  background: #FFFFFF !important;
+  color: #1C2A1E !important;
   font-family: 'Outfit', sans-serif !important;
 }
+
+/* ══════════════════════════════════════════════════════
+   FORCE ALL WIDGETS LEGIBLE — overrides dark mode
+   ══════════════════════════════════════════════════════ */
+
+/* Text inputs, textareas, number inputs */
+input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textarea {
+  background-color: #FFFFFF !important;
+  color: #1C2A1E !important;
+  caret-color: #1C2A1E !important;
+}
+
+/* Selectbox / dropdown */
+[data-baseweb="select"] > div { background-color: #FFFFFF !important; color: #1C2A1E !important; }
+[data-baseweb="select"] span { color: #1C2A1E !important; }
+[data-baseweb="popover"] { background-color: #FFFFFF !important; }
+[data-baseweb="popover"] li { color: #1C2A1E !important; }
+[data-baseweb="popover"] li:hover { background-color: var(--green-l) !important; }
+
+/* Download buttons — force white bg with dark text */
+[data-testid="stDownloadButton"] button,
+[data-testid="stDownloadButton"] > button {
+  background-color: #FFFFFF !important;
+  color: #1C2A1E !important;
+  border: 1.5px solid var(--border) !important;
+  border-radius: 10px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 500 !important;
+}
+[data-testid="stDownloadButton"] button:hover {
+  background-color: var(--green-l) !important;
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+}
+
+/* Slider — force green track instead of red */
+[data-testid="stSlider"] [role="slider"] { background: var(--green) !important; }
+[data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: var(--green) !important; }
+[data-baseweb="slider"] div { background-color: var(--border) !important; }
+[data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: var(--green) !important; }
+[data-baseweb="slider"] [role="slider"] { background-color: var(--green) !important; border-color: var(--green) !important; }
+[data-testid="stSlider"] p { color: var(--ink) !important; }
+
+/* Number input */
+[data-testid="stNumberInput"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
+[data-testid="stNumberInput"] button { background-color: #FFFFFF !important; color: #1C2A1E !important; }
+
+/* Radio buttons */
+[data-testid="stRadio"] label span { color: #1C2A1E !important; }
+[data-testid="stRadio"] div[role="radiogroup"] label { color: #1C2A1E !important; }
+
+/* Checkboxes */
+[data-testid="stCheckbox"] label span { color: #1C2A1E !important; }
+
+/* Expander */
+[data-testid="stExpander"] { background: #FFFFFF !important; border-color: var(--border) !important; }
+[data-testid="stExpander"] summary, [data-testid="stExpander"] summary span { color: #1C2A1E !important; }
+[data-testid="stExpander"] div { color: #1C2A1E !important; }
+
+/* Markdown text inside all containers */
+.stMarkdown p, .stMarkdown li, .stMarkdown span { color: #1C2A1E !important; }
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { color: var(--green) !important; }
+
+/* Form container background */
+[data-testid="stForm"] { background-color: transparent !important; border: none !important; }
+
+/* Brand cert badges — ensure white text on green bg */
+.brand-cert { color: #FFFFFF !important; background: var(--green) !important; }
+
+/* Hero card text — always white on dark background */
+.recipe-hero h2, .recipe-hero .hero-sub, .recipe-hero .hero-badge,
+.recipe-hero-text h2, .recipe-hero-text .hero-sub { color: #FFFFFF !important; }
+.recipe-hero .hero-sub { opacity: 0.85; }
 
 /* ── Recipe Hero Card ── */
 .recipe-hero {
@@ -269,10 +343,11 @@ div[data-testid="stTextInput"] input, div[data-testid="stSelectbox"] > div > div
   width: 100%;
   background: linear-gradient(135deg, var(--green) 0%, #152618 100%);
   border-radius: var(--r);
-  overflow: hidden;
+  overflow: visible;
   margin: 1.4rem 0 0 0;
   box-shadow: var(--shadow);
   padding: 2.5rem;
+  min-height: auto;
   border-left: 6px solid var(--amber);
 }
 .recipe-hero-text h2 {
@@ -288,6 +363,9 @@ div[data-testid="stTextInput"] input, div[data-testid="stSelectbox"] > div > div
   margin-top: 8px;
   font-family: 'Outfit', sans-serif;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 .hero-badge {
   display: inline-block;
@@ -908,13 +986,13 @@ if "recipe" in st.session_state:
     # ── METRIC CONTROLS & DOWNLOADING ──
     col_sc, col_cp = st.columns([3, 2])
     with col_sc:
-        new_sv = st.slider("🍽️ Dynamic Servings Scaling Finder", 1, 20, int(cur_sv))
+        new_sv = st.slider("🍽️ Adjust Servings", 1, 20, int(cur_sv))
         if new_sv != cur_sv:
             st.session_state["current_servings"] = new_sv
             st.rerun()
     with col_cp:
         recipe_text = recipe_to_text(recipe, cur_sv)
-        st.download_button("📋 Download Text Blueprint", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
+        st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
     # ── NATIVE GLUTEN IDENTIFIED RISKS ──
     sources = recipe.get("gluten_sources") or []
