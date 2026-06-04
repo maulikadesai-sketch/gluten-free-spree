@@ -1008,7 +1008,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with s_col3:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
     with s_col4:
-        servings = st.slider("🍽️ Servings", 1, 12, 4, key="servings_slider")
+        servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
