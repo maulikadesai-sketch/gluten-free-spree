@@ -92,8 +92,10 @@ DIETARY_TAGS = ["None", "Vegan", "Vegetarian", "Dairy-Free", "Nut-Free", "Low-FO
 # CSS - Sage Green Palette Makeover
 # ─────────────────────────────────────────────
 CUSTOM_CSS = """
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
   --ink:      #1C2A1E;
@@ -301,6 +303,8 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 }
 
 /* Slider — force green track instead of red */
+[data-testid="stSlider"] { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+[data-testid="stSlider"] > div { background: transparent !important; }
 [data-testid="stSlider"] [role="slider"] { background: var(--green) !important; }
 [data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: var(--green) !important; }
 [data-baseweb="slider"] div { background-color: var(--border) !important; }
@@ -343,15 +347,15 @@ div.stFormSubmitButton > button p,
 [data-testid="stFormSubmitButton"] > button span,
 [data-testid="stFormSubmitButton"] > button p { color: #FFFFFF !important; }
 
-/* Step number circles */
-.step-n, .step-n span, .step-n p, .step-n div { color: #FFFFFF !important; }
+/* Step numbers — plain dark text */
+.step-n, .step-n span { color: var(--green) !important; }
 
-/* Brand logo initials */
+/* Brand logo initials — dark text on light bg */
 .brand-logo-placeholder, .brand-logo-placeholder span,
-.brand-logo-placeholder p, .brand-logo-placeholder div { color: #FFFFFF !important; }
+.brand-logo-placeholder p, .brand-logo-placeholder div { color: #2F5435 !important; }
 
-/* Brand certification badges */
-.brand-cert, .brand-cert span, .brand-cert p { color: #FFFFFF !important; }
+/* Brand certification badges — dark text on light bg */
+.brand-cert, .brand-cert span, .brand-cert p { color: #2F5435 !important; }
 
 /* Hero card — all text white */
 .recipe-hero h2, .recipe-hero p, .recipe-hero span, .recipe-hero div,
@@ -497,12 +501,13 @@ div.stFormSubmitButton > button p,
 }
 .brand-logo-placeholder {
   width: 40px; height: 40px; border-radius: 8px;
-  background: var(--green); display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  background: var(--green-l); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
 }
 .brand-name { font-weight: 600; font-size: 0.9rem; color: var(--green); }
 .brand-desc { font-size: 0.82rem; color: var(--ink-mid); margin-top: 3px; line-height: 1.45; }
-.brand-cert { font-size: 0.7rem; background: var(--green); color: #fff; border-radius: 6px; padding: 1px 7px; margin-left: 6px; font-weight: 600; }
+.brand-cert { font-size: 0.7rem; background: var(--green-l); color: var(--green); border: 1px solid var(--border); border-radius: 6px; padding: 1px 7px; margin-left: 6px; font-weight: 600; }
 
 /* ── Gluten danger tags ── */
 .g-tag { display: inline-block; background: var(--red-l); border: 1px solid #E2B3B3; color: var(--red); border-radius: 7px; font-size: 0.76rem; padding: 4px 10px; margin: 3px 3px 3px 0; font-weight: 500; }
@@ -581,10 +586,8 @@ div.stFormSubmitButton > button p,
 .step-block { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 1.1rem; }
 .step-block:last-child { margin-bottom: 0; }
 .step-n {
-  min-width: 30px; height: 30px; border-radius: 50%;
-  background: var(--green); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  min-width: 24px;
+  font-size: 0.95rem; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 3px;
 }
 .step-t { font-size: 0.92rem; line-height: 1.65; color: var(--ink); }
 
@@ -914,27 +917,39 @@ if go:
         st.warning("Please type a recipe name first.")
         st.stop()
 
-    with st.spinner(f"Recreating recipe for {dish}..."):
-        try:
-            # Derive short system metric identifier
-            unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
-            recipe = generate_recipe(dish.strip(), api_key, model, country, dietary, servings, unit_val)
-            st.session_state["recipe"] = recipe
-            st.session_state["base_servings"] = recipe.get("servings", servings) or servings
-            st.session_state["current_servings"] = servings
-        except Exception as e:
-            err = str(e)
-            if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded")):
-                st.warning(
-                    "🕐 **Daily API limit reached.** I tried 4 different models but they're all "
-                    "at their daily cap. This resets at **midnight US Pacific time**.\n\n"
-                    "**Quick fix:** Create a second free API key with a different Gmail account "
-                    "at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) "
-                    "and paste it into the `HARDCODED_API_KEY` line in app.py."
-                )
-            else:
-                st.error(f"Error: {err}")
-            st.stop()
+    # Check cache first — same dish/settings returns instantly without API call
+    cache_key = f"{dish.strip()}|{country}|{dietary}|{servings}|{unit_sys}".lower()
+    if "recipe_cache" not in st.session_state:
+        st.session_state["recipe_cache"] = {}
+
+    if cache_key in st.session_state["recipe_cache"]:
+        recipe = st.session_state["recipe_cache"][cache_key]
+        st.session_state["recipe"] = recipe
+        st.session_state["base_servings"] = recipe.get("servings", servings) or servings
+        st.session_state["current_servings"] = servings
+    else:
+        with st.spinner(f"Recreating recipe for {dish}..."):
+            try:
+                unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
+                recipe = generate_recipe(dish.strip(), api_key, model, country, dietary, servings, unit_val)
+                st.session_state["recipe"] = recipe
+                st.session_state["base_servings"] = recipe.get("servings", servings) or servings
+                st.session_state["current_servings"] = servings
+                # Cache it
+                st.session_state["recipe_cache"][cache_key] = recipe
+            except Exception as e:
+                err = str(e)
+                if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded")):
+                    st.warning(
+                        "🕐 **Daily API limit reached.** I tried 4 different models but they're all "
+                        "at their daily cap. This resets at **midnight US Pacific time**.\n\n"
+                        "**Quick fix:** Create a second free API key with a different Gmail account "
+                        "at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) "
+                        "and paste it into the `HARDCODED_API_KEY` line in app.py."
+                    )
+                else:
+                    st.error(f"Error: {err}")
+                st.stop()
 
 # ─────────────────────────────────────────────
 # Output Recipe Render Engine
@@ -1064,7 +1079,7 @@ if "recipe" in st.session_state:
     with col_right:
         st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
         steps_html = "".join(
-            f"<div class='step-block'><div class='step-n' style='color:#fff !important;'>{idx}</div><div class='step-t'>{step}</div></div>"
+            f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
             for idx, step in enumerate(recipe.get("steps", []), 1)
         )
         st.markdown(
@@ -1167,10 +1182,10 @@ if "recipe" in st.session_state:
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
             initials = "".join(w[0].upper() for w in b.get("brand", "?").split()[:2])
-            c_badge = f"<span class='brand-cert' style='color:#fff !important;background:#2F5435 !important;'>{b.get('certification','')}</span>" if b.get('certification') else ""
+            c_badge = f"<span class='brand-cert' style='color:#2F5435 !important;background:#E2ECE5 !important;border:1px solid #CCD5CD;'>{b.get('certification','')}</span>" if b.get('certification') else ""
             html = (
                 f"<div class='brand-item'>"
-                f"<div class='brand-logo-placeholder' style='color:#fff !important;'>{initials}</div>"
+                f"<div class='brand-logo-placeholder' style='color:#2F5435 !important;background:#E2ECE5 !important;'>{initials}</div>"
                 f"<div><div class='brand-name'>{b.get('brand','')} {c_badge}</div>"
                 f"<div class='brand-desc'><strong>{b.get('product','')}</strong><br>{b.get('where_to_buy','')}</div>"
                 f"</div></div>"
