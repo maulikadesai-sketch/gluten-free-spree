@@ -301,24 +301,55 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 }
 
 /* Slider — force green track instead of red */
-[data-testid="stSlider"] { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
-[data-testid="stSlider"] > div { background: transparent !important; }
-[data-testid="stSlider"] [role="slider"] { background: #1C2A1E !important; border-color: #1C2A1E !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] { background: transparent !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] div[role="progressbar"] > div { background: #1C2A1E !important; }
-/* Remove grey box from all slider parent wrappers */
-[data-testid="stSlider"] [data-baseweb="slider"] > div { background-color: transparent !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] > div > div { background-color: #CCD5CD !important; }
-[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div { background-color: #1C2A1E !important; }
-[data-testid="stElementContainer"]:has([data-testid="stSlider"]) { background: transparent !important; border: none !important; box-shadow: none !important; }
-[data-baseweb="slider"] div { background-color: transparent !important; }
-[data-baseweb="slider"] div[role="progressbar"] { background-color: #CCD5CD !important; }
-[data-baseweb="slider"] div[role="progressbar"] > div { background-color: #1C2A1E !important; }
-[data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: #1C2A1E !important; }
-[data-baseweb="slider"] [role="slider"] { background-color: #1C2A1E !important; border-color: #1C2A1E !important; }
-[data-baseweb="slider"] [data-testid="stTickBar"] { background: transparent !important; }
-[data-baseweb="slider"] [data-testid="stTickBar"] > div { background: transparent !important; }
-[data-testid="stSlider"] p { color: var(--ink) !important; background: transparent !important; }
+/* ── SLIDER — nuclear override for ALL sliders everywhere ── */
+[data-testid="stSlider"],
+[data-testid="stSidebar"] [data-testid="stSlider"] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+[data-testid="stSlider"] div,
+[data-testid="stSidebar"] [data-testid="stSlider"] div {
+  background-color: transparent !important;
+}
+/* The track (grey background line) */
+[data-baseweb="slider"] div[role="progressbar"] {
+  background-color: #CCD5CD !important;
+}
+/* The filled portion (was coral, now black) */
+[data-baseweb="slider"] div[role="progressbar"] > div,
+[data-baseweb="slider"] div[role="progressbar"] > div:first-child {
+  background-color: #1C2A1E !important;
+}
+/* The thumb (circle you drag) */
+[data-baseweb="slider"] div[role="slider"],
+[data-baseweb="slider"] div[role="slider"] > div {
+  background-color: #1C2A1E !important;
+  border-color: #1C2A1E !important;
+}
+/* The value label above the thumb */
+[data-baseweb="slider"] div[data-testid="stThumbValue"],
+[data-baseweb="slider"] [data-testid="stThumbValue"] {
+  background: transparent !important;
+  color: var(--ink) !important;
+}
+/* Min/max labels (1 and 20) */
+[data-testid="stSlider"] [data-testid="stTickBar"],
+[data-testid="stSlider"] [data-testid="stTickBar"] > div,
+[data-testid="stSlider"] [data-testid="stTickBarMin"],
+[data-testid="stSlider"] [data-testid="stTickBarMax"] {
+  background: transparent !important;
+}
+[data-testid="stSlider"] p,
+[data-testid="stSidebar"] [data-testid="stSlider"] p {
+  color: var(--ink) !important;
+  background: transparent !important;
+}
+[data-testid="stElementContainer"]:has([data-testid="stSlider"]) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 
 /* Number input */
 [data-testid="stNumberInput"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
