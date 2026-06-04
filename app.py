@@ -326,16 +326,44 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 .stMarkdown p, .stMarkdown li, .stMarkdown span { color: #1C2A1E !important; }
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { color: var(--green) !important; }
 
+/* ══ WHITE TEXT EXCEPTIONS — elements with dark/green backgrounds ══ */
+/* Form submit / primary buttons */
+div.stButton > button[kind="primary"],
+div.stButton > button[kind="primary"] span,
+div.stButton > button[kind="primary"] p,
+button[kind="primaryFormSubmit"],
+button[kind="primaryFormSubmit"] span,
+button[kind="primaryFormSubmit"] p,
+div.stFormSubmitButton > button,
+div.stFormSubmitButton > button span,
+div.stFormSubmitButton > button p,
+[data-testid="stFormSubmitButton"] > button,
+[data-testid="stFormSubmitButton"] > button span,
+[data-testid="stFormSubmitButton"] > button p { color: #FFFFFF !important; }
+
+/* Step number circles */
+.step-n, .step-n span, .step-n p, .step-n div { color: #FFFFFF !important; }
+
+/* Brand logo initials */
+.brand-logo-placeholder, .brand-logo-placeholder span,
+.brand-logo-placeholder p, .brand-logo-placeholder div { color: #FFFFFF !important; }
+
+/* Brand certification badges */
+.brand-cert, .brand-cert span, .brand-cert p { color: #FFFFFF !important; }
+
+/* Hero card — all text white */
+.recipe-hero h2, .recipe-hero p, .recipe-hero span, .recipe-hero div,
+.recipe-hero-text h2, .recipe-hero-text p, .recipe-hero-text span,
+.recipe-hero-text div, .recipe-hero-text .hero-sub,
+.hero-badge, .hero-badge span { color: #FFFFFF !important; }
+
+/* Natural box / adaptation banner text stays dark */
+.natural-box, .natural-box span, .natural-box p { color: var(--green) !important; }
+.adapt-banner, .adapt-banner div, .adapt-banner span, .adapt-banner p { color: #1C2A1E !important; }
+.adapt-title { color: var(--amber) !important; }
+
 /* Form container background */
 [data-testid="stForm"] { background-color: transparent !important; border: none !important; }
-
-/* Brand cert badges — ensure white text on green bg */
-.brand-cert { color: #FFFFFF !important; background: var(--green) !important; }
-
-/* Hero card text — always white on dark background */
-.recipe-hero h2, .recipe-hero .hero-sub, .recipe-hero .hero-badge,
-.recipe-hero-text h2, .recipe-hero-text .hero-sub { color: #FFFFFF !important; }
-.recipe-hero .hero-sub { opacity: 0.85; }
 
 /* ── Recipe Hero Card ── */
 .recipe-hero {
