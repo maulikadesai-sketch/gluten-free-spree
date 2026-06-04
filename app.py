@@ -193,12 +193,13 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stMetricLabel"] p { color: var(--ink-soft) !important; }
 
 #MainMenu, footer { visibility: hidden; }
-/* Hide the header bar entirely — removes the broken "keyboard_double_" icon text */
 header[data-testid="stHeader"] { display: none !important; }
 [data-testid="stDecoration"] { display: none; }
-/* Hide the sidebar collapse button so users can't close it (avoids the broken icon) */
+/* Hide sidebar completely — all settings are on the main page now */
+[data-testid="stSidebar"] { display: none !important; }
 [data-testid="stSidebarCollapseButton"] { display: none !important; }
 button[kind="headerNoPadding"] { display: none !important; }
+section[data-testid="stSidebar"] { display: none !important; }
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
@@ -896,49 +897,50 @@ def recipe_to_text(recipe, servings_label):
 # ─────────────────────────────────────────────
 # Page Setup
 # ─────────────────────────────────────────────
-st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# Sidebar Workspace Controllers
+# API Key — loaded silently in background
 # ─────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("<p style='font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:700;color:#1C2A1E;margin-bottom:2px;'>Gluten-Free Spree</p>", unsafe_allow_html=True)
-    st.divider()
-
-    # API key — loaded silently
-    api_key = HARDCODED_API_KEY or ""
-    if not api_key:
-        try:
-            api_key = st.secrets.get("GEMINI_API_KEY", "")
-        except Exception:
-            api_key = ""
-
-    # Model is set from the constant — no user-facing input
-    model = DEFAULT_MODEL
-
-    country_choice = st.radio("📍 Your Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
-    if country_choice == "🌍 Other":
-        other_countries = [c for c in COUNTRIES if "India" not in c]
-        country = st.selectbox("Select your country", other_countries, index=0, label_visibility="collapsed", key="country_select")
-    else:
-        country = "🇮🇳 India"
-    dietary = st.selectbox("🥗 Dietary Need", DIETARY_TAGS, index=0, key="dietary_select")
-    unit_sys = st.selectbox("📏 Preferred Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
-    servings = st.slider("🍽️ Servings", 1, 12, 4, key="servings_slider")
-    st.divider()
+api_key = HARDCODED_API_KEY or ""
+if not api_key:
+    try:
+        api_key = st.secrets.get("GEMINI_API_KEY", "")
+    except Exception:
+        api_key = ""
+model = DEFAULT_MODEL
 
 # ─────────────────────────────────────────────
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:0.5rem 0 1rem;'>
+<div style='padding:0.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
   <p style='color:var(--ink-mid); font-size:1.1rem; margin-top:2px;'>
     Your gluten-free recipe companion.
   </p>
 </div>
 """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────
+# Settings Panel — works on both desktop and mobile
+# ─────────────────────────────────────────────
+with st.expander("⚙️ Settings — Country, Diet & Servings", expanded=False):
+    s_col1, s_col2, s_col3, s_col4 = st.columns(4)
+    with s_col1:
+        country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+        if country_choice == "🌍 Other":
+            other_countries = [c for c in COUNTRIES if "India" not in c]
+            country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+        else:
+            country = "🇮🇳 India"
+    with s_col2:
+        dietary = st.selectbox("🥗 Dietary Need", DIETARY_TAGS, index=0, key="dietary_select")
+    with s_col3:
+        unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+    with s_col4:
+        servings = st.slider("🍽️ Servings", 1, 12, 4, key="servings_slider")
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
