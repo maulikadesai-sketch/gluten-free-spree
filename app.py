@@ -842,6 +842,31 @@ div.stFormSubmitButton > button p,
 [data-baseweb="tag"] span { color: #1C2A1E !important; }
 [data-baseweb="tag"] svg { fill: #1C2A1E !important; }
 [data-baseweb="tag"]:hover { background-color: #CCD5CD !important; }
+
+/* ── Dietary pills ── */
+[data-testid="stPills"] { background: transparent !important; }
+[data-testid="stPills"] button {
+  background-color: #FFFFFF !important;
+  color: #1C2A1E !important;
+  border: 1.5px solid #CCD5CD !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  padding: 5px 14px !important;
+  margin: 2px !important;
+  font-family: 'Outfit', sans-serif !important;
+  cursor: pointer !important;
+}
+[data-testid="stPills"] button:hover {
+  background-color: #E2ECE5 !important;
+  border-color: #2F5435 !important;
+}
+[data-testid="stPills"] button[aria-checked="true"],
+[data-testid="stPills"] button[data-selected="true"] {
+  background-color: #2F5435 !important;
+  color: #FFFFFF !important;
+  border-color: #2F5435 !important;
+  font-weight: 600 !important;
+}
 </style>
 """
 
@@ -1114,7 +1139,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
-# Dietary restrictions — clean multiselect with removable tags
+# Dietary restrictions — tappable pills, selected ones turn green
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1135,10 +1160,9 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect(
-    "🥗 Other Dietary Restrictions — select any that apply, click ✕ to remove",
-    all_dietary, default=[], key="dietary_select",
-)
+
+st.markdown("**🥗 Other Dietary Restrictions** — tap to select, tap again to deselect")
+dietary = st.pills("dietary", all_dietary, selection_mode="multi", default=[], key="dietary_select", label_visibility="collapsed")
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
