@@ -532,7 +532,11 @@ div.stFormSubmitButton > button p,
 .adapt-title { color: var(--amber) !important; }
 
 /* Form container background */
-[data-testid="stForm"] { background-color: transparent !important; border: none !important; }
+[data-testid="stForm"] { background-color: transparent !important; border: none !important; padding: 0 !important; }
+/* Hide "Press Enter to submit form" hint text */
+[data-testid="stForm"] [data-testid="stFormSubmitButton"] + div,
+.stForm > div:last-child > div:last-child > small,
+[data-testid="stForm"] small { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
 
 /* ── Recipe Hero Card ── */
 .recipe-hero {
@@ -1169,15 +1173,15 @@ dietary = st.multiselect("🥗 Other Dietary Restrictions", all_dietary, default
 # ─────────────────────────────────────────────
 # Search Bar Interface
 # ─────────────────────────────────────────────
-# Search bar — no form wrapper, so no "press enter" hint
-col_input, col_btn = st.columns([5, 1], vertical_alignment="bottom")
-with col_input:
-    dish = st.text_input(
-        "Enter a dish to recreate gluten-free:",
-        placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
-    )
-with col_btn:
-    go = st.button("✨ Recreate", type="primary", use_container_width=True)
+with st.form("recipe_form", clear_on_submit=False, border=False):
+    col_input, col_btn = st.columns([5, 1], vertical_alignment="bottom")
+    with col_input:
+        dish = st.text_input(
+            "Enter a dish to recreate gluten-free:",
+            placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
+        )
+    with col_btn:
+        go = st.form_submit_button("✨ Recreate", type="primary", use_container_width=True)
 
 st.divider()
 
@@ -1197,7 +1201,7 @@ if go:
     if cache_key in st.session_state["recipe_cache"]:
         recipe = st.session_state["recipe_cache"][cache_key]
         st.session_state["recipe"] = recipe
-        st.session_state["base_servings"] = recipe.get("servings", servings) or servings
+        st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
         st.session_state["current_servings"] = servings
     else:
         with st.spinner(f"Recreating recipe for {dish}..."):
@@ -1205,7 +1209,7 @@ if go:
                 unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
                 recipe = generate_recipe(dish.strip(), all_api_keys, model, country, dietary, servings, unit_val)
                 st.session_state["recipe"] = recipe
-                st.session_state["base_servings"] = recipe.get("servings", servings) or servings
+                st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                 st.session_state["current_servings"] = servings
                 # Cache it
                 st.session_state["recipe_cache"][cache_key] = recipe
@@ -1228,9 +1232,13 @@ if go:
 # ─────────────────────────────────────────────
 if "recipe" in st.session_state:
     recipe = st.session_state["recipe"]
-    base_sv = st.session_state.get("base_servings", 4) or 4
-    cur_sv  = servings  # Use the live slider value so ingredients auto-update
-    scale   = cur_sv / base_sv if base_sv else 1
+    # Force base_servings to integer to prevent type errors
+    try:
+        base_sv = int(st.session_state.get("base_servings", 4) or 4)
+    except (ValueError, TypeError):
+        base_sv = 4
+    cur_sv = int(servings)
+    scale = cur_sv / base_sv if base_sv > 0 else 1
 
     title = recipe.get("dish_name", dish)
     naturally_gf = recipe.get("naturally_gluten_free", False)
@@ -1557,7 +1565,7 @@ if "recipe" in st.session_state:
                     unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
                     recipe = generate_recipe(qd, all_api_keys, model, country, dietary, servings, unit_val)
                     st.session_state["recipe"] = recipe
-                    st.session_state["base_servings"] = recipe.get("servings", servings) or servings
+                    st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                     st.session_state["current_servings"] = servings
                     st.rerun()
                 except Exception as e:
