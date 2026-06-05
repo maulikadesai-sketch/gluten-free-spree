@@ -1108,44 +1108,31 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
-# Dietary restrictions — each category in its own collapsible dropdown
+# Dietary restrictions — one alphabetical list
 selected_dietary = []
+all_dietary = sorted([
+    "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
+    "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
+    "AIP (Autoimmune Protocol)", "Mediterranean", "DASH (Heart-Healthy)",
+    "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium",
+    "Low-Sugar / Diabetic-Friendly", "Anti-Inflammatory",
+    "Low-Oxalate (Kidney-Friendly)", "GERD-Friendly (Low Acid)",
+    "PKU (Low Phenylalanine)", "Renal Diet",
+    "Halal", "Kosher", "Jain (No Onion/Garlic/Root Veg)", "Sattvic", "Buddhist Vegetarian",
+    "Dairy-Free", "Lactose-Free", "Egg-Free", "Peanut-Free",
+    "Nut-Free (Tree Nuts)", "Soy-Free", "Fish-Free", "Shellfish-Free",
+    "Sesame-Free", "Mustard-Free", "Celery-Free", "Lupin-Free",
+    "Mollusk-Free", "Corn-Free", "Coconut-Free", "Nightshade-Free",
+    "Legume-Free", "Garlic-Free", "Onion-Free", "Citrus-Free",
+    "Berry-Free", "Mushroom-Free", "Alpha-Gal (No Red Meat)",
+    "Latex-Fruit Allergy (No Banana/Avocado/Kiwi)",
+    "Fructose-Free", "Histamine-Free", "Sulfite-Free",
+    "Salicylate-Free", "MSG-Free / Glutamate-Free",
+    "Caffeine-Free", "Alcohol-Free (In Cooking)",
+])
 
-with st.expander("🥗 Lifestyle / Diet Restrictions", expanded=False):
-    lifestyle = ["Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
-                  "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
-                  "AIP (Autoimmune Protocol)", "Mediterranean", "DASH (Heart-Healthy)",
-                  "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium",
-                  "Low-Sugar / Diabetic-Friendly", "Anti-Inflammatory",
-                  "Low-Oxalate (Kidney-Friendly)", "GERD-Friendly (Low Acid)",
-                  "PKU (Low Phenylalanine)", "Renal Diet"]
-    for item in lifestyle:
-        if st.checkbox(item, key=f"diet_{item}"):
-            selected_dietary.append(item)
-
-with st.expander("🙏 Religious / Cultural Restrictions", expanded=False):
-    religious = ["Halal", "Kosher", "Jain (No Onion/Garlic/Root Veg)", "Sattvic", "Buddhist Vegetarian"]
-    for item in religious:
-        if st.checkbox(item, key=f"diet_{item}"):
-            selected_dietary.append(item)
-
-with st.expander("⚠️ Allergy Restrictions", expanded=False):
-    allergies = ["Dairy-Free", "Lactose-Free", "Egg-Free", "Peanut-Free",
-                 "Nut-Free (Tree Nuts)", "Soy-Free", "Fish-Free", "Shellfish-Free",
-                 "Sesame-Free", "Mustard-Free", "Celery-Free", "Lupin-Free",
-                 "Mollusk-Free", "Corn-Free", "Coconut-Free", "Nightshade-Free",
-                 "Legume-Free", "Garlic-Free", "Onion-Free", "Citrus-Free",
-                 "Berry-Free", "Mushroom-Free", "Alpha-Gal (No Red Meat)",
-                 "Latex-Fruit Allergy (No Banana/Avocado/Kiwi)"]
-    for item in allergies:
-        if st.checkbox(item, key=f"diet_{item}"):
-            selected_dietary.append(item)
-
-with st.expander("🧪 Intolerance / Sensitivity Restrictions", expanded=False):
-    intolerances = ["Fructose-Free", "Histamine-Free", "Sulfite-Free",
-                    "Salicylate-Free", "MSG-Free / Glutamate-Free",
-                    "Caffeine-Free", "Alcohol-Free (In Cooking)"]
-    for item in intolerances:
+with st.expander("🥗 Other Dietary Restrictions", expanded=False):
+    for item in all_dietary:
         if st.checkbox(item, key=f"diet_{item}"):
             selected_dietary.append(item)
 
