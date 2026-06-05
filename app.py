@@ -20,11 +20,6 @@ os.makedirs('.streamlit', exist_ok=True)
 with open('.streamlit/config.toml', 'w') as f:
     f.write("""[theme]
 base = "light"
-primaryColor = "#2F5435"
-backgroundColor = "#EBF1EC"
-secondaryBackgroundColor = "#DCE4DC"
-textColor = "#1C2A1E"
-font = "sans serif"
 """)
 
 # ─────────────────────────────────────────────
