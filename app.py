@@ -846,7 +846,7 @@ div.stFormSubmitButton > button p,
   bottom: unset !important;
 }
 
-/* Mobile fix — force dropdown to appear as bottom sheet overlay */
+/* Mobile fix — dropdown appears as clean bottom sheet */
 @media (max-width: 768px) {
   [data-baseweb="popover"] {
     position: fixed !important;
@@ -854,16 +854,31 @@ div.stFormSubmitButton > button p,
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
+    width: 100% !important;
     max-height: 50vh !important;
     overflow-y: auto !important;
-    border-radius: 16px 16px 0 0 !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
-    z-index: 9999 !important;
+    border-radius: 14px 14px 0 0 !important;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18) !important;
+    z-index: 99999 !important;
     transform: none !important;
+    padding: 8px 0 !important;
+    border: 1px solid #CCD5CD !important;
+    border-bottom: none !important;
+  }
+  [data-baseweb="popover"] > div {
+    position: static !important;
+    transform: none !important;
+    max-height: 48vh !important;
+    overflow-y: auto !important;
   }
   [data-baseweb="popover"] ul {
-    max-height: 45vh !important;
+    max-height: 46vh !important;
     overflow-y: auto !important;
+  }
+  [data-baseweb="popover"] li {
+    padding: 12px 16px !important;
+    font-size: 0.95rem !important;
+    border-bottom: 1px solid #f0f0f0 !important;
   }
 }
 /* Each item in the dropdown list */
@@ -913,15 +928,17 @@ For example: if the dish is Indian, suggest other Indian GF dishes like dal tadk
 If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines randomly. \
 IMPORTANT: The also_try dishes MUST also comply with all the user's dietary restrictions listed above.
 8. Suggest 3 "accompaniments" — side dishes, drinks, or extras that pair well with this dish. \
-CRITICAL: The accompaniments MUST pair well specifically with THIS dish — not just match the cuisine. \
-Think about flavour balance, texture contrast, and what would genuinely taste good eaten together IN THE SAME MEAL. \
-For example: \
-- Spicy curry pairs with cooling raita or plain rice — not another spicy dish. \
-- Rich creamy pasta pairs with a light salad or sparkling water — not more heavy carbs. \
-- Grilled chicken pairs with roasted vegetables or a tangy dipping sauce — not dessert. \
-- Barfi does NOT pair with chai as a meal accompaniment — that is a separate snack combination. \
-Each suggestion must be something you would realistically serve alongside this dish on the same plate or table. \
-Consider: Does it balance the flavour? Does it add texture contrast? Would someone actually order this combo? Each accompaniment must itself be gluten-free AND comply with ALL the user's \
+CRITICAL: Suggest what people ACTUALLY eat with this dish in real life — common, traditional pairings \
+that restaurants serve together or families cook together. NOT creative or unusual combinations. \
+Examples of CORRECT pairings: \
+- Chole → bhature, poori, kulcha, or jeera rice \
+- Idli → sambhar, coconut chutney, ghee podi \
+- Barfi → nothing as a side (it IS the dessert) — instead suggest what main meal comes BEFORE it \
+- Pasta → garlic bread, caesar salad, minestrone soup \
+- Sushi → miso soup, edamame, pickled ginger \
+- Tacos → guacamole, refried beans, Mexican rice \
+If the dish IS a dessert or snack, suggest the MEAL that would precede it, not another snack. \
+Think: "What would a restaurant menu show alongside this dish?" or "What does a home cook serve with this?" Each accompaniment must itself be gluten-free AND comply with ALL the user's \
 dietary restrictions listed above (e.g. if the user is Vegan, no dairy/meat accompaniments). \
 Give name, type (e.g. "Side", "Drink", "Dessert", "Sauce", "Condiment"), and a short reason it pairs well.
 9. For EACH ingredient include a single relevant food "emoji" (e.g. 🥚 eggs, 🧈 butter, 🧄 garlic, 🍚 rice, 🧀 cheese). Use 🍽️ if nothing fits.
