@@ -354,8 +354,17 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 /* Selectbox / dropdown — force white everywhere */
 [data-baseweb="select"] > div { background-color: #FFFFFF !important; color: #1C2A1E !important; }
 [data-baseweb="select"] span { color: #1C2A1E !important; }
-[data-baseweb="select"] svg { fill: #1C2A1E !important; }
+[data-baseweb="select"] svg {
+  fill: #1C2A1E !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+/* Arrow points DOWN when closed, UP when open */
+[data-baseweb="select"][aria-expanded="false"] svg { transform: rotate(0deg) !important; }
+[data-baseweb="select"][aria-expanded="true"] svg { transform: rotate(180deg) !important; }
 [data-baseweb="select"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
+[data-baseweb="select"] [data-baseweb="tag"] svg { width: 14px !important; height: 14px !important; transform: none !important; }
+[data-baseweb="select"] [class*="indicatorContainer"] { cursor: pointer !important; }
 /* Dropdown menu overlay — force open downward */
 [data-baseweb="popover"] { background-color: #FFFFFF !important; transform: none !important; }
 [data-baseweb="popover"] ul { background-color: #FFFFFF !important; max-height: 250px !important; overflow-y: auto !important; }
@@ -399,8 +408,16 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 /* Expander — white background */
 [data-testid="stExpander"] { background: #FFFFFF !important; border: 1px solid #CCD5CD !important; border-radius: 10px !important; }
 [data-testid="stExpander"] details { background: #FFFFFF !important; }
-[data-testid="stExpander"] summary { background: #FFFFFF !important; }
+[data-testid="stExpander"] summary { background: #FFFFFF !important; cursor: pointer !important; }
 [data-testid="stExpander"] summary span { color: #1C2A1E !important; }
+/* Make the expand/collapse arrow clearly visible and flip up/down */
+[data-testid="stExpander"] summary svg {
+  fill: #2F5435 !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+[data-testid="stExpander"] details:not([open]) summary svg { transform: rotate(0deg) !important; }
+[data-testid="stExpander"] details[open] summary svg { transform: rotate(180deg) !important; }
 
 /* Download buttons — force white bg with dark text */
 [data-testid="stDownloadButton"] button,
