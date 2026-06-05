@@ -1155,7 +1155,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
-# Dietary restrictions — dropdown list
+# Dietary restrictions — OUTSIDE expander, full width, with plenty of page below
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1181,6 +1181,9 @@ dietary = st.multiselect(
     all_dietary, default=[], key="dietary_select",
     help="Select any that apply. Click ✕ on a tag to remove it."
 )
+
+# Add spacer so the dropdown has room to open downward
+st.markdown("<div style='min-height:200px;'></div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
