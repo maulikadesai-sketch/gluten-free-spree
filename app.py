@@ -382,29 +382,10 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 [data-testid="stMultiSelect"] [data-baseweb="popover"] li {
   background-color: #FFFFFF !important; color: #1C2A1E !important;
 }
-/* Checkboxes — clear green tick marks */
+/* Checkboxes — visible on all devices */
 [data-testid="stCheckbox"] { background: transparent !important; }
-[data-testid="stCheckbox"] > div { background: transparent !important; }
-[data-testid="stCheckbox"] label { background: transparent !important; cursor: pointer !important; }
-[data-testid="stCheckbox"] label span { color: #1C2A1E !important; background: transparent !important; }
-/* Unchecked box — light green border */
-[data-testid="stCheckbox"] [data-baseweb="checkbox"] > div:first-child {
-  background-color: #FFFFFF !important;
-  border: 2px solid #A8C5AB !important;
-  border-radius: 4px !important;
-  width: 20px !important;
-  height: 20px !important;
-}
-/* Checked box — green with white tick */
-[data-testid="stCheckbox"] [data-baseweb="checkbox"][aria-checked="true"] > div:first-child {
-  background-color: #2F5435 !important;
-  border-color: #2F5435 !important;
-}
-[data-testid="stCheckbox"] [data-baseweb="checkbox"] svg {
-  fill: #FFFFFF !important;
-  width: 14px !important;
-  height: 14px !important;
-}
+[data-testid="stCheckbox"] label { background: transparent !important; cursor: pointer !important; color: #1C2A1E !important; }
+[data-testid="stCheckbox"] label span { color: #1C2A1E !important; }
 /* Radio buttons — transparent */
 [data-testid="stRadio"] > div { background: transparent !important; }
 [data-testid="stRadio"] label { background: transparent !important; color: #1C2A1E !important; }
@@ -1184,34 +1165,33 @@ with st.expander("🥗 Other Dietary Restrictions — tap to open, tap again to 
             selected_dietary.append(item)
 
 if selected_dietary:
-    st.markdown("<p style='font-size:0.8rem;color:#1C2A1E;font-weight:600;margin-bottom:4px;'>Selected restrictions — click ✕ to remove:</p>", unsafe_allow_html=True)
-    remove_cols = st.columns(min(len(selected_dietary), 4))
-    for i, d in enumerate(selected_dietary):
-        with remove_cols[i % min(len(selected_dietary), 4)]:
-            if st.button(f"✕ {d}", key=f"remove_{d}", use_container_width=True):
-                st.session_state[f"diet_{d}"] = False
-                st.rerun()
+    tags = " ".join(
+        f"<span style='display:inline-block;background:#E2ECE5;color:#1C2A1E;font-size:0.82rem;"
+        f"font-weight:600;padding:5px 14px;border-radius:20px;margin:3px;border:1px solid #A8C5AB;'>✓ {d}</span>"
+        for d in selected_dietary
+    )
+    st.markdown(
+        f"<div style='margin-bottom:0.6rem;'>"
+        f"<p style='font-size:0.78rem;color:#1C2A1E;font-weight:600;margin-bottom:4px;'>Selected restrictions (open list above to change):</p>"
+        f"{tags}</div>",
+        unsafe_allow_html=True,
+    )
 
 dietary = selected_dietary
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
 # ─────────────────────────────────────────────
-with st.form("recipe_form", clear_on_submit=False):
-    col_input, col_btn = st.columns([5, 1], vertical_alignment="bottom")
-    with col_input:
-        dish = st.text_input(
-            "Enter a dish to recreate gluten-free:",
-            placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
-        )
-    with col_btn:
-        go = st.form_submit_button("✨ Recreate", type="primary", use_container_width=True)
+# Search bar — no form wrapper, so no "press enter" hint
+col_input, col_btn = st.columns([5, 1], vertical_alignment="bottom")
+with col_input:
+    dish = st.text_input(
+        "Enter a dish to recreate gluten-free:",
+        placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
+    )
+with col_btn:
+    go = st.button("✨ Recreate", type="primary", use_container_width=True)
 
-st.markdown(
-    "<p style='font-size:0.82rem;color:var(--ink-soft);margin-top:5px;'>"
-    "Trending: <em>Gyoza Dumplings · Yorkshire Pudding · Tempura · Sourdough Bread · Tiramisu</em></p>",
-    unsafe_allow_html=True,
-)
 st.divider()
 
 if go:
