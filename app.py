@@ -356,8 +356,9 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 [data-baseweb="select"] span { color: #1C2A1E !important; }
 [data-baseweb="select"] svg { fill: #1C2A1E !important; }
 [data-baseweb="select"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-baseweb="popover"] { background-color: #FFFFFF !important; }
-[data-baseweb="popover"] ul { background-color: #FFFFFF !important; }
+/* Dropdown menu overlay — force open downward */
+[data-baseweb="popover"] { background-color: #FFFFFF !important; transform: none !important; }
+[data-baseweb="popover"] ul { background-color: #FFFFFF !important; max-height: 250px !important; overflow-y: auto !important; }
 [data-baseweb="popover"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
 [data-baseweb="popover"] li:hover { background-color: #E2ECE5 !important; }
 /* Dropdown menu overlay */
@@ -375,12 +376,23 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
 [data-testid="stMultiSelect"] [data-baseweb="popover"] li {
   background-color: #FFFFFF !important; color: #1C2A1E !important;
 }
-/* Checkboxes — transparent background */
+/* Checkboxes — light green background */
 [data-testid="stCheckbox"] { background: transparent !important; }
 [data-testid="stCheckbox"] > div { background: transparent !important; }
 [data-testid="stCheckbox"] label { background: transparent !important; }
 [data-testid="stCheckbox"] label span { color: #1C2A1E !important; background: transparent !important; }
-[data-testid="stCheckbox"] svg { fill: #1C2A1E !important; }
+[data-testid="stCheckbox"] svg { fill: #2F5435 !important; }
+/* The actual checkbox box */
+[data-testid="stCheckbox"] [data-baseweb="checkbox"] > div:first-child {
+  background-color: #E2ECE5 !important;
+  border-color: #A8C5AB !important;
+  border-radius: 4px !important;
+}
+/* Checked state */
+[data-testid="stCheckbox"] [data-baseweb="checkbox"] [aria-checked="true"] > div:first-child {
+  background-color: #4A8B52 !important;
+  border-color: #4A8B52 !important;
+}
 /* Radio buttons — transparent */
 [data-testid="stRadio"] > div { background: transparent !important; }
 [data-testid="stRadio"] label { background: transparent !important; color: #1C2A1E !important; }
