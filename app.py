@@ -1102,7 +1102,50 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     else:
         country = "🇮🇳 India"
 
-    dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
+    with st.expander("🥗 Other Dietary Restrictions — tap to open/close"):
+        diet_cols = st.columns(3)
+        selected_dietary = []
+
+        lifestyle = ["Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
+                      "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
+                      "AIP (Autoimmune Protocol)", "Mediterranean", "DASH (Heart-Healthy)",
+                      "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium",
+                      "Low-Sugar / Diabetic-Friendly", "Anti-Inflammatory",
+                      "Low-Oxalate (Kidney-Friendly)", "GERD-Friendly (Low Acid)",
+                      "PKU (Low Phenylalanine)", "Renal Diet"]
+        religious = ["Halal", "Kosher", "Jain (No Onion/Garlic/Root Veg)", "Sattvic", "Buddhist Vegetarian"]
+        allergies = ["Dairy-Free", "Lactose-Free", "Egg-Free", "Peanut-Free",
+                     "Nut-Free (Tree Nuts)", "Soy-Free", "Fish-Free", "Shellfish-Free",
+                     "Sesame-Free", "Mustard-Free", "Celery-Free", "Lupin-Free",
+                     "Mollusk-Free", "Corn-Free", "Coconut-Free", "Nightshade-Free",
+                     "Legume-Free", "Garlic-Free", "Onion-Free", "Citrus-Free",
+                     "Berry-Free", "Mushroom-Free", "Alpha-Gal (No Red Meat)",
+                     "Latex-Fruit Allergy (No Banana/Avocado/Kiwi)"]
+        intolerances = ["Fructose-Free", "Histamine-Free", "Sulfite-Free",
+                        "Salicylate-Free", "MSG-Free / Glutamate-Free",
+                        "Caffeine-Free", "Alcohol-Free (In Cooking)"]
+
+        with diet_cols[0]:
+            st.markdown("**Lifestyle / Diet**")
+            for item in lifestyle:
+                if st.checkbox(item, key=f"diet_{item}"):
+                    selected_dietary.append(item)
+        with diet_cols[1]:
+            st.markdown("**Religious / Cultural**")
+            for item in religious:
+                if st.checkbox(item, key=f"diet_{item}"):
+                    selected_dietary.append(item)
+            st.markdown("**Intolerances**")
+            for item in intolerances:
+                if st.checkbox(item, key=f"diet_{item}"):
+                    selected_dietary.append(item)
+        with diet_cols[2]:
+            st.markdown("**Allergies**")
+            for item in allergies:
+                if st.checkbox(item, key=f"diet_{item}"):
+                    selected_dietary.append(item)
+
+    dietary = selected_dietary
 
     col_u, col_s = st.columns(2)
     with col_u:
