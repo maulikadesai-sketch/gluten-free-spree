@@ -1114,7 +1114,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
-# Dietary restrictions — one alphabetical list
+# Dietary restrictions — clean multiselect with removable tags
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1135,30 +1135,10 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-
-with st.expander("🥗 Other Dietary Restrictions — tap to open/close", expanded=False):
-    selected_dietary = []
-    for item in all_dietary:
-        if st.checkbox(item, key=f"diet_{item}"):
-            selected_dietary.append(item)
-
-# Show selected items as green tags below the expander
-if selected_dietary:
-    tags = " ".join(
-        f"<span style='display:inline-block;background:#2F5435;color:#fff;font-size:0.82rem;"
-        f"font-weight:600;padding:5px 14px;border-radius:20px;margin:3px;'>✓ {d}</span>"
-        for d in selected_dietary
-    )
-    st.markdown(
-        f"<div style='margin-bottom:0.8rem;'>"
-        f"<p style='font-size:0.78rem;color:#6A7E6E;margin-bottom:4px;'>Selected — uncheck above to remove:</p>"
-        f"{tags}</div>",
-        unsafe_allow_html=True,
-    )
-else:
-    st.markdown("<p style='font-size:0.78rem;color:#6A7E6E;margin-bottom:0.8rem;'>No dietary restrictions selected — gluten-free only.</p>", unsafe_allow_html=True)
-
-dietary = selected_dietary
+dietary = st.multiselect(
+    "🥗 Other Dietary Restrictions — select any that apply, click ✕ to remove",
+    all_dietary, default=[], key="dietary_select",
+)
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
