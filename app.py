@@ -834,7 +834,7 @@ div.stFormSubmitButton > button p,
   background-color: #FFFFFF !important;
   color: #1C2A1E !important;
 }
-/* Dropdown list container */
+/* Dropdown list container — force downward opening */
 [data-baseweb="popover"],
 [data-baseweb="popover"] > div,
 [data-baseweb="menu"],
@@ -843,6 +843,7 @@ div.stFormSubmitButton > button p,
 [data-baseweb="list"] > div {
   background-color: #FFFFFF !important;
   color: #1C2A1E !important;
+  bottom: unset !important;
 }
 /* Each item in the dropdown list */
 [data-baseweb="popover"] li,
@@ -892,9 +893,14 @@ If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines ra
 IMPORTANT: The also_try dishes MUST also comply with all the user's dietary restrictions listed above.
 8. Suggest 3 "accompaniments" — side dishes, drinks, or extras that pair well with this dish. \
 CRITICAL: The accompaniments MUST be culturally and culinarily appropriate for the dish's cuisine. \
-For example: roti pairs with dal/raita/sabzi, NOT chicken sausage. Pasta pairs with garlic bread/salad, NOT naan. \
-Sushi pairs with miso soup/edamame, NOT coleslaw. Think about what a person from that cuisine's culture would \
-actually eat alongside this dish. Each accompaniment must itself be gluten-free AND comply with ALL the user's \
+Think about what is TRADITIONALLY served together in that cuisine's culture — not random combinations. \
+For example: \
+- Indian dishes pair with raita, dal, rice, chutney, papad, lassi — NOT chai with barfi, or random Western sides. \
+- Italian dishes pair with salad, bruschetta, wine, olive oil bread — NOT naan or miso soup. \
+- Japanese dishes pair with miso soup, pickled ginger, edamame, green tea — NOT coleslaw or naan. \
+- Mexican dishes pair with guacamole, salsa, rice, beans, horchata — NOT yogurt or chapati. \
+The pairing must make sense as part of the SAME MEAL. A dessert and a main course side should not both be suggested \
+unless one is clearly a post-meal item. Drinks should match the cuisine (lassi for Indian, horchata for Mexican, etc.). Each accompaniment must itself be gluten-free AND comply with ALL the user's \
 dietary restrictions listed above (e.g. if the user is Vegan, no dairy/meat accompaniments). \
 Give name, type (e.g. "Side", "Drink", "Dessert", "Sauce", "Condiment"), and a short reason it pairs well.
 9. For EACH ingredient include a single relevant food "emoji" (e.g. 🥚 eggs, 🧈 butter, 🧄 garlic, 🍚 rice, 🧀 cheese). Use 🍽️ if nothing fits.
@@ -1497,7 +1503,7 @@ if "recipe" in st.session_state:
     # ── PERFECT PAIRINGS / ACCOMPANIMENTS ──
     accompaniments = recipe.get("accompaniments") or []
     if accompaniments:
-        st.markdown("<div class='sec-hdr'>🍴 Perfect Pairings</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🍴 Potential Pairings</div>", unsafe_allow_html=True)
         st.markdown(
             "<p style='font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.8rem;'>"
             "Gluten-free sides, drinks and extras that round out the meal.</p>",
