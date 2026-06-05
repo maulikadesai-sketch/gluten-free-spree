@@ -28,10 +28,6 @@ FALLBACK_MODELS = [
 
 # ─────────────────────────────────────────────
 # 🔑 API KEYS — Add multiple keys for more free quota!
-#    Each key from a different Gmail account gets its own daily limit.
-#    3 keys × 4 models = ~240 requests/day FREE.
-#
-#    Get free keys at: https://aistudio.google.com/apikey
 # ─────────────────────────────────────────────
 API_KEYS = [
     "",    # ← Key 1 (required): paste your first Gemini key here
@@ -40,46 +36,9 @@ API_KEYS = [
 ]
 
 COUNTRIES = [
-    "🌍 Global / International",
-    "🇦🇫 Afghanistan", "🇦🇱 Albania", "🇩🇿 Algeria", "🇦🇩 Andorra", "🇦🇴 Angola", 
+    "🌍 Global / International", "🇦🇫 Afghanistan", "🇦🇱 Albania", "🇩🇿 Algeria", "🇦🇩 Andorra", 
     "🇦🇬 Antigua & Barbuda", "🇦🇷 Argentina", "🇦🇲 Armenia", "🇦🇺 Australia", "🇦🇹 Austria", 
-    "🇦🇿 Azerbaijan", "🇧🇸 Bahamas", "🇧🇭 Bahrain", "🇧🇩 Bangladesh", "🇧🇧 Barbados", 
-    "🇧🇾 Belarus", "🇧🇪 Belgium", "🇧🇿 Belize", "🇧🇯 Benin", "🇧🇹 Bhutan", 
-    "🇧🇴 Bolivia", "🇧🇦 Bosnia Herzegovina", "🇧🇼 Botswana", "🇧🇷 Brazil", "🇧🇳 Brunei", 
-    "🇧🇬 Bulgaria", "🇧🇫 Burkina Faso", "🇧🇮 Burundi", "🇰🇭 Cambodia", "🇨🇲 Cameroon", 
-    "🇨🇦 Canada", "🇨🇻 Cape Verde", "🇨🇫 Central African Rep", "🇹🇩 Chad", "🇨🇱 Chile", 
-    "🇨🇳 China", "🇨🇴 Colombia", "🇨🇲 Comoros", "🇨🇬 Congo", "🇨🇷 Costa Rica", 
-    "🇭🇷 Croatia", "🇨🇺 Cuba", "🇨🇾 Cyprus", "🇨🇿 Czech Republic", "🇩🇰 Denmark", 
-    "🇩🇯 Djibouti", "🇩🇲 Dominica", "🇩🇴 Dominican Republic", "🇪🇨 Ecuador", "🇪🇬 Egypt", 
-    "🇸🇻 El Salvador", "🇬🇶 Equatorial Guinea", "🇪🇷 Eritrea", "🇪🇪 Estonia", "🇸🇿 Eswatini", 
-    "🇪🇹 Ethiopia", "🇫🇯 Fiji", "🇫🇮 Finland", "🇫🇷 France", "🇬🇦 Gabon", 
-    "🇬🇲 Gambia", "🇬🇪 Georgia", "🇩🇪 Germany", "🇬🇭 Ghana", "🇬🇷 Greece", 
-    "🇬🇩 Grenada", "🇬🇹 Guatemala", "🇬🇳 Guinea", "🇬🇼 Guinea-Bissau", "🇬🇾 Guyana", 
-    "🇭🇹 Haiti", "🇭🇳 Honduras", "🇭🇺 Hungary", "🇮🇸 Iceland", "🇮🇳 India", 
-    "🇮🇩 Indonesia", "🇮🇷 Iran", "🇮🇶 Iraq", "🇮🇪 Ireland", "🇮🇱 Israel", 
-    "🇮🇹 Italy", "🇯🇲 Jamaica", "🇯🇵 Japan", "🇯🇴 Jordan", "🇰🇿 Kazakhstan", 
-    "🇰🇪 Kenya", "🇰展现 Kiribati", "🇰🇵 North Korea", "🇰🇷 South Korea", "🇰🇼 Kuwait", 
-    "🇰🇬 Kyrgyzstan", "🇱🇦 Laos", "🇱🇻 Latvia", "🇱🇧 Lebanon", "🇱🇸 Lesotho", 
-    "🇱🇷 Liberia", "🇱🇾 Libya", "🇱🇮 Liechtenstein", "🇱🇹 Lithuania", "🇱🇺 Luxembourg", 
-    "🇲展现 Madagascar", "🇲🇼 Malawi", "🇲🇾 Malaysia", "🇲展现 Maldives", "🇲🇱 Mali", 
-    "🇲🇹 Malta", "🇲🇭 Marshall Islands", "🇲🇷 Mauritania", "🇲🇺 Mauritius", "🇲🇽 Mexico", 
-    "🇫🇲 Micronesia", "🇲🇩 Moldova", "🇲🇨 Monaco", "🇲🇳 Mongolia", "🇲🇪 Montenegro", 
-    "🇲🇦 Morocco", "🇲🇿 Mozambique", "🇲🇲 Myanmar", "🇳🇦 Namibia", "🇳🇷 Nauru", 
-    "🇳🇵 Nepal", "🇳🇱 Netherlands", "🇳🇿 New Zealand", "🇳🇮 Nicaragua", "🇳🇪 Niger", 
-    "🇳🇬 Nigeria", "🇲展现 North Macedonia", "🇳🇴 Norway", "🇴🇲 Oman", "🇵🇰 Pakistan", 
-    "🇵展现 Palau", "🇵🇸 Palestine", "🇵🇦 Panama", "🇵🇬 Papua New Guinea", "🇵🇾 Paraguay", 
-    "🇵🇪 Peru", "🇵🇭 Philippines", "🇵🇱 Poland", "🇵🇹 Portugal", "🇶🇦 Qatar", 
-    "🇷🇴 Romania", "🇷🇺 Russia", "🇷🇼 Rwanda", "🇰展现 St Kitts & Nevis", "🇱🇨 St Lucia", 
-    "🇻🇨 St Vincent", "🇼🇸 Samoa", "🇸🇲 San Marino", "🇸🇹 Sao Tome", "🇸🇦 Saudi Arabia", 
-    "🇸🇳 Senegal", "🇷🇸 Serbia", "🇸🇨 Seychelles", "🇸🇱 Sierra Leone", "🇸🇬 Singapore", 
-    "🇸🇰 Slovakia", "🇸🇮 Slovenia", "🇸🇧 Solomon Islands", "🇸🇴 Somalia", "🇿🇦 South Africa", 
-    "🇪🇸 Spain", "🇱🇰 Sri Lanka", "🇸🇩 Sudan", "🇸🇷 Suriname", "🇸🇪 Sweden", 
-    "🇨🇭 Switzerland", "🇸🇾 Syria", "🇹🇼 Taiwan", "🇹🇯 Tajikistan", "🇹🇿 Tanzania", 
-    "🇹🇭 Thailand", "🇹展现 Timor-Leste", "🇹🇬 Togo", "🇹🇴 Tonga", "🇹🇹 Trinidad & Tobago", 
-    "🇹🇳 Tunisia", "🇹🇷 Turkey", "🇹🇲 Turkmenistan", "🇹展现 Tuvalu", "🇺🇬 Uganda", 
-    "🇺🇦 Ukraine", "🇦🇪 UAE", "🇬🇧 United Kingdom", "🇺🇸 United States", "🇺🇾 Uruguay", 
-    "🇺🇿 Uzbekistan", "🇻展现 Vanuatu", "🇻🇪 Venezuela", "🇻🇳 Vietnam", "🇾🇪 Yemen", 
-    "🇿🇲 Zambia", "🇿🇼 Zimbabwe"
+    "🇮🇳 India", "🇮🇹 Italy", "🇫🇷 France", "🇪🇸 Spain", "🇬🇧 United Kingdom", "🇺🇸 United States"
 ]
 
 DIETARY_OPTIONS = [
@@ -137,21 +96,16 @@ st.markdown("""
         margin: 1.5rem 0;
     }
 
-    /* Fixes for mobile display of markdown checkboxes */
-    .stMarkdown div ul {
-        list-style-type: none;
-        padding-left: 0 !important;
-    }
-    .stMarkdown li {
-        display: flex !important;
-        align-items: flex-start !important;
-        margin-bottom: 0.5rem;
-    }
-    .stMarkdown li input[type="checkbox"] {
-        margin-right: 10px !important;
-        margin-top: 4px !important;
-        transform: scale(1.1);
-        flex-shrink: 0;
+    /* Cross-browser layout fix for native Streamlit checkboxes */
+    div[data-testid="stCheckbox"] {
+        background-color: #ffffff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+        margin-bottom: 6px !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     /* Headings */
@@ -212,7 +166,6 @@ st.markdown("""
         transform: translateY(-1px);
     }
     
-    /* Utility */
     .badge {
         background: #ffe0b2;
         color: #e65100;
@@ -232,9 +185,7 @@ st.markdown("""
 # 🛠️ Business Logic / API Helpers
 # ─────────────────────────────────────────────
 def try_gemini_models(api_key, model_list, prompt_payload):
-    """Iterate through models using a single key until one works."""
     headers = {"Content-Type": "application/json"}
-    
     for model in model_list:
         url = f"{API_BASE}/{model}:generateContent?key={api_key}"
         try:
@@ -242,20 +193,17 @@ def try_gemini_models(api_key, model_list, prompt_payload):
             if res.status_code == 200:
                 return res.json(), model
             elif res.status_code in (429, 404, 503):
-                continue # Try next model
+                continue
         except Exception:
             continue
     return None, None
 
 def call_gemini_api(all_keys, preferred_model, prompt_text):
-    """Cycle through multiple API keys and fallback models to maximize free tier uptime."""
     valid_keys = [k.strip() for k in all_keys if k.strip()]
     if not valid_keys:
         raise ValueError("Missing API Key. Please supply at least one Gemini API Key.")
 
-    # Reorder models to try preferred first
     models_to_try = [preferred_model] + [m for m in FALLBACK_MODELS if m != preferred_model]
-    
     payload = {
         "contents": [{"parts": [{"text": prompt_text}]}],
         "generationConfig": {
@@ -264,7 +212,6 @@ def call_gemini_api(all_keys, preferred_model, prompt_text):
         }
     }
 
-    # Try every key × model combination
     for key in valid_keys:
         result, working_model = try_gemini_models(key, models_to_try, payload)
         if result:
@@ -272,26 +219,24 @@ def call_gemini_api(all_keys, preferred_model, prompt_text):
                 raw_text = result['candidates'][0]['content']['parts'][0]['text']
                 return json.loads(raw_text), working_model
             except (KeyError, IndexError, ValueError):
-                raise ValueError("The AI model returned an unparseable response layout. Please retry.")
+                raise ValueError("The AI model returned an unparseable response layout.")
                 
-    raise RuntimeError("429 / Daily Limit reached across all provided API keys and fallback models.")
+    raise RuntimeError("429 / Daily Limit reached across all provided API keys.")
 
 def generate_recipe(dish, keys, model, country, dietary, servings, unit_sys):
     diet_str = ", ".join(dietary) if dietary else "None"
-    
     prompt = f"""
-    You are an expert culinary specialist and a certified allergen/coeliac safety inspector.
     Create a highly detailed, gourmet, structured recipe for: "{dish}".
+    The recipe MUST BE 100% GLUTEN-FREE. Substitute standard flour/wheat items with explicit safe alternatives.
     
-    CRITICAL CONSTRAINT: The recipe MUST BE 100% GLUTEN-FREE. 
-    If the traditional recipe contains wheat, rye, barley, soy sauce, or standard flour, you MUST substitute them with safe, explicitly labeled gluten-free alternatives (e.g., 'gluten-free tamari' instead of 'soy sauce', 'certified gluten-free oat flour').
-    
-    Context Contextual Adjustments:
-    - Target Localization/Country Sourcing: {country} (Tailor standard ingredient names, measurements, and terminology to this locale if applicable).
-    - Extra Dietary Restrictions: {diet_str} (The recipe must respect these rules in addition to being strictly gluten-free).
+    Context:
+    - Target Country Sourcing: {country}
+    - Extra Dietary Restrictions: {diet_str}
     - Target Yield: {servings} servings.
     - Measurement Unit Standard: Use {unit_sys} units primarily.
 
-    Return your output strictly as a valid JSON object matching this schema exactly. Do not wrap it in markdown code blocks, just raw JSON:
+    Return output strictly as a valid JSON object matching this schema:
     {{
-      "dish_name
+      "dish_name": "String",
+      "is_inherently_gluten_free": true/false,
+      "coeliac_safety_warning": "String
