@@ -1184,17 +1184,13 @@ with st.expander("🥗 Other Dietary Restrictions — tap to open, tap again to 
             selected_dietary.append(item)
 
 if selected_dietary:
-    tags = " ".join(
-        f"<span style='display:inline-block;background:#2F5435;color:#fff;font-size:0.82rem;"
-        f"font-weight:600;padding:5px 14px;border-radius:20px;margin:3px;'>✓ {d}</span>"
-        for d in selected_dietary
-    )
-    st.markdown(
-        f"<div style='margin-bottom:0.6rem;'>"
-        f"<p style='font-size:0.76rem;color:#6A7E6E;margin-bottom:4px;'>Selected (uncheck above to remove):</p>"
-        f"{tags}</div>",
-        unsafe_allow_html=True,
-    )
+    st.markdown("<p style='font-size:0.8rem;color:#1C2A1E;font-weight:600;margin-bottom:4px;'>Selected restrictions — click ✕ to remove:</p>", unsafe_allow_html=True)
+    remove_cols = st.columns(min(len(selected_dietary), 4))
+    for i, d in enumerate(selected_dietary):
+        with remove_cols[i % min(len(selected_dietary), 4)]:
+            if st.button(f"✕ {d}", key=f"remove_{d}", use_container_width=True):
+                st.session_state[f"diet_{d}"] = False
+                st.rerun()
 
 dietary = selected_dietary
 
