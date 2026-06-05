@@ -839,6 +839,26 @@ div.stFormSubmitButton > button p,
 [data-baseweb="tag"] span { color: #1C2A1E !important; }
 [data-baseweb="tag"] svg { fill: #1C2A1E !important; }
 [data-baseweb="tag"]:hover { background-color: var(--border) !important; }
+
+/* ── Dietary restriction pills ── */
+[data-testid="stPills"] button {
+  background-color: #FFFFFF !important;
+  color: #1C2A1E !important;
+  border: 1.5px solid #CCD5CD !important;
+  border-radius: 20px !important;
+  font-size: 0.82rem !important;
+  padding: 4px 14px !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+[data-testid="stPills"] button:hover {
+  background-color: #E2ECE5 !important;
+  border-color: #2F5435 !important;
+}
+[data-testid="stPills"] button[aria-checked="true"] {
+  background-color: #2F5435 !important;
+  color: #FFFFFF !important;
+  border-color: #2F5435 !important;
+}
 </style>
 """
 
@@ -1105,7 +1125,8 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     else:
         country = "🇮🇳 India"
 
-    dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
+    dietary_options = [t for t in DIETARY_TAGS if t != "None"]
+    dietary = st.pills("🥗 Other Dietary Restrictions (tap to select multiple)", dietary_options, selection_mode="multi", default=[], key="dietary_select")
 
     col_u, col_s = st.columns(2)
     with col_u:
