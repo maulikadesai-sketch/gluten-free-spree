@@ -1081,19 +1081,19 @@ st.markdown("""
 # Settings Panel — works on both desktop and mobile
 # ─────────────────────────────────────────────
 with st.expander("⚙️ Choose Your Specifications", expanded=False):
-    s_col1, s_col2, s_col3, s_col4 = st.columns(4)
-    with s_col1:
-        country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
-        if country_choice == "🌍 Other":
-            other_countries = [c for c in COUNTRIES if "India" not in c]
-            country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
-        else:
-            country = "🇮🇳 India"
-    with s_col2:
-        dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
-    with s_col3:
+    country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+    if country_choice == "🌍 Other":
+        other_countries = [c for c in COUNTRIES if "India" not in c]
+        country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+    else:
+        country = "🇮🇳 India"
+
+    dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
+
+    col_u, col_s = st.columns(2)
+    with col_u:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
-    with s_col4:
+    with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
 # ─────────────────────────────────────────────
