@@ -359,15 +359,12 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
   width: 20px !important;
   height: 20px !important;
 }
-/* Arrow points DOWN when closed, UP when open */
-[data-baseweb="select"][aria-expanded="false"] svg { transform: rotate(0deg) !important; }
-[data-baseweb="select"][aria-expanded="true"] svg { transform: rotate(180deg) !important; }
 [data-baseweb="select"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-baseweb="select"] [data-baseweb="tag"] svg { width: 14px !important; height: 14px !important; transform: none !important; }
+[data-baseweb="select"] [data-baseweb="tag"] svg { width: 14px !important; height: 14px !important; }
 [data-baseweb="select"] [class*="indicatorContainer"] { cursor: pointer !important; }
-/* Dropdown menu overlay — force open downward */
-[data-baseweb="popover"] { background-color: #FFFFFF !important; transform: none !important; }
-[data-baseweb="popover"] ul { background-color: #FFFFFF !important; max-height: 250px !important; overflow-y: auto !important; }
+/* Dropdown menu overlay */
+[data-baseweb="popover"] { background-color: #FFFFFF !important; }
+[data-baseweb="popover"] ul { background-color: #FFFFFF !important; }
 [data-baseweb="popover"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
 [data-baseweb="popover"] li:hover { background-color: #E2ECE5 !important; }
 /* Dropdown menu overlay */
@@ -829,36 +826,16 @@ div.stFormSubmitButton > button p,
   display: inline-flex; align-items: center; gap: 6px;
 }
 .time-pill-icon { font-size: 1rem; }
-/* ── Multiselect tags — remove coral, make neutral ── */
+/* ── Multiselect tags ── */
 [data-baseweb="tag"] {
-  background-color: var(--green-l) !important;
+  background-color: #E2ECE5 !important;
   color: #1C2A1E !important;
-  border: 1px solid var(--border) !important;
+  border: 1px solid #CCD5CD !important;
   border-radius: 6px !important;
 }
 [data-baseweb="tag"] span { color: #1C2A1E !important; }
 [data-baseweb="tag"] svg { fill: #1C2A1E !important; }
-[data-baseweb="tag"]:hover { background-color: var(--border) !important; }
-
-/* ── Dietary restriction pills ── */
-[data-testid="stPills"] button {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
-  border: 1.5px solid #CCD5CD !important;
-  border-radius: 20px !important;
-  font-size: 0.82rem !important;
-  padding: 4px 14px !important;
-  font-family: 'Outfit', sans-serif !important;
-}
-[data-testid="stPills"] button:hover {
-  background-color: #E2ECE5 !important;
-  border-color: #2F5435 !important;
-}
-[data-testid="stPills"] button[aria-checked="true"] {
-  background-color: #2F5435 !important;
-  color: #FFFFFF !important;
-  border-color: #2F5435 !important;
-}
+[data-baseweb="tag"]:hover { background-color: #CCD5CD !important; }
 </style>
 """
 
@@ -1125,8 +1102,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     else:
         country = "🇮🇳 India"
 
-    dietary_options = [t for t in DIETARY_TAGS if t != "None"]
-    dietary = st.pills("🥗 Other Dietary Restrictions (tap to select multiple)", dietary_options, selection_mode="multi", default=[], key="dietary_select")
+    dietary = st.multiselect("🥗 Other Dietary Restrictions", [t for t in DIETARY_TAGS if t != "None"], default=[], key="dietary_select")
 
     col_u, col_s = st.columns(2)
     with col_u:
