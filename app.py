@@ -1136,7 +1136,7 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     with col_s:
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
-# Dietary restrictions — expander with checkboxes (no dropdown = no direction issues)
+# Dietary restrictions — single widget (fast) instead of 59 checkboxes (slow)
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1157,27 +1157,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-
-selected_dietary = []
-with st.expander("🥗 Other Dietary Restrictions — tap to open, tap again to close", expanded=False):
-    for item in all_dietary:
-        if st.checkbox(item, key=f"diet_{item}"):
-            selected_dietary.append(item)
-
-if selected_dietary:
-    tags = " ".join(
-        f"<span style='display:inline-block;background:#E2ECE5;color:#1C2A1E;font-size:0.82rem;"
-        f"font-weight:600;padding:5px 14px;border-radius:20px;margin:3px;border:1px solid #A8C5AB;'>✓ {d}</span>"
-        for d in selected_dietary
-    )
-    st.markdown(
-        f"<div style='margin-bottom:0.6rem;'>"
-        f"<p style='font-size:0.78rem;color:#1C2A1E;font-weight:600;margin-bottom:4px;'>Selected restrictions (open list above to change):</p>"
-        f"{tags}</div>",
-        unsafe_allow_html=True,
-    )
-
-dietary = selected_dietary
+dietary = st.multiselect("🥗 Other Dietary Restrictions", all_dietary, default=[], key="dietary_select")
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
