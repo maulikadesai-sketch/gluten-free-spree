@@ -22,15 +22,22 @@ API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 FALLBACK_MODELS = [
     "gemini-2.5-flash-lite",   # primary
     "gemini-2.5-flash",        # fallback 1
-    "gemini-2.5-pro",          # fallback 2 (50/day free)
-    "gemini-3.0-flash",        # fallback 3 (newer, may have higher quota)
+    "gemini-2.5-pro",          # fallback 2
+    "gemini-3.0-flash",        # fallback 3
 ]
 
 # ─────────────────────────────────────────────
-# 🔑 API KEY — Paste your Gemini key here.
-#    Get a free key at: https://aistudio.google.com/apikey
+# 🔑 API KEYS — Add multiple keys for more free quota!
+#    Each key from a different Gmail account gets its own daily limit.
+#    3 keys × 4 models = ~240 requests/day FREE.
+#
+#    Get free keys at: https://aistudio.google.com/apikey
 # ─────────────────────────────────────────────
-HARDCODED_API_KEY = ""   # ← Paste your key inside the quotes
+API_KEYS = [
+    "",    # ← Key 1 (required): paste your first Gemini key here
+    "",    # ← Key 2 (optional): from a different Gmail account
+    "",    # ← Key 3 (optional): from another Gmail account
+]
 
 COUNTRIES = [
     "🌍 Global / International",
@@ -344,12 +351,44 @@ input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textare
   caret-color: #1C2A1E !important;
 }
 
-/* Selectbox / dropdown */
+/* Selectbox / dropdown — force white everywhere */
 [data-baseweb="select"] > div { background-color: #FFFFFF !important; color: #1C2A1E !important; }
 [data-baseweb="select"] span { color: #1C2A1E !important; }
+[data-baseweb="select"] svg { fill: #1C2A1E !important; }
+[data-baseweb="select"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
 [data-baseweb="popover"] { background-color: #FFFFFF !important; }
-[data-baseweb="popover"] li { color: #1C2A1E !important; }
-[data-baseweb="popover"] li:hover { background-color: var(--green-l) !important; }
+[data-baseweb="popover"] ul { background-color: #FFFFFF !important; }
+[data-baseweb="popover"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
+[data-baseweb="popover"] li:hover { background-color: #E2ECE5 !important; }
+/* Dropdown menu overlay */
+[data-baseweb="menu"] { background-color: #FFFFFF !important; }
+[data-baseweb="menu"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
+[data-baseweb="menu"] li:hover { background-color: #E2ECE5 !important; }
+[data-baseweb="menu"] ul { background-color: #FFFFFF !important; }
+/* Multiselect dropdown */
+[data-testid="stMultiSelect"] div { background-color: transparent !important; }
+[data-testid="stMultiSelect"] [data-baseweb="select"] > div { background-color: #FFFFFF !important; }
+[data-testid="stMultiSelect"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
+[data-testid="stMultiSelect"] span { color: #1C2A1E !important; }
+[data-testid="stMultiSelect"] [data-baseweb="popover"],
+[data-testid="stMultiSelect"] [data-baseweb="popover"] ul,
+[data-testid="stMultiSelect"] [data-baseweb="popover"] li {
+  background-color: #FFFFFF !important; color: #1C2A1E !important;
+}
+/* Checkboxes — transparent background */
+[data-testid="stCheckbox"] { background: transparent !important; }
+[data-testid="stCheckbox"] > div { background: transparent !important; }
+[data-testid="stCheckbox"] label { background: transparent !important; }
+[data-testid="stCheckbox"] label span { color: #1C2A1E !important; background: transparent !important; }
+[data-testid="stCheckbox"] svg { fill: #1C2A1E !important; }
+/* Radio buttons — transparent */
+[data-testid="stRadio"] > div { background: transparent !important; }
+[data-testid="stRadio"] label { background: transparent !important; color: #1C2A1E !important; }
+/* Expander — white background */
+[data-testid="stExpander"] { background: #FFFFFF !important; border: 1px solid #CCD5CD !important; border-radius: 10px !important; }
+[data-testid="stExpander"] details { background: #FFFFFF !important; }
+[data-testid="stExpander"] summary { background: #FFFFFF !important; }
+[data-testid="stExpander"] summary span { color: #1C2A1E !important; }
 
 /* Download buttons — force white bg with dark text */
 [data-testid="stDownloadButton"] button,
@@ -844,8 +883,8 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 # ─────────────────────────────────────────────
 # Gemini Helper
 # ─────────────────────────────────────────────
-def generate_recipe(dish, api_key, model, country, dietary, base_servings=None, unit_system="Metric"):
-    """Generate a recipe. Tries each fallback model before giving up."""
+def generate_recipe(dish, api_keys, model, country, dietary, base_servings=None, unit_system="Metric"):
+    """Generate a recipe. Cycles through every API key × every model before giving up."""
     dietary_note = ""
     dietary_str = ""
     if dietary and len(dietary) > 0:
@@ -876,33 +915,49 @@ Double-check every single ingredient against ALL restrictions before including i
         "generationConfig": {"response_mime_type": "application/json", "temperature": 0.7},
     }
 
+    # Ensure api_keys is a list
+    if isinstance(api_keys, str):
+        api_keys = [api_keys]
+    api_keys = [k for k in api_keys if k]  # remove empties
+
     models_to_try = [model] + [m for m in FALLBACK_MODELS if m != model]
     resp = None
     last_err = None
+    combos_tried = 0
 
-    for m in models_to_try:
-        url = f"{API_BASE}/{m}:generateContent?key={api_key}"
-        try:
-            resp = requests.post(url, json=payload, timeout=60)
-        except requests.exceptions.RequestException as e:
-            last_err = RuntimeError(f"Network error: {e}")
+    for key in api_keys:
+        for m in models_to_try:
+            combos_tried += 1
+            url = f"{API_BASE}/{m}:generateContent?key={key}"
+            try:
+                resp = requests.post(url, json=payload, timeout=60)
+            except requests.exceptions.RequestException as e:
+                last_err = RuntimeError(f"Network error: {e}")
+                resp = None
+                continue
+
+            if resp.status_code == 200:
+                break  # success!
+
+            try:
+                msg = resp.json().get("error", {}).get("message", resp.text)
+            except Exception:
+                msg = resp.text
+
+            last_err = RuntimeError(f"API error ({resp.status_code}): {msg}")
             resp = None
-            continue
+            continue  # try next combo
 
-        if resp.status_code == 200:
-            break
-
-        try:
-            msg = resp.json().get("error", {}).get("message", resp.text)
-        except Exception:
-            msg = resp.text
-
-        last_err = RuntimeError(f"API error ({resp.status_code}): {msg}")
-        resp = None
-        continue  # try next model
+        if resp is not None and resp.status_code == 200:
+            break  # done!
 
     if resp is None or resp.status_code != 200:
-        raise last_err or RuntimeError("All models at daily limit. Resets at midnight US Pacific time.")
+        n_keys = len(api_keys)
+        raise RuntimeError(
+            f"Tried {combos_tried} combinations ({n_keys} key(s) × {len(models_to_try)} models) — "
+            f"all at their daily limit. Resets at midnight US Pacific time (1:30 PM IST). "
+            f"Add more free API keys from different Gmail accounts to increase your daily quota."
+        )
 
     data = resp.json()
     try:
@@ -983,12 +1038,19 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 # ─────────────────────────────────────────────
 # API Key — loaded silently in background
 # ─────────────────────────────────────────────
-api_key = HARDCODED_API_KEY or ""
-if not api_key:
-    try:
-        api_key = st.secrets.get("GEMINI_API_KEY", "")
-    except Exception:
-        api_key = ""
+# Build list of all available API keys (from code + secrets)
+all_api_keys = [k.strip() for k in API_KEYS if k.strip()]
+try:
+    # Also check secrets for keys (supports GEMINI_API_KEY, GEMINI_API_KEY_1, _2, _3 etc.)
+    secret_key = st.secrets.get("GEMINI_API_KEY", "")
+    if secret_key and secret_key.strip() not in all_api_keys:
+        all_api_keys.append(secret_key.strip())
+    for i in range(1, 6):
+        sk = st.secrets.get(f"GEMINI_API_KEY_{i}", "")
+        if sk and sk.strip() not in all_api_keys:
+            all_api_keys.append(sk.strip())
+except Exception:
+    pass
 model = DEFAULT_MODEL
 
 # ─────────────────────────────────────────────
@@ -1043,7 +1105,7 @@ st.markdown(
 st.divider()
 
 if go:
-    if not api_key:
+    if not all_api_keys:
         st.error("⚠️ API key not configured. Please contact the site administrator.")
         st.stop()
     if not dish.strip():
@@ -1064,7 +1126,7 @@ if go:
         with st.spinner(f"Recreating recipe for {dish}..."):
             try:
                 unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
-                recipe = generate_recipe(dish.strip(), api_key, model, country, dietary, servings, unit_val)
+                recipe = generate_recipe(dish.strip(), all_api_keys, model, country, dietary, servings, unit_val)
                 st.session_state["recipe"] = recipe
                 st.session_state["base_servings"] = recipe.get("servings", servings) or servings
                 st.session_state["current_servings"] = servings
@@ -1072,13 +1134,13 @@ if go:
                 st.session_state["recipe_cache"][cache_key] = recipe
             except Exception as e:
                 err = str(e)
-                if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded")):
+                if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded", "combinations")):
                     st.warning(
-                        "🕐 **Daily API limit reached.** I tried 4 different models but they're all "
-                        "at their daily cap. This resets at **midnight US Pacific time**.\n\n"
-                        "**Quick fix:** Create a second free API key with a different Gmail account "
-                        "at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) "
-                        "and paste it into the `HARDCODED_API_KEY` line in app.py."
+                        "🕐 **Daily API limit reached.** All API keys and models are at their daily cap. "
+                        "This resets at **midnight US Pacific time** (1:30 PM IST).\n\n"
+                        "**To increase your daily quota for free:** Create additional Gmail accounts, "
+                        "get an API key for each at [aistudio.google.com/apikey](https://aistudio.google.com/apikey), "
+                        "and add them to the `API_KEYS` list in app.py. Each key adds ~80 more recipes/day."
                     )
                 else:
                     st.error(f"Error: {err}")
@@ -1231,7 +1293,7 @@ if "recipe" in st.session_state:
                       font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
               .btn:hover {{ transform:translateY(-1px); }}
               .btn-start {{ background:#2F5435; color:#fff; }}
-              .btn-pause {{ background:#B26225; color:#fff; }}
+              .btn-pause {{ background:#D4751C; color:#fff; font-weight:700; }}
               .btn-reset {{ background:#fff; color:#2F5435; border:2px solid #CCD5CD; }}
               .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
               #done {{ display:none; margin-top:12px; padding:10px; background:#E4EFE5;
@@ -1409,11 +1471,11 @@ if "recipe" in st.session_state:
 
     if "_queued_dish" in st.session_state:
         qd = st.session_state.pop("_queued_dish")
-        if qd and api_key:
+        if qd and all_api_keys:
             with st.spinner(f"Recreating recipe for {qd}..."):
                 try:
                     unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
-                    recipe = generate_recipe(qd, api_key, model, country, dietary, servings, unit_val)
+                    recipe = generate_recipe(qd, all_api_keys, model, country, dietary, servings, unit_val)
                     st.session_state["recipe"] = recipe
                     st.session_state["base_servings"] = recipe.get("servings", servings) or servings
                     st.session_state["current_servings"] = servings
