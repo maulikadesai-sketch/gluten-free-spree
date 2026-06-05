@@ -1229,7 +1229,7 @@ if go:
 if "recipe" in st.session_state:
     recipe = st.session_state["recipe"]
     base_sv = st.session_state.get("base_servings", 4) or 4
-    cur_sv  = st.session_state.get("current_servings", base_sv)
+    cur_sv  = servings  # Use the live slider value so ingredients auto-update
     scale   = cur_sv / base_sv if base_sv else 1
 
     title = recipe.get("dish_name", dish)
@@ -1315,7 +1315,10 @@ if "recipe" in st.session_state:
 
     with col_left:
         st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
-        st.write("*Tick off what you already have — the rest becomes your shopping list:*")
+        if scale != 1:
+            st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
+        else:
+            st.write("*Tick off what you already have — the rest becomes your shopping list:*")
 
         shopping_list = []
         for idx, ing in enumerate(recipe.get("ingredients", [])):
