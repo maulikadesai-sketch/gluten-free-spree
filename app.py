@@ -846,8 +846,20 @@ div.stFormSubmitButton > button p,
   bottom: unset !important;
 }
 
-/* Mobile fix — dropdown appears as clean bottom sheet */
+/* Mobile fix — ALL dropdowns appear as bottom sheet with tap-to-close backdrop */
 @media (max-width: 768px) {
+  /* Dark backdrop behind dropdown — tap it to close */
+  [data-baseweb="popover"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: -1;
+  }
+  /* The dropdown itself — fixed to bottom of screen */
   [data-baseweb="popover"] {
     position: fixed !important;
     bottom: 0 !important;
@@ -879,6 +891,15 @@ div.stFormSubmitButton > button p,
     padding: 12px 16px !important;
     font-size: 0.95rem !important;
     border-bottom: 1px solid #f0f0f0 !important;
+  }
+  /* Also target selectbox-specific dropdown */
+  [data-baseweb="select"] [data-baseweb="popover"],
+  [data-testid="stSelectbox"] [data-baseweb="popover"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: 99999 !important;
   }
 }
 /* Each item in the dropdown list */
