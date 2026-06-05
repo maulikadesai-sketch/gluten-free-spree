@@ -834,7 +834,7 @@ div.stFormSubmitButton > button p,
   background-color: #FFFFFF !important;
   color: #1C2A1E !important;
 }
-/* Dropdown list container — force downward opening */
+/* Dropdown list container */
 [data-baseweb="popover"],
 [data-baseweb="popover"] > div,
 [data-baseweb="menu"],
@@ -843,64 +843,6 @@ div.stFormSubmitButton > button p,
 [data-baseweb="list"] > div {
   background-color: #FFFFFF !important;
   color: #1C2A1E !important;
-  bottom: unset !important;
-}
-
-/* Mobile fix — ALL dropdowns appear as bottom sheet with tap-to-close backdrop */
-@media (max-width: 768px) {
-  /* Dark backdrop behind dropdown — tap it to close */
-  [data-baseweb="popover"]::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.25);
-    z-index: -1;
-  }
-  /* The dropdown itself — fixed to bottom of screen */
-  [data-baseweb="popover"] {
-    position: fixed !important;
-    bottom: 0 !important;
-    top: auto !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    max-height: 50vh !important;
-    overflow-y: auto !important;
-    border-radius: 14px 14px 0 0 !important;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.18) !important;
-    z-index: 99999 !important;
-    transform: none !important;
-    padding: 8px 0 !important;
-    border: 1px solid #CCD5CD !important;
-    border-bottom: none !important;
-  }
-  [data-baseweb="popover"] > div {
-    position: static !important;
-    transform: none !important;
-    max-height: 48vh !important;
-    overflow-y: auto !important;
-  }
-  [data-baseweb="popover"] ul {
-    max-height: 46vh !important;
-    overflow-y: auto !important;
-  }
-  [data-baseweb="popover"] li {
-    padding: 12px 16px !important;
-    font-size: 0.95rem !important;
-    border-bottom: 1px solid #f0f0f0 !important;
-  }
-  /* Also target selectbox-specific dropdown */
-  [data-baseweb="select"] [data-baseweb="popover"],
-  [data-testid="stSelectbox"] [data-baseweb="popover"] {
-    position: fixed !important;
-    bottom: 0 !important;
-    top: auto !important;
-    transform: none !important;
-    z-index: 99999 !important;
-  }
 }
 /* Each item in the dropdown list */
 [data-baseweb="popover"] li,
