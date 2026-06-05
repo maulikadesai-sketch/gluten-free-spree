@@ -1115,7 +1115,6 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
         servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
 
 # Dietary restrictions — one alphabetical list
-selected_dietary = []
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1138,24 +1137,26 @@ all_dietary = sorted([
 ])
 
 with st.expander("🥗 Other Dietary Restrictions — tap to open/close", expanded=False):
+    selected_dietary = []
     for item in all_dietary:
         if st.checkbox(item, key=f"diet_{item}"):
             selected_dietary.append(item)
 
-# Show selected items as tags above for easy visibility and removal reminder
+# Show selected items as green tags below the expander
 if selected_dietary:
-    tags_html = "".join(
+    tags = " ".join(
         f"<span style='display:inline-block;background:#2F5435;color:#fff;font-size:0.82rem;"
-        f"font-weight:600;padding:4px 12px;border-radius:16px;margin:3px 4px;'>"
-        f"✓ {item}</span>"
-        for item in selected_dietary
+        f"font-weight:600;padding:5px 14px;border-radius:20px;margin:3px;'>✓ {d}</span>"
+        for d in selected_dietary
     )
     st.markdown(
-        f"<div style='margin:0.3rem 0 0.8rem;'>"
-        f"<span style='font-size:0.78rem;color:#6A7E6E;'>Selected restrictions (uncheck above to remove):</span><br>"
-        f"{tags_html}</div>",
+        f"<div style='margin-bottom:0.8rem;'>"
+        f"<p style='font-size:0.78rem;color:#6A7E6E;margin-bottom:4px;'>Selected — uncheck above to remove:</p>"
+        f"{tags}</div>",
         unsafe_allow_html=True,
     )
+else:
+    st.markdown("<p style='font-size:0.78rem;color:#6A7E6E;margin-bottom:0.8rem;'>No dietary restrictions selected — gluten-free only.</p>", unsafe_allow_html=True)
 
 dietary = selected_dietary
 
