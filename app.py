@@ -40,7 +40,7 @@ API_KEYS = [
 ]
 
 COUNTRIES = [
-    "🌍 Global / International",
+    "🌍 Global",
     "🇦🇫 Afghanistan", "🇦🇱 Albania", "🇩🇿 Algeria", "🇦🇩 Andorra",
     "🇦🇴 Angola", "🇦🇬 Antigua and Barbuda", "🇦🇷 Argentina", "🇦🇲 Armenia",
     "🇦🇺 Australia", "🇦🇹 Austria", "🇦🇿 Azerbaijan", "🇧🇸 Bahamas",
@@ -1181,7 +1181,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Other Dietary Restrictions", all_dietary, default=[], key="dietary_select")
+dietary = st.multiselect("🥗 Other Dietary Needs", all_dietary, default=[], key="dietary_select")
 
 # ─────────────────────────────────────────────
 # Search Bar Interface
@@ -1337,7 +1337,7 @@ if "recipe" in st.session_state:
         st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
 
         # Adjust servings — directly above ingredients
-        new_sv = st.slider("🍽️ Adjust Servings", 1, 30, int(cur_sv), key="adjust_servings_slider")
+        new_sv = st.slider("🍽️ Adjust Servings", 1, 20, int(cur_sv), key="adjust_servings_slider")
         if new_sv != cur_sv:
             st.session_state["current_servings"] = new_sv
             st.rerun()
@@ -1392,19 +1392,19 @@ if "recipe" in st.session_state:
             <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
             <style>
               * {{ margin:0; padding:0; box-sizing:border-box; }}
-              body {{ font-family:'Outfit',sans-serif; background:transparent; text-align:center; padding:12px 0; }}
+              body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
               #display {{ font-size:3.2rem; font-weight:700; color:#2F5435; letter-spacing:3px; margin-bottom:14px; }}
               #display.warn {{ color:#9E2A2B; }}
               .btns {{ display:flex; gap:10px; justify-content:center; }}
               .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
                       font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
               .btn:hover {{ transform:translateY(-1px); }}
-              .btn-start {{ background:#2F5435; color:#fff; }}
-              .btn-pause {{ background:#D4751C; color:#fff; font-weight:700; }}
-              .btn-reset {{ background:#fff; color:#2F5435; border:2px solid #CCD5CD; }}
+              .btn-start {{ background:#FFFFFF; color:#2F5435; border:2px solid #2F5435; }}
+              .btn-pause {{ background:#FFFFFF; color:#2F5435; border:2px solid #2F5435; font-weight:700; }}
+              .btn-reset {{ background:#FFFFFF; color:#2F5435; border:2px solid #CCD5CD; }}
               .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
-              #done {{ display:none; margin-top:12px; padding:10px; background:#E4EFE5;
-                       border-radius:8px; color:#2F5435; font-weight:600; font-size:0.9rem; }}
+              #done {{ display:none; margin-top:12px; padding:10px; background:#FFFFFF;
+                       border-radius:8px; color:#2F5435; font-weight:600; font-size:0.9rem; border:1px solid #CCD5CD; }}
             </style>
             </head>
             <body>
@@ -1472,7 +1472,7 @@ if "recipe" in st.session_state:
     # ── REGIONAL BRANDS AND SOURCING ──
     brands = recipe.get("brands_panel") or []
     if brands:
-        c_name = country.split(' ', 1)[-1] if country != "🌍 Global / International" else "your region"
+        c_name = country.split(' ', 1)[-1] if country != "🌍 Global" else "your region"
         st.markdown(f"<div class='sec-hdr'>🏪 Where to Buy in {c_name}</div>", unsafe_allow_html=True)
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
