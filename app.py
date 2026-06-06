@@ -533,10 +533,22 @@ div.stFormSubmitButton > button p,
 
 /* Form container background */
 [data-testid="stForm"] { background-color: transparent !important; border: none !important; padding: 0 !important; }
-/* Hide "Press Enter to submit form" hint text */
+/* Hide ALL "Press Enter" hint texts — form hints, text input hints, everything */
+[data-testid="stForm"] small,
 [data-testid="stForm"] [data-testid="stFormSubmitButton"] + div,
-.stForm > div:last-child > div:last-child > small,
-[data-testid="stForm"] small { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+[data-testid="InputInstructions"],
+[data-testid="stTextInput"] [data-testid="InputInstructions"],
+div.stTextInput > div > div > div:last-child,
+[data-testid="stForm"] > div:last-child small,
+.stTextInput small,
+small:has(> span) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  opacity: 0 !important;
+}
 
 /* ── Recipe Hero Card ── */
 .recipe-hero {
@@ -1141,11 +1153,12 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     else:
         country = "🇮🇳 India"
 
-    col_u, col_s = st.columns(2)
-    with col_u:
+    col_u = st.columns(1)
+    with col_u[0]:
         unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
-    with col_s:
-        servings = st.slider("🍽️ Servings", 1, 30, 4, key="servings_slider")
+
+# Default servings (adjustable in recipe display area)
+servings = st.session_state.get("current_servings", 4)
 
 # Dietary restrictions — single widget (fast) instead of 59 checkboxes (slow)
 all_dietary = sorted([
@@ -1232,12 +1245,11 @@ if go:
 # ─────────────────────────────────────────────
 if "recipe" in st.session_state:
     recipe = st.session_state["recipe"]
-    # Force base_servings to integer to prevent type errors
     try:
         base_sv = int(st.session_state.get("base_servings", 4) or 4)
     except (ValueError, TypeError):
         base_sv = 4
-    cur_sv = int(servings)
+    cur_sv = int(st.session_state.get("current_servings", base_sv))
     scale = cur_sv / base_sv if base_sv > 0 else 1
 
     title = recipe.get("dish_name", dish)
@@ -1323,6 +1335,13 @@ if "recipe" in st.session_state:
 
     with col_left:
         st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
+
+        # Adjust servings — directly above ingredients
+        new_sv = st.slider("🍽️ Adjust Servings", 1, 30, int(cur_sv), key="adjust_servings_slider")
+        if new_sv != cur_sv:
+            st.session_state["current_servings"] = new_sv
+            st.rerun()
+
         if scale != 1:
             st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
         else:
