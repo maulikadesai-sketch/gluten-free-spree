@@ -1107,6 +1107,18 @@ def recipe_to_text(recipe, servings_label):
     return "\n".join(lines)
 
 # ─────────────────────────────────────────────
+# Cached recipe generation — same dish + settings = 0 API calls
+# Works across ALL users visiting the site, lasts 24 hours
+# ─────────────────────────────────────────────
+@st.cache_data(ttl=86400, show_spinner=False)
+def cached_generate(keys_str, dish, model, country, dietary_str, unit_system):
+    """Cached wrapper. Same dish+country+dietary = 1 API call total across ALL users for 24 hours.
+    Servings excluded from cache key — scaling is done client-side."""
+    api_keys = [k for k in keys_str.split("|") if k]
+    dietary = [d for d in dietary_str.split("|") if d] if dietary_str else []
+    return generate_recipe(dish, api_keys, model, country, dietary, 4, unit_system)
+
+# ─────────────────────────────────────────────
 # Page Setup
 # ─────────────────────────────────────────────
 st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
@@ -1206,39 +1218,28 @@ if go:
         st.warning("Please type a recipe name first.")
         st.stop()
 
-    # Check cache first — same dish/settings returns instantly without API call
-    cache_key = f"{dish.strip()}|{country}|{','.join(sorted(dietary))}|{servings}|{unit_sys}".lower()
-    if "recipe_cache" not in st.session_state:
-        st.session_state["recipe_cache"] = {}
-
-    if cache_key in st.session_state["recipe_cache"]:
-        recipe = st.session_state["recipe_cache"][cache_key]
-        st.session_state["recipe"] = recipe
-        st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
-        st.session_state["current_servings"] = servings
-    else:
-        with st.spinner(f"Recreating recipe for {dish}..."):
-            try:
-                unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
-                recipe = generate_recipe(dish.strip(), all_api_keys, model, country, dietary, servings, unit_val)
-                st.session_state["recipe"] = recipe
-                st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
-                st.session_state["current_servings"] = servings
-                # Cache it
-                st.session_state["recipe_cache"][cache_key] = recipe
-            except Exception as e:
-                err = str(e)
-                if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded", "combinations")):
-                    st.warning(
-                        "🕐 **Daily API limit reached.** All API keys and models are at their daily cap. "
-                        "This resets at **midnight US Pacific time** (1:30 PM IST).\n\n"
-                        "**To increase your daily quota for free:** Create additional Gmail accounts, "
-                        "get an API key for each at [aistudio.google.com/apikey](https://aistudio.google.com/apikey), "
-                        "and add them to the `API_KEYS` list in app.py. Each key adds ~80 more recipes/day."
-                    )
-                else:
-                    st.error(f"Error: {err}")
-                st.stop()
+    with st.spinner(f"Recreating recipe for {dish}..."):
+        try:
+            unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
+            keys_str = "|".join(all_api_keys)
+            dietary_str = "|".join(dietary) if dietary else ""
+            recipe = cached_generate(keys_str, dish.strip(), model, country, dietary_str, unit_val)
+            st.session_state["recipe"] = recipe
+            st.session_state["base_servings"] = int(recipe.get("servings", 4) or 4)
+            st.session_state["current_servings"] = st.session_state.get("current_servings", 4)
+        except Exception as e:
+            err = str(e)
+            if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded", "combinations")):
+                st.warning(
+                    "🕐 **Daily API limit reached.** All API keys and models are at their daily cap. "
+                    "This resets at **midnight US Pacific time** (1:30 PM IST).\n\n"
+                    "**To increase your daily quota for free:** Create additional Gmail accounts, "
+                    "get an API key for each at [aistudio.google.com/apikey](https://aistudio.google.com/apikey), "
+                    "and add them to Streamlit Secrets. Each key adds ~80 more recipes/day."
+                )
+            else:
+                st.error(f"Error: {err}")
+            st.stop()
 
 # ─────────────────────────────────────────────
 # Output Recipe Render Engine
@@ -1582,7 +1583,9 @@ if "recipe" in st.session_state:
             with st.spinner(f"Recreating recipe for {qd}..."):
                 try:
                     unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
-                    recipe = generate_recipe(qd, all_api_keys, model, country, dietary, servings, unit_val)
+                    keys_str = "|".join(all_api_keys)
+                    dietary_str = "|".join(dietary) if dietary else ""
+                    recipe = cached_generate(keys_str, qd, model, country, dietary_str, unit_val)
                     st.session_state["recipe"] = recipe
                     st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                     st.session_state["current_servings"] = servings
