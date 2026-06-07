@@ -250,7 +250,7 @@ h1 {
   color: var(--green-d);
   border-bottom: 2px solid var(--green);
   padding-bottom: 8px;
-  margin: 1.8rem 0 1rem 0;
+  margin: 3rem 0 1.5rem 0;
   letter-spacing: -0.3px;
 }
 
@@ -491,9 +491,9 @@ div[data-testid="stTextInput"] input:focus {
 .time-pill-icon { font-size: 0.9rem; }
 
 /* ── Steps ── */
-.step-block { display: flex; gap: 12px; margin: 14px 0; align-items: flex-start; }
+.step-block { display: flex; gap: 14px; margin: 22px 0; align-items: flex-start; }
 .step-n { min-width: 24px; font-size: 0.95rem; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 3px; }
-.step-t { font-size: 0.92rem; line-height: 1.7; color: var(--ink); }
+.step-t { font-size: 0.92rem; line-height: 1.8; color: var(--ink); }
 
 /* ── Ingredient emoji ── */
 .ing-emoji { font-size: 0.95rem; margin-right: 7px; }
@@ -502,7 +502,7 @@ div[data-testid="stTextInput"] input:focus {
 .pair-card {
   background: var(--card);
   border: 1px solid var(--border); border-radius: var(--r);
-  padding: 20px 16px; text-align: center; height: 100%;
+  padding: 24px 20px; text-align: center; height: 100%;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -510,12 +510,12 @@ div[data-testid="stTextInput"] input:focus {
 .pair-icon { font-size: 1.6rem; margin-bottom: 8px; }
 .pair-name { font-weight: 700; font-size: 0.95rem; color: var(--green-d); margin: 6px 0 2px; font-family: 'Cormorant Garamond', serif; }
 .pair-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--green); margin-bottom: 6px; }
-.pair-reason { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.5; }
+.pair-reason { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.65; }
 
 /* ── Brands ── */
 .brands-panel {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 16px; margin-bottom: 12px;
+  border-radius: var(--r); padding: 20px; margin-bottom: 16px;
   box-shadow: var(--shadow);
 }
 .brand-item { display: flex; align-items: flex-start; gap: 12px; }
@@ -526,7 +526,7 @@ div[data-testid="stTextInput"] input:focus {
   color: var(--green); font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
 }
 .brand-name { font-weight: 600; font-size: 0.9rem; color: var(--green-d); }
-.brand-desc { font-size: 0.82rem; color: var(--ink-mid); margin-top: 3px; line-height: 1.5; }
+.brand-desc { font-size: 0.82rem; color: var(--ink-mid); margin-top: 5px; line-height: 1.65; }
 .brand-cert { font-size: 0.7rem; background: var(--green-l); color: var(--green); border: 1px solid rgba(27,107,74,0.15); border-radius: 6px; padding: 1px 8px; margin-left: 6px; font-weight: 600; }
 
 /* ── Gluten tags ── */
@@ -535,13 +535,13 @@ div[data-testid="stTextInput"] input:focus {
 /* ── Substitution cards ── */
 .sub-card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 16px; margin-bottom: 10px;
+  border-radius: var(--r); padding: 18px; margin-bottom: 14px;
   box-shadow: var(--shadow);
 }
-.sub-arrow { text-align: center; font-size: 1.2rem; margin: 6px 0; color: var(--green); }
+.sub-arrow { text-align: center; font-size: 1.2rem; margin: 10px 0; color: var(--green); }
 .sub-orig { color: var(--red); font-weight: 600; }
 .sub-new { color: var(--green); font-weight: 700; }
-.sub-why { font-size: 0.82rem; color: var(--ink-mid); margin-top: 6px; font-style: italic; line-height: 1.5; }
+.sub-why { font-size: 0.82rem; color: var(--ink-mid); margin-top: 8px; font-style: italic; line-height: 1.65; }
 .sub-brands { font-size: 0.8rem; color: var(--ink-soft); margin-top: 5px; }
 
 /* ── Also try buttons ── */
@@ -572,6 +572,29 @@ div.stFormSubmitButton > button p, div.stFormSubmitButton > button span,
 /* ── Divider ── */
 hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
+/* ── Content section spacing ── */
+.tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
+.info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--card); border: 1px solid var(--border); }
+
+/* ── Mobile spacing — more breathing room on phones ── */
+@media (max-width: 768px) {
+  .sec-hdr { font-size: 1.2rem; margin: 2rem 0 1.2rem 0; }
+  .step-block { padding: 14px 0; }
+  .step-t { font-size: 0.95rem; line-height: 1.8; }
+  .tip-row { padding: 10px 0; line-height: 1.7; }
+  .info-box { padding: 16px !important; margin: 12px 0 !important; line-height: 1.7 !important; font-size: 0.92rem !important; }
+  .brands-panel { padding: 14px !important; margin-bottom: 10px !important; }
+  .brand-desc { line-height: 1.6 !important; }
+  .pair-card { padding: 16px 14px !important; }
+  .sub-card { padding: 16px !important; margin-bottom: 10px !important; }
+  [data-testid="stMetric"] { padding: 12px 10px; min-height: 80px; }
+  [data-testid="stMetricValue"] { font-size: 0.85rem !important; }
+  [data-testid="stCheckbox"] label { padding: 6px 0 !important; line-height: 1.6 !important; }
+  .natural-box, .adapt-banner { padding: 14px !important; margin: 10px 0 !important; line-height: 1.6 !important; }
+  .recipe-hero { padding: 1.5rem !important; }
+  .recipe-hero-text h2 { font-size: 1.5rem !important; }
+  .recipe-hero-text .hero-sub { font-size: 0.9rem !important; }
+}
 </style>
 """
 
@@ -872,10 +895,10 @@ model = DEFAULT_MODEL
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:0 0 0.5rem;'>
+<div style='padding:0; margin-top:-1rem;'>
   <h1>Gluten-Free Spree</h1>
   <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.6; font-style:italic;'>
-    Craving something delicious but need it gluten-free? You're in the right place! Type a dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
+    Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your country and other dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -1048,7 +1071,7 @@ if "recipe" in st.session_state:
     if sources:
         st.markdown("<div class='sec-hdr'>⚠️ Gluten Contaminants</div>", unsafe_allow_html=True)
         tags = "".join(f"<span class='g-tag'>⚠️ {s}</span>" for s in sources)
-        st.markdown(f"<div style='margin:0.5rem 0 1rem;'>{tags}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='margin:1rem 0 1.5rem;'>{tags}</div>", unsafe_allow_html=True)
 
     # ── TWO COLUMN MAIN INTERACTIVE WORKSPACE ──
     col_left, col_right = st.columns([2, 3], gap="large")
