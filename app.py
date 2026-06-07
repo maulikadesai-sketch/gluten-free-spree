@@ -898,7 +898,9 @@ Tailor all quantities and temperatures to the {unit_system} system (e.g. Metric:
 Process:
 1. Identify EVERY gluten source (obvious + sneaky: soy sauce, malt vinegar, roux, seitan, spice blends, couscous).
 2. For each, choose a substitution matching its FUNCTION (structure/binding/thickening/crisp coating/flavour) — not just "GF flour". Give realistic ratios (GF subs rarely swap 1:1; may need xanthan gum, starch blends).
-3. Write complete recipe with real quantities and clear steps.
+3. Write complete recipe with real quantities and clear steps. Each step MUST include specific time durations \
+in minutes or hours (e.g. "Sauté onions for 5 minutes", "Bake for 25 minutes at 180°C", "Let rest for 10 minutes"). \
+Never use vague timing like "until done" or "for a while" — always give exact minutes.
 4. Flag ingredients that are NOT ALWAYS GF (soy sauce, oats, stock, baking powder, spice mixes).
 5. Mention cross-contamination risks.
 6. For the brands_panel, list 3–5 actual certified gluten-free brands available in {country} that make the most critical substitution ingredients. For each brand include: name, what product, certification body (e.g. GFFS, NFCA, Coeliac UK), a brief note on where to buy, and "fully_gf" set to true if the brand is certified gluten-free, or false if the brand is NOT fully certified GF and may carry contamination risk (e.g. brands that also manufacture wheat products on the same line).
@@ -1161,10 +1163,10 @@ model = DEFAULT_MODEL
 st.markdown("""
 <div style='padding:0.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:var(--ink-mid); font-size:1.05rem; margin-top:4px; line-height:1.6;'>
-    🌾 Craving something delicious but need it gluten-free? You're in the right place!<br>
-    Just type any dish — we'll recreate it with safe GF swaps, real brand suggestions,
-    and easy step-by-step instructions tailored to your country and dietary needs.
+  <p style='color:var(--ink-mid); font-size:1.05rem; margin-top:4px; line-height:1.6; font-style:italic;'>
+    Craving something delicious but need it gluten-free? You're in the right place!<br>
+    Just type any dish — we'll recreate it with GF swaps, brand suggestions,
+    and easy step-by-step instructions tailored to your country and other dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -1181,15 +1183,13 @@ dish = st.text_input(
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
-with st.expander("🌍 Where are you cooking from & what units do you prefer?", expanded=False):
-    country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
-    if country_choice == "🌍 Other":
-        other_countries = [c for c in COUNTRIES if "India" not in c]
-        country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
-    else:
-        country = "🇮🇳 India"
-
-    unit_sys = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+# Location
+country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+if country_choice == "🌍 Other":
+    other_countries = [c for c in COUNTRIES if "India" not in c]
+    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+else:
+    country = "🇮🇳 India"
 
 # Default servings (adjustable in recipe display area)
 servings = st.session_state.get("current_servings", 4)
@@ -1217,8 +1217,13 @@ all_dietary = sorted([
 ])
 dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
 
-# Recreate button
-go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
+# Units preference
+unit_sys = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+
+# Make My Recipe button — not full width
+col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
+with col_btn_m:
+    go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
 
 st.divider()
 
@@ -1337,11 +1342,12 @@ if "recipe" in st.session_state:
     recipe_text = recipe_to_text(recipe, cur_sv)
     st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt")
 
-    # ── NATIVE GLUTEN IDENTIFIED RISKS ──
+    # ── GLUTEN CONTAMINANTS ──
     sources = recipe.get("gluten_sources") or []
     if sources:
+        st.markdown("<div class='sec-hdr'>⚠️ Gluten Contaminants</div>", unsafe_allow_html=True)
         tags = "".join(f"<span class='g-tag'>⚠️ {s}</span>" for s in sources)
-        st.markdown(f"<div style='margin:1rem 0;'>{tags}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='margin:0.5rem 0 1rem;'>{tags}</div>", unsafe_allow_html=True)
 
     # ── TWO COLUMN MAIN INTERACTIVE WORKSPACE ──
     col_left, col_right = st.columns([2, 3], gap="large")
