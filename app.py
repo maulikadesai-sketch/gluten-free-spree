@@ -166,570 +166,196 @@ DIETARY_TAGS = [
 # ─────────────────────────────────────────────
 CUSTOM_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --ink:      #1C2A1E;
-  --ink-mid:  #3D4F40;
-  --ink-soft: #6A7E6E;
-  --bg:       #EBF1EC; /* Sage green background */
-  --bg2:      #DCE4DC; /* Sidebar background sage */
-  --border:   #CCD5CD;
-  --green:    #2F5435; /* Forest accent green */
-  --green-l:  #E2ECE5;
-  --amber:    #B26225;
-  --amber-l:  #FDF3EB;
-  --red-l:    #FCECEC;
-  --red:      #9E2A2B;
-  --card:     #FFFFFF;
-  --shadow:   0 8px 30px rgba(28,42,30,0.08);
-  --r:        14px;
+  --ink: #1A1A2E;
+  --ink-mid: #4A4A5A;
+  --ink-soft: #8E8E9E;
+  --bg: #FAFAF7;
+  --bg2: #F0EDE8;
+  --border: #E5E0D8;
+  --green: #1B6B4A;
+  --green-l: #E8F5EE;
+  --green-d: #0F3D2B;
+  --amber: #C4722A;
+  --amber-l: #FEF3E8;
+  --red-l: #FDE8E8;
+  --red: #C53030;
+  --card: #FFFFFF;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.08);
+  --r: 12px;
 }
 
-/* ── Dark mode: swap colors for users with dark system/browser theme ── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink:      #1C2A1E;
-    --ink-mid:  #3D4F40;
-    --ink-soft: #6A7E6E;
-    --bg:       #EBF1EC;
-    --bg2:      #DCE4DC;
-    --border:   #CCD5CD;
-    --green:    #2F5435;
-    --green-l:  #E2ECE5;
-    --amber:    #B26225;
-    --amber-l:  #FDF3EB;
-    --red-l:    #FCECEC;
-    --red:      #9E2A2B;
-    --card:     #FFFFFF;
-    --shadow:   0 8px 30px rgba(28,42,30,0.08);
+    --ink: #1A1A2E; --ink-mid: #4A4A5A; --ink-soft: #8E8E9E;
+    --bg: #FAFAF7; --bg2: #F0EDE8; --border: #E5E0D8;
+    --green: #1B6B4A; --green-l: #E8F5EE; --card: #FFFFFF;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
   }
 }
-
-/* Also handle Streamlit's own theme attribute */
 [data-theme="dark"] {
-    --ink:      #1C2A1E;
-    --ink-mid:  #3D4F40;
-    --ink-soft: #6A7E6E;
-    --bg:       #EBF1EC;
-    --bg2:      #DCE4DC;
-    --border:   #CCD5CD;
-    --green:    #2F5435;
-    --green-l:  #E2ECE5;
-    --amber:    #B26225;
-    --amber-l:  #FDF3EB;
-    --red-l:    #FCECEC;
-    --red:      #9E2A2B;
-    --card:     #FFFFFF;
-    --shadow:   0 8px 30px rgba(28,42,30,0.08);
+  --ink: #1A1A2E; --ink-mid: #4A4A5A; --ink-soft: #8E8E9E;
+  --bg: #FAFAF7; --bg2: #F0EDE8; --border: #E5E0D8;
+  --green: #1B6B4A; --green-l: #E8F5EE; --card: #FFFFFF;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; }
 
-/* Prevent black/blank screen while Streamlit loads on mobile */
 html, body {
-  background-color: #EBF1EC !important;
-  color: #1C2A1E !important;
+  background-color: #FAFAF7 !important;
+  color: #1A1A2E !important;
   -webkit-text-size-adjust: 100%;
 }
-@media (prefers-color-scheme: dark) {
-  html, body {
-    background-color: #EBF1EC !important;
-    color: #1C2A1E !important;
-  }
-}
-.stApp, .main, [data-testid="stAppViewBlockContainer"] {
-  background-color: var(--bg) !important;
-}
-iframe { background-color: var(--card) !important; }
-
 html, body, [data-testid="stAppViewContainer"] {
   background: var(--bg) !important;
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
   color: var(--ink) !important;
 }
 
-/* Force ALL Streamlit text to follow our theme variables */
-[data-testid="stAppViewContainer"] p,
-[data-testid="stAppViewContainer"] span,
-[data-testid="stAppViewContainer"] div,
-[data-testid="stAppViewContainer"] label,
-[data-testid="stAppViewContainer"] li,
-[data-testid="stAppViewContainer"] h1,
-[data-testid="stAppViewContainer"] h2,
-[data-testid="stAppViewContainer"] h3,
-.stMarkdown, .stMarkdown p {
-  color: var(--ink) !important;
-}
+/* Force ALL text dark */
+[data-testid="stAppViewContainer"] p, [data-testid="stAppViewContainer"] span,
+[data-testid="stAppViewContainer"] div, [data-testid="stAppViewContainer"] label,
+[data-testid="stAppViewContainer"] li, [data-testid="stAppViewContainer"] h1,
+[data-testid="stAppViewContainer"] h2, [data-testid="stAppViewContainer"] h3,
+.stMarkdown, .stMarkdown p { color: var(--ink) !important; }
 [data-testid="stExpander"] summary span { color: var(--ink) !important; }
-[data-testid="stMetricValue"] { color: var(--green) !important; }
-[data-testid="stMetricLabel"] p { color: var(--ink-soft) !important; }
 
 #MainMenu, footer { visibility: hidden; }
 header[data-testid="stHeader"] { display: none !important; }
 [data-testid="stDecoration"] { display: none; }
-/* Hide sidebar completely — all settings are on the main page now */
 [data-testid="stSidebar"] { display: none !important; }
 [data-testid="stSidebarCollapseButton"] { display: none !important; }
 button[kind="headerNoPadding"] { display: none !important; }
 section[data-testid="stSidebar"] { display: none !important; }
 
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-  background: var(--bg2) !important;
-  border-right: 1px solid var(--border) !important;
+/* ── App title ── */
+h1 {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-size: 2.8rem !important;
+  font-weight: 400 !important;
+  color: var(--green-d) !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.1 !important;
+  margin-bottom: 0 !important;
 }
-/* Scope font to TEXT elements only — wildcard * breaks the Material Icons collapse arrow */
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] div,
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3,
-[data-testid="stSidebar"] input,
-[data-testid="stSidebar"] .stMarkdown { font-family: 'Outfit', sans-serif !important; }
-[data-testid="stSidebar"] label { font-size: 0.82rem !important; font-weight: 600 !important; letter-spacing: 0.3px !important; color: var(--ink-soft) !important; text-transform: uppercase !important; }
 
-/* ── Typography ── */
-h1, h2, h3 { font-family: 'Cormorant Garamond', serif !important; }
-h1 { font-size: 3.2rem !important; font-weight: 700 !important; letter-spacing: -1px; line-height: 1.1 !important; color: var(--green) !important; }
+/* ── Section headers ── */
+.sec-hdr {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--green-d);
+  border-bottom: 2px solid var(--green);
+  padding-bottom: 8px;
+  margin: 1.8rem 0 1rem 0;
+  letter-spacing: -0.3px;
+}
 
 /* ── Buttons ── */
-div.stButton > button[kind="primary"],
-button[kind="primaryFormSubmit"],
-div.stFormSubmitButton > button,
-[data-testid="stFormSubmitButton"] > button {
+div.stButton > button[kind="primary"] {
   background: var(--green) !important;
   color: #fff !important;
   border: none !important;
   border-radius: 10px !important;
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
-  font-size: 0.92rem !important;
-  padding: 0.6rem 1.6rem !important;
-  letter-spacing: 0.2px;
-  transition: all 0.18s ease !important;
+  font-size: 0.95rem !important;
+  padding: 0.65rem 2rem !important;
+  letter-spacing: 0.3px !important;
+  transition: all 0.2s ease !important;
 }
-div.stButton > button[kind="primary"]:hover,
-button[kind="primaryFormSubmit"]:hover,
-div.stFormSubmitButton > button:hover,
-[data-testid="stFormSubmitButton"] > button:hover {
-  background: #1C3321 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(47,84,53,0.3) !important;
+div.stButton > button[kind="primary"]:hover {
+  background: var(--green-d) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(27,107,74,0.25) !important;
 }
+div.stButton > button[kind="primary"] p,
+div.stButton > button[kind="primary"] span,
+div.stFormSubmitButton > button p,
+div.stFormSubmitButton > button span { color: #FFFFFF !important; }
+
+/* ── Secondary buttons ── */
 div.stButton > button:not([kind="primary"]) {
   background: var(--card) !important;
+  color: var(--green) !important;
   border: 1.5px solid var(--border) !important;
   border-radius: 10px !important;
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-weight: 500 !important;
-  font-size: 0.85rem !important;
-  color: var(--ink-mid) !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.2s ease !important;
 }
-div.stButton > button:not([kind="primary"]):hover { border-color: var(--green) !important; color: var(--green) !important; }
-
-/* ── Inputs ── */
-div[data-testid="stTextInput"] input, div[data-testid="stSelectbox"] > div > div {
-  border-radius: 10px !important;
-  border-color: var(--border) !important;
-  background: #FFFFFF !important;
-  color: #1C2A1E !important;
-  font-family: 'Outfit', sans-serif !important;
+div.stButton > button:not([kind="primary"]):hover {
+  border-color: var(--green) !important;
+  background: var(--green-l) !important;
 }
 
-/* ══════════════════════════════════════════════════════
-   FORCE ALL WIDGETS LEGIBLE — overrides dark mode
-   ══════════════════════════════════════════════════════ */
-
-/* Text inputs, textareas, number inputs */
-input, textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textarea {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
-  caret-color: #1C2A1E !important;
-}
-
-/* Selectbox / dropdown — force white everywhere */
-[data-baseweb="select"] > div { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-baseweb="select"] span { color: #1C2A1E !important; }
-[data-baseweb="select"] svg {
-  fill: #1C2A1E !important;
-  width: 20px !important;
-  height: 20px !important;
-}
-[data-baseweb="select"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-baseweb="select"] [data-baseweb="tag"] svg { width: 14px !important; height: 14px !important; }
-[data-baseweb="select"] [class*="indicatorContainer"] { cursor: pointer !important; }
-/* Dropdown menu overlay */
-[data-baseweb="popover"] { background-color: #FFFFFF !important; }
-[data-baseweb="popover"] ul { background-color: #FFFFFF !important; }
-[data-baseweb="popover"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
-[data-baseweb="popover"] li:hover { background-color: #E2ECE5 !important; }
-/* Dropdown menu overlay */
-[data-baseweb="menu"] { background-color: #FFFFFF !important; }
-[data-baseweb="menu"] li { color: #1C2A1E !important; background-color: #FFFFFF !important; }
-[data-baseweb="menu"] li:hover { background-color: #E2ECE5 !important; }
-[data-baseweb="menu"] ul { background-color: #FFFFFF !important; }
-/* Multiselect dropdown */
-[data-testid="stMultiSelect"] div { background-color: transparent !important; }
-[data-testid="stMultiSelect"] [data-baseweb="select"] > div { background-color: #FFFFFF !important; }
-[data-testid="stMultiSelect"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-testid="stMultiSelect"] span { color: #1C2A1E !important; }
-[data-testid="stMultiSelect"] [data-baseweb="popover"],
-[data-testid="stMultiSelect"] [data-baseweb="popover"] ul,
-[data-testid="stMultiSelect"] [data-baseweb="popover"] li {
-  background-color: #FFFFFF !important; color: #1C2A1E !important;
-}
-/* Checkboxes — visible on all devices */
-[data-testid="stCheckbox"] { background: transparent !important; }
-[data-testid="stCheckbox"] label { background: transparent !important; cursor: pointer !important; color: #1C2A1E !important; }
-[data-testid="stCheckbox"] label span { color: #1C2A1E !important; }
-/* Radio buttons — transparent */
-[data-testid="stRadio"] > div { background: transparent !important; }
-[data-testid="stRadio"] label { background: transparent !important; color: #1C2A1E !important; }
-/* Expander — white background */
-[data-testid="stExpander"] { background: #FFFFFF !important; border: 1px solid #CCD5CD !important; border-radius: 10px !important; }
-[data-testid="stExpander"] details { background: #FFFFFF !important; }
-[data-testid="stExpander"] summary { background: #FFFFFF !important; cursor: pointer !important; }
-[data-testid="stExpander"] summary span { color: #1C2A1E !important; }
-/* Make the expand/collapse arrow clearly visible and flip up/down */
-[data-testid="stExpander"] summary svg {
-  fill: #2F5435 !important;
-  width: 22px !important;
-  height: 22px !important;
-}
-[data-testid="stExpander"] details:not([open]) summary svg { transform: rotate(0deg) !important; }
-[data-testid="stExpander"] details[open] summary svg { transform: rotate(180deg) !important; }
-
-/* Download buttons — force white bg with dark text */
-[data-testid="stDownloadButton"] button,
-[data-testid="stDownloadButton"] > button {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
+/* ── Download buttons ── */
+[data-testid="stDownloadButton"] button {
+  background-color: var(--card) !important;
+  color: var(--ink) !important;
   border: 1.5px solid var(--border) !important;
   border-radius: 10px !important;
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-weight: 500 !important;
 }
 [data-testid="stDownloadButton"] button:hover {
   background-color: var(--green-l) !important;
   border-color: var(--green) !important;
-  color: var(--green) !important;
 }
 
-/* Slider — force green track instead of red */
-/* ── SLIDER — nuclear override for ALL sliders everywhere ── */
-[data-testid="stSlider"],
-[data-testid="stSidebar"] [data-testid="stSlider"] {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-[data-testid="stSlider"] div,
-[data-testid="stSidebar"] [data-testid="stSlider"] div {
-  background-color: transparent !important;
-}
-/* The track (grey background line) */
-[data-baseweb="slider"] div[role="progressbar"] {
-  background-color: #CCD5CD !important;
-}
-/* The filled portion (was coral, now black) */
-[data-baseweb="slider"] div[role="progressbar"] > div,
-[data-baseweb="slider"] div[role="progressbar"] > div:first-child {
-  background-color: #1C2A1E !important;
-}
-/* The thumb (circle you drag) */
-[data-baseweb="slider"] div[role="slider"],
-[data-baseweb="slider"] div[role="slider"] > div {
-  background-color: #1C2A1E !important;
-  border-color: #1C2A1E !important;
-}
-/* The value label above the thumb */
-[data-baseweb="slider"] div[data-testid="stThumbValue"],
-[data-baseweb="slider"] [data-testid="stThumbValue"],
-[data-baseweb="tooltip"],
-[data-baseweb="slider"] div[role="tooltip"],
-[data-baseweb="slider"] div[role="slider"] > div {
-  background: transparent !important;
+/* ── Inputs ── */
+div[data-testid="stTextInput"] input {
+  border-radius: 10px !important;
+  border: 1.5px solid var(--border) !important;
+  background: var(--card) !important;
   color: var(--ink) !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-/* Min/max labels (1 and 20) */
-[data-testid="stSlider"] [data-testid="stTickBar"],
-[data-testid="stSlider"] [data-testid="stTickBar"] > div,
-[data-testid="stSlider"] [data-testid="stTickBarMin"],
-[data-testid="stSlider"] [data-testid="stTickBarMax"] {
-  background: transparent !important;
-}
-[data-testid="stSlider"] p,
-[data-testid="stSidebar"] [data-testid="stSlider"] p {
-  color: var(--ink) !important;
-  background: transparent !important;
-}
-[data-testid="stElementContainer"]:has([data-testid="stSlider"]) {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Number input */
-[data-testid="stNumberInput"] input { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-[data-testid="stNumberInput"] button { background-color: #FFFFFF !important; color: #1C2A1E !important; }
-
-/* Radio buttons */
-[data-testid="stRadio"] label span { color: #1C2A1E !important; }
-[data-testid="stRadio"] div[role="radiogroup"] label { color: #1C2A1E !important; }
-
-/* Checkboxes */
-[data-testid="stCheckbox"] label span { color: #1C2A1E !important; }
-
-/* Expander */
-[data-testid="stExpander"] { background: #FFFFFF !important; border-color: var(--border) !important; }
-[data-testid="stExpander"] summary, [data-testid="stExpander"] summary span { color: #1C2A1E !important; }
-[data-testid="stExpander"] div { color: #1C2A1E !important; }
-
-/* Markdown text inside all containers */
-.stMarkdown p, .stMarkdown li, .stMarkdown span { color: #1C2A1E !important; }
-.stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { color: var(--green) !important; }
-
-/* ══ WHITE TEXT EXCEPTIONS — elements with dark/green backgrounds ══ */
-/* Form submit / primary buttons */
-div.stButton > button[kind="primary"],
-div.stButton > button[kind="primary"] span,
-div.stButton > button[kind="primary"] p,
-button[kind="primaryFormSubmit"],
-button[kind="primaryFormSubmit"] span,
-button[kind="primaryFormSubmit"] p,
-div.stFormSubmitButton > button,
-div.stFormSubmitButton > button span,
-div.stFormSubmitButton > button p,
-[data-testid="stFormSubmitButton"] > button,
-[data-testid="stFormSubmitButton"] > button span,
-[data-testid="stFormSubmitButton"] > button p { color: #FFFFFF !important; }
-
-/* Step numbers — plain dark text */
-.step-n, .step-n span { color: var(--green) !important; }
-
-/* Brand logo initials — dark text on light bg */
-.brand-logo-placeholder, .brand-logo-placeholder span,
-.brand-logo-placeholder p, .brand-logo-placeholder div { color: #2F5435 !important; }
-
-/* Brand certification badges — dark text on light bg */
-.brand-cert, .brand-cert span, .brand-cert p { color: #2F5435 !important; }
-
-/* Hero card — all text white */
-.recipe-hero h2, .recipe-hero p, .recipe-hero span, .recipe-hero div,
-.recipe-hero-text h2, .recipe-hero-text p, .recipe-hero-text span,
-.recipe-hero-text div, .recipe-hero-text .hero-sub,
-.hero-badge, .hero-badge span { color: #FFFFFF !important; }
-
-/* Natural box / adaptation banner text stays dark */
-.natural-box, .natural-box span, .natural-box p { color: var(--green) !important; }
-.adapt-banner, .adapt-banner div, .adapt-banner span, .adapt-banner p { color: #1C2A1E !important; }
-.adapt-title { color: var(--amber) !important; }
-
-/* Form container background */
-[data-testid="stForm"] { background-color: transparent !important; border: none !important; padding: 0 !important; }
-/* Hide ALL "Press Enter" hint texts — form hints, text input hints, everything */
-[data-testid="stForm"] small,
-[data-testid="stForm"] [data-testid="stFormSubmitButton"] + div,
-[data-testid="InputInstructions"],
-[data-testid="stTextInput"] [data-testid="InputInstructions"],
-div.stTextInput > div > div > div:last-child,
-[data-testid="stForm"] > div:last-child small,
-.stTextInput small,
-small:has(> span) {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  position: absolute !important;
-  opacity: 0 !important;
-}
-
-/* ── Recipe Hero Card ── */
-.recipe-hero {
-  position: relative;
-  width: 100%;
-  background: linear-gradient(135deg, var(--green) 0%, #152618 100%);
-  border-radius: var(--r);
-  overflow: visible;
-  margin: 1.4rem 0 0 0;
-  box-shadow: var(--shadow);
-  padding: 2.5rem;
-  min-height: auto;
-  border-left: 6px solid var(--amber);
-}
-.recipe-hero-text h2 {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: 2.8rem !important;
-  font-weight: 700 !important;
-  color: #fff !important;
-  line-height: 1.15 !important;
-}
-.recipe-hero-text .hero-sub {
-  color: rgba(255,255,255,0.85);
-  font-size: 1rem;
-  margin-top: 8px;
-  font-family: 'Outfit', sans-serif;
-  line-height: 1.5;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-}
-.hero-badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 100px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-.hero-badge-natural { background: var(--amber); border-color: transparent; }
-
-/* ── Meta pills ── */
-.meta-strip {
-  display: flex; gap: 10px; flex-wrap: wrap;
-  margin: 1.1rem 0;
-}
-.mpill {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 6px 16px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--ink-mid);
-  display: inline-flex; align-items: center; gap: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-}
-
-/* ── Difficulty meter ── */
-.diff-wrap { display: flex; align-items: center; gap: 10px; margin: 0.4rem 0 1rem; }
-.diff-bar { flex: 1; height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
-.diff-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
-.diff-label { font-size: 0.78rem; font-weight: 600; min-width: 56px; }
-
-/* ── Section headers ── */
-.sec-hdr {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--green);
-  border-bottom: 2px solid var(--green);
-  padding-bottom: 5px;
-  margin: 1.8rem 0 1rem;
-  display: flex; align-items: center; gap: 8px;
-}
-
-/* ── Ingredients ── */
-.ing-table { width: 100%; border-collapse: collapse; }
-.ing-table tr { border-bottom: 1px solid var(--border); }
-.ing-table tr:last-child { border-bottom: none; }
-.ing-table td { padding: 11px 6px; font-size: 0.9rem; vertical-align: top; }
-.ing-amt { font-weight: 600; color: var(--amber); width: 95px; }
-.ing-item { color: var(--ink); }
-.ing-note-text { font-size: 0.76rem; color: var(--ink-soft); font-style: italic; display: block; margin-top: 1px; }
-.swap-chip {
-  background: var(--green-l);
-  color: var(--green);
-  border: 1px solid #B4CDBA;
-  border-radius: 6px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  white-space: nowrap;
-  vertical-align: middle;
-  margin-left: 4px;
-}
-
-/* ── Substitution cards ── */
-.sub-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--amber);
-  border-radius: 0 var(--r) var(--r) 0;
-  padding: 14px 16px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow);
-}
-.sub-head { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
-.sub-ratio { font-size: 0.76rem; color: var(--ink-soft); margin-top: 2px; }
-.sub-why { font-size: 0.86rem; margin-top: 6px; line-height: 1.5; color: var(--ink-mid); }
-.sub-brands { font-size: 0.77rem; color: var(--green); margin-top: 6px; font-weight: 500; }
-
-/* ── Brands Panel ── */
-.brands-panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 1.2rem;
-  box-shadow: var(--shadow);
-}
-.brand-item {
-  display: flex; align-items: flex-start; gap: 12px;
-}
-.brand-logo-placeholder {
-  width: 40px; height: 40px; border-radius: 8px;
-  background: var(--green-l); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--green); font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
-}
-.brand-name { font-weight: 600; font-size: 0.9rem; color: var(--green); }
-.brand-desc { font-size: 0.82rem; color: var(--ink-mid); margin-top: 3px; line-height: 1.45; }
-.brand-cert { font-size: 0.7rem; background: var(--green-l); color: var(--green); border: 1px solid var(--border); border-radius: 6px; padding: 1px 7px; margin-left: 6px; font-weight: 600; }
-
-/* ── Gluten danger tags ── */
-.g-tag { display: inline-block; background: var(--red-l); border: 1px solid #E2B3B3; color: var(--red); border-radius: 7px; font-size: 0.76rem; padding: 4px 10px; margin: 3px 3px 3px 0; font-weight: 500; }
-
-/* ── Tips ── */
-.tip-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 0.9rem; }
-.tip-row:last-child { border-bottom: none; }
-
-/* ── Also try ── */
-.try-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  text-align: center;
-}
-.try-card:hover { border-color: var(--green); box-shadow: 0 4px 16px rgba(47,84,53,0.15); transform: translateY(-2px); }
-
-/* ── Info / warn boxes ── */
-.warn-box { background: var(--amber-l); border: 1px solid #E5C3A5; border-left: 4px solid var(--amber); border-radius: 10px; padding: 13px 17px; font-size: 0.88rem; color: #6E3A0F; margin: 0.8rem 0; }
-.info-box { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--green); border-radius: 10px; padding: 13px 17px; font-size: 0.88rem; color: var(--ink); margin: 0.8rem 0; }
-.natural-box { background: #E4EFE5; border: 1px solid #B4D3B8; border-radius: 12px; padding: 13px 17px; color: var(--green); font-weight: 600; margin: 0.6rem 0; }
-
-/* ── Interactive Kitchen Hub Components ── */
-.interactive-panel {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: var(--shadow);
-}
-.cooking-done-step {
-  text-decoration: line-through;
-  opacity: 0.55;
-  transition: all 0.2s ease;
-}
-
-/* ── Dynamic Layout Styles ── */
-[data-testid="stMetricValue"] {
+  font-family: 'Inter', sans-serif !important;
+  padding: 0.7rem 1rem !important;
   font-size: 0.95rem !important;
+  transition: border-color 0.2s ease !important;
+}
+div[data-testid="stTextInput"] input:focus {
+  border-color: var(--green) !important;
+  box-shadow: 0 0 0 3px rgba(27,107,74,0.08) !important;
+}
+
+/* ── Select/Dropdown ── */
+[data-baseweb="select"] > div {
+  background-color: var(--card) !important; color: var(--ink) !important;
+  border-radius: 10px !important; border-color: var(--border) !important;
+}
+[data-baseweb="select"] span { color: var(--ink) !important; }
+[data-baseweb="select"] svg { fill: var(--ink) !important; width: 18px !important; height: 18px !important; }
+[data-baseweb="select"] input { background: var(--card) !important; color: var(--ink) !important; }
+[data-baseweb="popover"], [data-baseweb="popover"] > div,
+[data-baseweb="menu"], [data-baseweb="menu"] > div,
+[data-baseweb="list"], [data-baseweb="list"] > div { background-color: var(--card) !important; color: var(--ink) !important; }
+[data-baseweb="popover"] li, [data-baseweb="menu"] li, [role="option"] { background-color: var(--card) !important; color: var(--ink) !important; }
+[data-baseweb="popover"] li:hover, [data-baseweb="menu"] li:hover, [role="option"]:hover,
+[role="option"][aria-selected="true"] { background-color: var(--green-l) !important; }
+[data-testid="stSelectbox"] [data-baseweb="select"] > div { background: var(--card) !important; color: var(--ink) !important; }
+[data-testid="stMultiSelect"] div { background-color: transparent !important; }
+[data-testid="stMultiSelect"] [data-baseweb="select"] > div { background: var(--card) !important; }
+[data-testid="stMultiSelect"] input { background: var(--card) !important; color: var(--ink) !important; }
+
+/* ── Tags (multiselect) ── */
+[data-baseweb="tag"] {
+  background-color: var(--green) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 20px !important;
+  font-weight: 500 !important;
+}
+[data-baseweb="tag"] span { color: #FFFFFF !important; }
+[data-baseweb="tag"] svg { fill: #FFFFFF !important; }
+[data-baseweb="tag"]:hover { background-color: var(--green-d) !important; }
+
+/* ── Metrics ── */
+[data-testid="stMetricValue"] {
+  font-size: 1rem !important;
   font-weight: 700 !important;
   color: var(--green) !important;
   white-space: normal !important;
@@ -737,149 +363,215 @@ small:has(> span) {
   text-overflow: unset !important;
   line-height: 1.3 !important;
   word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
 }
-[data-testid="stMetricValue"] div,
-[data-testid="stMetricValue"] span,
-[data-testid="stMetricValue"] p {
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: unset !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
+[data-testid="stMetricValue"] div, [data-testid="stMetricValue"] span {
+  white-space: normal !important; overflow: visible !important; text-overflow: unset !important;
 }
 [data-testid="stMetricLabel"] { overflow: visible !important; white-space: normal !important; }
-
-/* ── Metric cards ── */
 [data-testid="stMetric"] {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 12px;
+  border-radius: var(--r);
+  padding: 16px 14px;
   text-align: center;
   box-shadow: var(--shadow);
   overflow: visible !important;
-  min-height: 90px;
 }
-[data-testid="stMetric"] > div { overflow: visible !important; }
-[data-testid="stMetric"] > div > div { overflow: visible !important; }
-[data-testid="stMetric"] > div > div > div { overflow: visible !important; text-overflow: unset !important; }
+[data-testid="stMetric"] > div, [data-testid="stMetric"] > div > div { overflow: visible !important; }
+[data-testid="stMetricValue"] { color: var(--green) !important; }
+[data-testid="stMetricLabel"] p { color: var(--ink-soft) !important; }
 
-/* Smooth hover on substitution & brand cards */
-.sub-card, .brands-panel { transition: transform 0.18s ease, box-shadow 0.18s ease; }
-.sub-card:hover, .brands-panel:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(47,84,53,0.12); }
+/* ── Slider ── */
+[data-testid="stSlider"] { background: transparent !important; }
+[data-testid="stSlider"] > div { background: transparent !important; }
+[data-testid="stSlider"] div { background-color: transparent !important; }
+[data-baseweb="slider"] div[role="progressbar"] { background-color: var(--border) !important; }
+[data-baseweb="slider"] div[role="progressbar"] > div,
+[data-baseweb="slider"] div[role="progressbar"] > div:first-child { background-color: var(--green) !important; }
+[data-baseweb="slider"] [role="slider"] { background-color: var(--green) !important; border-color: var(--green) !important; }
+[data-baseweb="slider"] div[role="slider"] > div { background: transparent !important; border: none !important; box-shadow: none !important; }
+[data-baseweb="tooltip"] { background: transparent !important; border: none !important; box-shadow: none !important; }
+[data-testid="stSlider"] p { color: var(--ink) !important; }
+[data-testid="stElementContainer"]:has([data-testid="stSlider"]) { background: transparent !important; }
 
-/* ── Numbered cooking steps ── */
-.step-block { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 1.1rem; }
-.step-block:last-child { margin-bottom: 0; }
-.step-n {
-  min-width: 24px;
-  font-size: 0.95rem; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 3px;
+/* ── Checkboxes ── */
+[data-testid="stCheckbox"] { background: transparent !important; }
+[data-testid="stCheckbox"] label { background: transparent !important; cursor: pointer !important; color: var(--ink) !important; }
+[data-testid="stCheckbox"] label span { color: var(--ink) !important; }
+
+/* ── Radio ── */
+[data-testid="stRadio"] > div { background: transparent !important; }
+[data-testid="stRadio"] label { background: transparent !important; color: var(--ink) !important; }
+
+/* ── Expander ── */
+[data-testid="stExpander"] { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--r) !important; }
+[data-testid="stExpander"] details { background: var(--card) !important; }
+[data-testid="stExpander"] summary { background: var(--card) !important; cursor: pointer !important; }
+[data-testid="stExpander"] summary span { color: var(--ink) !important; font-weight: 500 !important; }
+[data-testid="stExpander"] summary svg { fill: var(--green) !important; width: 20px !important; height: 20px !important; }
+[data-testid="stExpander"] details:not([open]) summary svg { transform: rotate(0deg) !important; }
+[data-testid="stExpander"] details[open] summary svg { transform: rotate(180deg) !important; }
+
+/* ── Form ── */
+[data-testid="stForm"] { background: transparent !important; border: none !important; padding: 0 !important; }
+[data-testid="InputInstructions"], [data-testid="stForm"] small, .stTextInput small,
+[data-testid="stForm"] [data-testid="stFormSubmitButton"] + div {
+  display: none !important; visibility: hidden !important; height: 0 !important;
 }
-.step-t { font-size: 0.92rem; line-height: 1.65; color: var(--ink); }
+
+/* ── Number input ── */
+[data-testid="stNumberInput"] input { background: var(--card) !important; color: var(--ink) !important; border-radius: 8px !important; }
+[data-testid="stNumberInput"] button { background: var(--card) !important; color: var(--ink) !important; }
+
+/* ── Recipe Hero Card ── */
+.recipe-hero {
+  position: relative; width: 100%;
+  background: linear-gradient(135deg, #1B6B4A 0%, #0F3D2B 100%);
+  border-radius: 16px;
+  overflow: visible;
+  margin: 1.5rem 0 0 0;
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+  min-height: auto;
+}
+.recipe-hero-text { position: relative; z-index: 1; }
+.recipe-hero-text h2 {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  color: #FFFFFF !important;
+  font-size: 2rem !important;
+  font-weight: 400 !important;
+  margin: 0.5rem 0 0 0 !important;
+  line-height: 1.15 !important;
+}
+.recipe-hero-text .hero-sub {
+  color: rgba(255,255,255,0.8);
+  font-size: 1rem; margin-top: 10px;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+}
+.hero-badge-natural { background: rgba(39,174,96,0.25); border-color: rgba(39,174,96,0.4); }
+
+/* ── Adaptation banner ── */
+.adapt-banner {
+  background: var(--amber-l); border-left: 4px solid var(--amber);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 14px 18px; margin: 1rem 0;
+}
+.adapt-title { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--amber) !important; margin-bottom: 4px; }
+.adapt-banner div, .adapt-banner span, .adapt-banner p { color: var(--ink) !important; }
+.natural-box {
+  background: var(--green-l); border-left: 4px solid var(--green);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 14px 18px; margin: 1rem 0;
+  color: var(--green) !important; font-weight: 500;
+}
+
+/* ── Time pills ── */
+.time-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--green-l); border: 1px solid rgba(27,107,74,0.15);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 0.82rem; margin: 3px 4px;
+  color: var(--green-d);
+}
+.time-pill-icon { font-size: 0.9rem; }
+
+/* ── Steps ── */
+.step-block { display: flex; gap: 12px; margin: 14px 0; align-items: flex-start; }
+.step-n { min-width: 24px; font-size: 0.95rem; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 3px; }
+.step-t { font-size: 0.92rem; line-height: 1.7; color: var(--ink); }
 
 /* ── Ingredient emoji ── */
 .ing-emoji { font-size: 0.95rem; margin-right: 7px; }
 
-/* ── Perfect pairings cards ── */
+/* ── Pairing cards ── */
 .pair-card {
-  background: linear-gradient(160deg, var(--card) 0%, var(--green-l) 100%);
-  border: 1.5px solid var(--border); border-radius: var(--r);
-  padding: 18px 16px; text-align: center; height: 100%;
-  transition: all 0.2s ease;
+  background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 20px 16px; text-align: center; height: 100%;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.pair-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(47,84,53,0.16); border-color: var(--green); }
-.pair-icon { font-size: 2rem; margin-bottom: 6px; }
-.pair-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--green); line-height: 1.2; }
-.pair-type { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.7px; color: var(--amber); font-weight: 700; margin-top: 3px; }
-.pair-reason { font-size: 0.8rem; color: var(--ink-mid); margin-top: 8px; line-height: 1.5; }
+.pair-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.pair-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.pair-name { font-weight: 700; font-size: 0.95rem; color: var(--green-d); margin: 6px 0 2px; font-family: 'DM Serif Display', serif; }
+.pair-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--green); margin-bottom: 6px; }
+.pair-reason { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.5; }
 
-/* ── Dish hero image ── */
-.dish-img-wrap {
-  width: 100%; height: 320px; border-radius: var(--r);
-  overflow: hidden; margin: 1rem 0; box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+/* ── Brands ── */
+.brands-panel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
 }
-.dish-img-wrap img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform 0.4s ease;
+.brand-item { display: flex; align-items: flex-start; gap: 12px; }
+.brand-logo-placeholder {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--green-l); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
 }
-.dish-img-wrap:hover img { transform: scale(1.03); }
+.brand-name { font-weight: 600; font-size: 0.9rem; color: var(--green-d); }
+.brand-desc { font-size: 0.82rem; color: var(--ink-mid); margin-top: 3px; line-height: 1.5; }
+.brand-cert { font-size: 0.7rem; background: var(--green-l); color: var(--green); border: 1px solid rgba(27,107,74,0.15); border-radius: 6px; padding: 1px 8px; margin-left: 6px; font-weight: 600; }
 
-/* ── Dietary adaptation banner ── */
-.adapt-banner {
-  background: linear-gradient(135deg, #F0F7F1 0%, #E6F0E0 100%);
-  border: 1px solid var(--green-l);
-  border-left: 5px solid var(--amber);
-  border-radius: 0 var(--r) var(--r) 0;
-  padding: 14px 20px;
-  margin: 0.8rem 0;
-  display: flex; align-items: flex-start; gap: 12px;
-  font-size: 0.9rem; line-height: 1.55;
-  color: var(--ink);
-}
-.adapt-icon { font-size: 1.4rem; flex-shrink: 0; }
-.adapt-title { font-weight: 700; color: var(--amber); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+/* ── Gluten tags ── */
+.g-tag { display: inline-block; background: var(--red-l); border: 1px solid #E2B3B3; color: var(--red); border-radius: 20px; font-size: 0.76rem; padding: 5px 12px; margin: 3px; font-weight: 500; }
 
-/* ── Extra time pills ── */
-.time-pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 0.5rem 0 0.8rem; }
-.time-pill {
-  background: var(--card); border: 1px solid var(--border); border-radius: 100px;
-  padding: 6px 16px; font-size: 0.82rem; font-weight: 500; color: var(--ink-mid);
-  display: inline-flex; align-items: center; gap: 6px;
+/* ── Substitution cards ── */
+.sub-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px; margin-bottom: 10px;
+  box-shadow: var(--shadow);
 }
-.time-pill-icon { font-size: 1rem; }
-/* ── Multiselect tags ── */
-[data-baseweb="tag"] {
-  background-color: #E2ECE5 !important;
-  color: #1C2A1E !important;
-  border: 1px solid #CCD5CD !important;
-  border-radius: 6px !important;
-}
-[data-baseweb="tag"] span { color: #1C2A1E !important; }
-[data-baseweb="tag"] svg { fill: #1C2A1E !important; }
-[data-baseweb="tag"]:hover { background-color: #CCD5CD !important; }
+.sub-arrow { text-align: center; font-size: 1.2rem; margin: 6px 0; color: var(--green); }
+.sub-orig { color: var(--red); font-weight: 600; }
+.sub-new { color: var(--green); font-weight: 700; }
+.sub-why { font-size: 0.82rem; color: var(--ink-mid); margin-top: 6px; font-style: italic; line-height: 1.5; }
+.sub-brands { font-size: 0.8rem; color: var(--ink-soft); margin-top: 5px; }
 
-/* ── NUCLEAR DARK MODE FIX — force white on ALL dropdown elements ── */
-[data-baseweb="select"] > div,
-[data-baseweb="select"] > div > div,
-[data-baseweb="input"] > div,
-[data-testid="stMultiSelect"] > div,
-[data-testid="stMultiSelect"] > div > div,
-[data-testid="stMultiSelect"] [data-baseweb="select"] > div {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
+/* ── Also try buttons ── */
+.also-try-btn {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 18px;
+  cursor: pointer; font-weight: 500; font-size: 0.88rem;
+  transition: all 0.2s ease; color: var(--ink);
 }
-/* Dropdown list container */
-[data-baseweb="popover"],
-[data-baseweb="popover"] > div,
-[data-baseweb="menu"],
-[data-baseweb="menu"] > div,
-[data-baseweb="list"],
-[data-baseweb="list"] > div {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
-}
-/* Each item in the dropdown list */
-[data-baseweb="popover"] li,
-[data-baseweb="menu"] li,
-[data-baseweb="list"] li,
-[role="option"] {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
-}
-[data-baseweb="popover"] li:hover,
-[data-baseweb="menu"] li:hover,
-[role="option"]:hover,
-[role="option"][aria-selected="true"] {
-  background-color: #E2ECE5 !important;
-  color: #1C2A1E !important;
-}
-/* Selectbox dropdown */
-[data-testid="stSelectbox"] [data-baseweb="select"] > div {
-  background-color: #FFFFFF !important;
-  color: #1C2A1E !important;
-}
+.also-try-btn:hover { border-color: var(--green); background: var(--green-l); color: var(--green-d); }
+
+/* ── White text on dark backgrounds ── */
+div.stButton > button[kind="primary"] p, div.stButton > button[kind="primary"] span,
+div.stFormSubmitButton > button p, div.stFormSubmitButton > button span,
+[data-testid="stFormSubmitButton"] > button p { color: #FFFFFF !important; }
+.recipe-hero h2, .recipe-hero p, .recipe-hero span, .recipe-hero div,
+.recipe-hero-text h2, .recipe-hero-text p, .recipe-hero-text span,
+.recipe-hero-text div, .recipe-hero-text .hero-sub,
+.hero-badge, .hero-badge span { color: #FFFFFF !important; }
+.recipe-hero-text .hero-sub { color: rgba(255,255,255,0.8) !important; }
+.natural-box, .natural-box span, .natural-box p { color: var(--green) !important; }
+.adapt-banner div, .adapt-banner span, .adapt-banner p { color: var(--ink) !important; }
+.adapt-title { color: var(--amber) !important; }
+.step-n, .step-n span { color: var(--green) !important; }
+.brand-logo-placeholder, .brand-logo-placeholder span { color: var(--green) !important; }
+.brand-cert, .brand-cert span { color: var(--green) !important; }
+
+/* ── Divider ── */
+hr { border-color: var(--border) !important; opacity: 0.5 !important; }
+
 </style>
 """
 
@@ -1178,12 +870,12 @@ model = DEFAULT_MODEL
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:0.5rem 0 0.5rem;'>
+<div style='padding:1.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:var(--ink-mid); font-size:1.05rem; margin-top:4px; line-height:1.6; font-style:italic;'>
-    Craving something delicious but need it gluten-free? You're in the right place!<br>
-    Just type any dish — we'll recreate it with GF swaps, brand suggestions,
-    and easy step-by-step instructions tailored to your country and other dietary needs.
+  <p style='color:#8E8E9E; font-size:1rem; margin-top:8px; line-height:1.7; font-style:italic; max-width:600px;'>
+    Craving something delicious but need it gluten-free? You're in the right place!
+    Type any dish and we'll recreate it with GF swaps, brand suggestions,
+    and step-by-step instructions tailored to your country and other dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -1234,10 +926,12 @@ all_dietary = sorted([
 ])
 dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
 
-# Units preference
-unit_sys = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+# Units stored in session state, configurable near recipe
+if "unit_pref" not in st.session_state:
+    st.session_state["unit_pref"] = "Metric (g, ml, °C)"
+unit_sys = st.session_state["unit_pref"]
 
-# Make My Recipe button — not full width
+# Make My Recipe button
 col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
 with col_btn_m:
     go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
@@ -1377,6 +1071,12 @@ if "recipe" in st.session_state:
         if new_sv != cur_sv:
             st.session_state["current_servings"] = new_sv
             st.rerun()
+
+        # Units preference — below servings
+        new_unit = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
+                                index=0 if "Metric" in unit_sys else 1, key="unit_select")
+        if new_unit != st.session_state.get("unit_pref"):
+            st.session_state["unit_pref"] = new_unit
 
         if scale != 1:
             st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
