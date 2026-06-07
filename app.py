@@ -246,7 +246,7 @@ h1 {
 .sec-hdr {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.35rem;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--green-d);
   border-bottom: 2px solid var(--green);
   padding-bottom: 8px;
@@ -765,10 +765,18 @@ def scale_amount(amount_str, factor):
         return amount_str
 
     def friendly_number(n):
-        """Round to nearest ¼ for measurements."""
+        """Round to cooking-friendly numbers — multiples of 5/10 for large, ¼ for small."""
         if n <= 0:
             return "0"
-        # Round to nearest 0.25
+        # Large numbers: round to nearest 5 (≥50) or 10 (≥100)
+        if n >= 100:
+            return str(int(round(n / 10) * 10))
+        if n >= 20:
+            return str(int(round(n / 5) * 5))
+        # Medium numbers (5-20): round to whole number
+        if n >= 5:
+            return str(round(n))
+        # Small numbers: round to nearest ¼
         rounded = round(n * 4) / 4
         if rounded == 0:
             rounded = 0.25
@@ -808,12 +816,6 @@ def scale_amount(amount_str, factor):
         return f"{friendly_number(scaled)} {rest}".strip()
     except Exception:
         return amount_str
-
-def difficulty_meta(diff_str):
-    d = (diff_str or "Medium").strip().title()
-    if d == "Easy":   return 33, "#3A5F43", "Easy"
-    if d == "Hard":   return 100, "#9E2B2B", "Hard"
-    return 66, "#B26225", "Medium"
 
 def recipe_to_text(recipe, servings_label):
     lines = [
@@ -870,12 +872,10 @@ model = DEFAULT_MODEL
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:1.5rem 0 0.5rem;'>
+<div style='padding:0 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.7; font-style:italic; max-width:600px;'>
-    Craving something delicious but need it gluten-free? You're in the right place!
-    Type any dish and we'll recreate it with GF swaps, brand suggestions,
-    and step-by-step instructions tailored to your country and other dietary needs.
+  <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.6; font-style:italic;'>
+    Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your country and other dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -1012,8 +1012,6 @@ if "recipe" in st.session_state:
         """, unsafe_allow_html=True)
 
     # ── METRICS STRIP ──
-    diff_pct, diff_color, diff_label = difficulty_meta(recipe.get("difficulty"))
-
     col_m1, col_m2, col_m3, col_m4, col_m5 = st.columns(5)
     with col_m1:
         st.metric("Prep Time", recipe.get("prep_time", "N/A"))
@@ -1037,14 +1035,6 @@ if "recipe" in st.session_state:
             pills_html += f"<span class='time-pill'><span class='time-pill-icon'>⏳</span><strong>Marination / Rest:</strong> {marination_time}</span>"
         pills_html += "</div>"
         st.markdown(pills_html, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class='diff-wrap'>
-      <span style='font-size:0.85rem;color:var(--ink-mid);font-weight:600;min-width:70px;'>Difficulty:</span>
-      <div class='diff-bar'><div class='diff-fill' style='width:{diff_pct}%;background:{diff_color};'></div></div>
-      <span class='diff-label' style='color:{diff_color};'>{diff_label}</span>
-    </div>
-    """, unsafe_allow_html=True)
 
     if naturally_gf:
         st.markdown("<div class='natural-box'>✅ This flavor blueprint is naturally gluten-free. Review potential contamination flags below.</div>", unsafe_allow_html=True)
