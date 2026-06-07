@@ -1067,36 +1067,53 @@ Double-check every single ingredient against ALL restrictions before including i
     return result
 
 def scale_amount(amount_str, factor):
-    """Safely scale fractions, integer, decimal, and range amounts."""
+    """Scale ingredient amounts to cooking-friendly numbers (whole numbers and halves)."""
     import re
     if not amount_str or factor == 1:
         return amount_str
+
+    def friendly_number(n):
+        """Round to nearest ¼ for measurements."""
+        if n <= 0:
+            return "0"
+        # Round to nearest 0.25
+        rounded = round(n * 4) / 4
+        if rounded == 0:
+            rounded = 0.25
+        if rounded == int(rounded):
+            return str(int(rounded))
+        whole = int(rounded)
+        frac = rounded - whole
+        frac_str = {0.25: "¼", 0.5: "½", 0.75: "¾"}.get(frac, str(frac))
+        if whole == 0:
+            return frac_str
+        return f"{whole}{frac_str}"
+
     # Handle ranges like "18-24" or "2-3"
     range_match = re.match(r'^(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*(.*)', amount_str.strip())
     if range_match:
-        lo, hi, rest = float(range_match.group(1)), float(range_match.group(2)), range_match.group(3)
-        lo_s, hi_s = lo * factor, hi * factor
-        lo_f = int(lo_s) if lo_s == int(lo_s) else (round(lo_s) if lo_s >= 10 else round(lo_s, 1))
-        hi_f = int(hi_s) if hi_s == int(hi_s) else (round(hi_s) if hi_s >= 10 else round(hi_s, 1))
-        return f"{lo_f}-{hi_f} {rest}".strip()
+        lo = float(range_match.group(1)) * factor
+        hi = float(range_match.group(2)) * factor
+        rest = range_match.group(3)
+        return f"{friendly_number(lo)}-{friendly_number(hi)} {rest}".strip()
+
+    # Handle fractions like "1/4", "1/2", "3/4"
+    frac_match = re.match(r'^(\d+)\s*/\s*(\d+)\s*(.*)', amount_str.strip())
+    if frac_match:
+        num = float(frac_match.group(1)) / float(frac_match.group(2))
+        scaled = num * factor
+        rest = frac_match.group(3)
+        return f"{friendly_number(scaled)} {rest}".strip()
+
     # Handle single numbers
-    m = re.match(r'^(\d+\.?\d*|\d*/\d+)\s*(.*)', amount_str.strip())
+    m = re.match(r'^(\d+\.?\d*)\s*(.*)', amount_str.strip())
     if not m:
         return amount_str
-    num_str, rest = m.group(1), m.group(2)
     try:
-        if '/' in num_str:
-            n, d = num_str.split('/')
-            num = float(n) / float(d)
-        else:
-            num = float(num_str)
+        num = float(m.group(1))
+        rest = m.group(2)
         scaled = num * factor
-        if scaled == int(scaled):
-            return f"{int(scaled)} {rest}".strip()
-        elif scaled >= 10:
-            return f"{round(scaled)} {rest}".strip()
-        else:
-            return f"{round(scaled, 1)} {rest}".strip()
+        return f"{friendly_number(scaled)} {rest}".strip()
     except Exception:
         return amount_str
 
