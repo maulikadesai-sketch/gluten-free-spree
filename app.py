@@ -1064,14 +1064,13 @@ if "recipe" in st.session_state:
 
     # ── DOWNLOAD ──
     recipe_text = recipe_to_text(recipe, cur_sv)
-    st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt")
 
     # ── GLUTEN CONTAMINANTS ──
     sources = recipe.get("gluten_sources") or []
     if sources:
-        st.markdown("<div class='sec-hdr'>⚠️ Gluten Contaminants</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr' style='margin:1.5rem 0 0.5rem;'>⚠️ Gluten Contaminants</div>", unsafe_allow_html=True)
         tags = "".join(f"<span class='g-tag'>⚠️ {s}</span>" for s in sources)
-        st.markdown(f"<div style='margin:1rem 0 1.5rem;'>{tags}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='margin:0 0 0.5rem;'>{tags}</div>", unsafe_allow_html=True)
 
     # ── TWO COLUMN MAIN INTERACTIVE WORKSPACE ──
     col_left, col_right = st.columns([2, 3], gap="large")
@@ -1120,7 +1119,11 @@ if "recipe" in st.session_state:
             st.session_state["unit_pref"] = new_unit
 
     with col_right:
-        st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
+        col_steps_hdr, col_steps_dl = st.columns([3, 1])
+        with col_steps_hdr:
+            st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
+        with col_steps_dl:
+            st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
         steps_html = "".join(
             f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
             for idx, step in enumerate(recipe.get("steps", []), 1)
