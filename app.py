@@ -1065,8 +1065,19 @@ Double-check every single ingredient against ALL restrictions before including i
     return result
 
 def scale_amount(amount_str, factor):
-    """Safely scale fractions, integer, and decimal amounts of ingredients."""
+    """Safely scale fractions, integer, decimal, and range amounts."""
     import re
+    if not amount_str or factor == 1:
+        return amount_str
+    # Handle ranges like "18-24" or "2-3"
+    range_match = re.match(r'^(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*(.*)', amount_str.strip())
+    if range_match:
+        lo, hi, rest = float(range_match.group(1)), float(range_match.group(2)), range_match.group(3)
+        lo_s, hi_s = lo * factor, hi * factor
+        lo_f = int(lo_s) if lo_s == int(lo_s) else (round(lo_s) if lo_s >= 10 else round(lo_s, 1))
+        hi_f = int(hi_s) if hi_s == int(hi_s) else (round(hi_s) if hi_s >= 10 else round(hi_s, 1))
+        return f"{lo_f}-{hi_f} {rest}".strip()
+    # Handle single numbers
     m = re.match(r'^(\d+\.?\d*|\d*/\d+)\s*(.*)', amount_str.strip())
     if not m:
         return amount_str
@@ -1150,11 +1161,10 @@ model = DEFAULT_MODEL
 st.markdown("""
 <div style='padding:0.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:var(--ink-mid); font-size:1.1rem; margin-top:2px;'>
-    Your gluten-free recipe companion.<br>
-    Search for any dish and get a fully gluten-free recipe with safe ingredient swaps,
-    brand recommendations, and step-by-step cooking instructions —
-    customised for your country, dietary needs, and serving size.
+  <p style='color:var(--ink-mid); font-size:1.05rem; margin-top:4px; line-height:1.6;'>
+    🌾 Craving something delicious but need it gluten-free? You're in the right place!<br>
+    Just type any dish — we'll recreate it with safe GF swaps, real brand suggestions,
+    and easy step-by-step instructions tailored to your country and dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -1163,23 +1173,23 @@ st.markdown("""
 # DISH INPUT — first thing users see and type
 # ─────────────────────────────────────────────
 dish = st.text_input(
-    "Enter a dish to recreate gluten-free:",
-    placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
+    "🍳 What dish would you like to make gluten-free?",
+    placeholder="Type any dish — e.g., Biryani, Pizza, Croissants, Pad Thai...",
     key="dish_input",
 )
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
-with st.expander("⚙️ Choose Your Specifications", expanded=False):
-    country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+with st.expander("🌍 Where are you cooking from & what units do you prefer?", expanded=False):
+    country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
     if country_choice == "🌍 Other":
         other_countries = [c for c in COUNTRIES if "India" not in c]
         country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
     else:
         country = "🇮🇳 India"
 
-    unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+    unit_sys = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
 
 # Default servings (adjustable in recipe display area)
 servings = st.session_state.get("current_servings", 4)
@@ -1205,10 +1215,10 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Other Dietary Needs", all_dietary, default=[], key="dietary_select")
+dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
 
 # Recreate button
-go = st.button("✨ Recreate", type="primary", use_container_width=True)
+go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
 
 st.divider()
 
@@ -1340,7 +1350,7 @@ if "recipe" in st.session_state:
         st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
 
         # Adjust servings — directly above ingredients
-        new_sv = st.slider("🍽️ Adjust Servings", 1, 20, int(cur_sv), key="adjust_servings_slider")
+        new_sv = st.slider("🍽️ How many people are you cooking for?", 1, 20, int(cur_sv), key="adjust_servings_slider")
         if new_sv != cur_sv:
             st.session_state["current_servings"] = new_sv
             st.rerun()
@@ -1348,7 +1358,7 @@ if "recipe" in st.session_state:
         if scale != 1:
             st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
 
-        st.write("*Tick the ingredients you need to purchase:*")
+        st.write("*What do you need to buy? Tick the items below:*")
 
         shopping_list = []
         for idx, ing in enumerate(recipe.get("ingredients", [])):
@@ -1399,9 +1409,10 @@ if "recipe" in st.session_state:
                         default_mins = int(nums[0])
                     break
             default_mins = max(1, min(180, default_mins))
-            timer_min = st.number_input("Set minutes:", min_value=1, max_value=180, value=default_mins, step=1, key="timer_mins")
-            import streamlit.components.v1 as components
-            timer_html = f"""
+            timer_min = st.number_input("⏱️ Set your timer (minutes):", min_value=1, max_value=180, value=None, step=1, key="timer_mins", placeholder="Enter minutes...")
+            if timer_min and timer_min > 0:
+                import streamlit.components.v1 as components
+                timer_html = f"""
             <html>
             <head>
             <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1465,7 +1476,9 @@ if "recipe" in st.session_state:
             </body>
             </html>
             """
-            components.html(timer_html, height=160)
+                components.html(timer_html, height=160)
+            else:
+                st.info("Enter the number of minutes above to start your timer.")
 
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
