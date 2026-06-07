@@ -1080,8 +1080,10 @@ def scale_amount(amount_str, factor):
         scaled = num * factor
         if scaled == int(scaled):
             return f"{int(scaled)} {rest}".strip()
+        elif scaled >= 10:
+            return f"{round(scaled)} {rest}".strip()
         else:
-            return f"{scaled:.2g} {rest}".strip()
+            return f"{round(scaled, 1)} {rest}".strip()
     except Exception:
         return amount_str
 
@@ -1149,13 +1151,25 @@ st.markdown("""
 <div style='padding:0.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
   <p style='color:var(--ink-mid); font-size:1.1rem; margin-top:2px;'>
-    Your gluten-free recipe companion.
+    Your gluten-free recipe companion.<br>
+    Search for any dish and get a fully gluten-free recipe with safe ingredient swaps,
+    brand recommendations, and step-by-step cooking instructions —
+    customised for your country, dietary needs, and serving size.
   </p>
 </div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# Settings Panel — works on both desktop and mobile
+# DISH INPUT — first thing users see and type
+# ─────────────────────────────────────────────
+dish = st.text_input(
+    "Enter a dish to recreate gluten-free:",
+    placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
+    key="dish_input",
+)
+
+# ─────────────────────────────────────────────
+# Settings Panel — country, units
 # ─────────────────────────────────────────────
 with st.expander("⚙️ Choose Your Specifications", expanded=False):
     country_choice = st.radio("📍 Country", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
@@ -1165,14 +1179,12 @@ with st.expander("⚙️ Choose Your Specifications", expanded=False):
     else:
         country = "🇮🇳 India"
 
-    col_u = st.columns(1)
-    with col_u[0]:
-        unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
+    unit_sys = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], index=0, key="unit_select")
 
 # Default servings (adjustable in recipe display area)
 servings = st.session_state.get("current_servings", 4)
 
-# Dietary restrictions — single widget (fast) instead of 59 checkboxes (slow)
+# Dietary needs
 all_dietary = sorted([
     "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
@@ -1195,18 +1207,8 @@ all_dietary = sorted([
 ])
 dietary = st.multiselect("🥗 Other Dietary Needs", all_dietary, default=[], key="dietary_select")
 
-# ─────────────────────────────────────────────
-# Search Bar Interface
-# ─────────────────────────────────────────────
-with st.form("recipe_form", clear_on_submit=False, border=False):
-    col_input, col_btn = st.columns([5, 1], vertical_alignment="bottom")
-    with col_input:
-        dish = st.text_input(
-            "Enter a dish to recreate gluten-free:",
-            placeholder="e.g., Ramen, Chicken Schnitzel, Naan Bread, Croissants, Pasta Carbonara...",
-        )
-    with col_btn:
-        go = st.form_submit_button("✨ Recreate", type="primary", use_container_width=True)
+# Recreate button
+go = st.button("✨ Recreate", type="primary", use_container_width=True)
 
 st.divider()
 
@@ -1345,8 +1347,8 @@ if "recipe" in st.session_state:
 
         if scale != 1:
             st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
-        else:
-            st.write("*Tick off what you already have — the rest becomes your shopping list:*")
+
+        st.write("*Tick the ingredients you need to purchase:*")
 
         shopping_list = []
         for idx, ing in enumerate(recipe.get("ingredients", [])):
@@ -1358,18 +1360,17 @@ if "recipe" in st.session_state:
 
             full_line = f"{emoji} {amount} {item_name}{note}{swap_indicator}"
 
-            # Checkbox interactive ingredient tracker
-            is_owned = st.checkbox(full_line, key=f"ing_check_{idx}")
-            if not is_owned:
+            needs_to_buy = st.checkbox(full_line, key=f"ing_check_{idx}")
+            if needs_to_buy:
                 shopping_list.append(f"• {amount} {item_name}{note}{swap_indicator}")
 
         if shopping_list:
-            missing_text = "\n".join(shopping_list)
+            missing_text = "SHOPPING LIST\n" + "\n".join(shopping_list)
             st.download_button(
                 "🛒 Download Shopping List",
                 missing_text,
                 file_name="shopping_list.txt",
-                help="Saves your un-ticked ingredients to a text file for shopping."
+                help="Downloads only the ingredients you ticked above."
             )
 
     with col_right:
@@ -1383,9 +1384,22 @@ if "recipe" in st.session_state:
             unsafe_allow_html=True,
         )
 
-        # Kitchen Timer — hidden inside expander, JS runs in iframe via st.components
+        # Kitchen Timer — defaults to recipe's prep time
         with st.expander("⏱️ Kitchen Timer — click to open"):
-            timer_min = st.number_input("Set minutes:", min_value=1, max_value=180, value=10, step=1, key="timer_mins")
+            # Extract minutes from recipe's prep_time
+            default_mins = 10
+            for time_field in ["prep_time", "cook_time"]:
+                time_str = recipe.get(time_field, "") or ""
+                import re as _re
+                nums = _re.findall(r'(\d+)', time_str)
+                if nums:
+                    if "hour" in time_str.lower():
+                        default_mins = int(nums[0]) * 60 + (int(nums[1]) if len(nums) > 1 else 0)
+                    else:
+                        default_mins = int(nums[0])
+                    break
+            default_mins = max(1, min(180, default_mins))
+            timer_min = st.number_input("Set minutes:", min_value=1, max_value=180, value=default_mins, step=1, key="timer_mins")
             import streamlit.components.v1 as components
             timer_html = f"""
             <html>
@@ -1474,7 +1488,7 @@ if "recipe" in st.session_state:
     brands = recipe.get("brands_panel") or []
     if brands:
         c_name = country.split(' ', 1)[-1] if country != "🌍 Global" else "your region"
-        st.markdown(f"<div class='sec-hdr'>🏪 Where to Buy in {c_name}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='sec-hdr'>🏪 Recommended Brands in {c_name}</div>", unsafe_allow_html=True)
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
             initials = "".join(w[0].upper() for w in b.get("brand", "?").split()[:2])
