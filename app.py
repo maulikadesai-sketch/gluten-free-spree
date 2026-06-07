@@ -1119,7 +1119,12 @@ if "recipe" in st.session_state:
             st.session_state["unit_pref"] = new_unit
 
     with col_right:
-        st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
+        c_h, c_d = st.columns([4, 1], vertical_alignment="bottom")
+        with c_h:
+            st.markdown("**👨‍🍳 Cooking Steps**")
+        with c_d:
+            st.download_button("📋 Download", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
         steps_html = "".join(
             f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
             for idx, step in enumerate(recipe.get("steps", []), 1)
@@ -1128,11 +1133,6 @@ if "recipe" in st.session_state:
             f"<div style='background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
             unsafe_allow_html=True,
         )
-
-        # Download button — bottom right after steps
-        col_empty, col_dl = st.columns([3, 1])
-        with col_dl:
-            st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
         # Kitchen Timer — defaults to recipe's prep time
         with st.expander("⏱️ Kitchen Timer — click to open"):
