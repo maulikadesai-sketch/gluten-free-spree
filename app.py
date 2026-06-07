@@ -898,7 +898,7 @@ st.markdown("""
 <div style='padding:0; margin-top:-1rem;'>
   <h1>Gluten-Free Spree</h1>
   <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.6; font-style:italic;'>
-    Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your country and other dietary needs.
+    Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
 """, unsafe_allow_html=True)
