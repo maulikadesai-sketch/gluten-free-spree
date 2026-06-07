@@ -166,52 +166,52 @@ DIETARY_TAGS = [
 # ─────────────────────────────────────────────
 CUSTOM_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
-  --ink: #1A1A2E;
-  --ink-mid: #4A4A5A;
-  --ink-soft: #8E8E9E;
-  --bg: #FAFAF7;
-  --bg2: #F0EDE8;
-  --border: #E5E0D8;
-  --green: #1B6B4A;
-  --green-l: #E8F5EE;
-  --green-d: #0F3D2B;
-  --amber: #C4722A;
-  --amber-l: #FEF3E8;
-  --red-l: #FDE8E8;
-  --red: #C53030;
+  --ink: #1C2A1E;
+  --ink-mid: #3D4F40;
+  --ink-soft: #6A7E6E;
+  --bg: #EBF1EC;
+  --bg2: #DCE4DC;
+  --border: #CCD5CD;
+  --green: #2F5435;
+  --green-l: #E2ECE5;
+  --green-d: #1C3321;
+  --amber: #B26225;
+  --amber-l: #FDF3EB;
+  --red-l: #FCECEC;
+  --red: #9E2A2B;
   --card: #FFFFFF;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
-  --shadow-lg: 0 4px 12px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.08);
-  --r: 12px;
+  --shadow: 0 8px 30px rgba(28,42,30,0.08);
+  --shadow-lg: 0 8px 30px rgba(28,42,30,0.12);
+  --r: 14px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #1A1A2E; --ink-mid: #4A4A5A; --ink-soft: #8E8E9E;
-    --bg: #FAFAF7; --bg2: #F0EDE8; --border: #E5E0D8;
-    --green: #1B6B4A; --green-l: #E8F5EE; --card: #FFFFFF;
-    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+    --ink: #1C2A1E; --ink-mid: #3D4F40; --ink-soft: #6A7E6E;
+    --bg: #EBF1EC; --bg2: #DCE4DC; --border: #CCD5CD;
+    --green: #2F5435; --green-l: #E2ECE5; --card: #FFFFFF;
+    --shadow: 0 8px 30px rgba(28,42,30,0.08);
   }
 }
 [data-theme="dark"] {
-  --ink: #1A1A2E; --ink-mid: #4A4A5A; --ink-soft: #8E8E9E;
-  --bg: #FAFAF7; --bg2: #F0EDE8; --border: #E5E0D8;
-  --green: #1B6B4A; --green-l: #E8F5EE; --card: #FFFFFF;
+  --ink: #1C2A1E; --ink-mid: #3D4F40; --ink-soft: #6A7E6E;
+  --bg: #EBF1EC; --bg2: #DCE4DC; --border: #CCD5CD;
+  --green: #2F5435; --green-l: #E2ECE5; --card: #FFFFFF;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  background-color: #FAFAF7 !important;
-  color: #1A1A2E !important;
+  background-color: #EBF1EC !important;
+  color: #1C2A1E !important;
   -webkit-text-size-adjust: 100%;
 }
 html, body, [data-testid="stAppViewContainer"] {
   background: var(--bg) !important;
-  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   color: var(--ink) !important;
 }
 
@@ -233,18 +233,18 @@ section[data-testid="stSidebar"] { display: none !important; }
 
 /* ── App title ── */
 h1 {
-  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-family: 'Cormorant Garamond', serif !important;
   font-size: 2.8rem !important;
-  font-weight: 400 !important;
+  font-weight: 700 !important;
   color: var(--green-d) !important;
-  letter-spacing: -0.5px !important;
+  letter-spacing: -0.3px !important;
   line-height: 1.1 !important;
   margin-bottom: 0 !important;
 }
 
 /* ── Section headers ── */
 .sec-hdr {
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 1.35rem;
   font-weight: 400;
   color: var(--green-d);
@@ -260,7 +260,7 @@ div.stButton > button[kind="primary"] {
   color: #fff !important;
   border: none !important;
   border-radius: 10px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   font-weight: 600 !important;
   font-size: 0.95rem !important;
   padding: 0.65rem 2rem !important;
@@ -283,7 +283,7 @@ div.stButton > button:not([kind="primary"]) {
   color: var(--green) !important;
   border: 1.5px solid var(--border) !important;
   border-radius: 10px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   font-weight: 500 !important;
   transition: all 0.2s ease !important;
 }
@@ -298,7 +298,7 @@ div.stButton > button:not([kind="primary"]):hover {
   color: var(--ink) !important;
   border: 1.5px solid var(--border) !important;
   border-radius: 10px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   font-weight: 500 !important;
 }
 [data-testid="stDownloadButton"] button:hover {
@@ -312,7 +312,7 @@ div[data-testid="stTextInput"] input {
   border: 1.5px solid var(--border) !important;
   background: var(--card) !important;
   color: var(--ink) !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   padding: 0.7rem 1rem !important;
   font-size: 0.95rem !important;
   transition: border-color 0.2s ease !important;
@@ -426,7 +426,7 @@ div[data-testid="stTextInput"] input:focus {
 /* ── Recipe Hero Card ── */
 .recipe-hero {
   position: relative; width: 100%;
-  background: linear-gradient(135deg, #1B6B4A 0%, #0F3D2B 100%);
+  background: linear-gradient(135deg, #2F5435 0%, #152618 100%);
   border-radius: 16px;
   overflow: visible;
   margin: 1.5rem 0 0 0;
@@ -436,17 +436,17 @@ div[data-testid="stTextInput"] input:focus {
 }
 .recipe-hero-text { position: relative; z-index: 1; }
 .recipe-hero-text h2 {
-  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-family: 'Cormorant Garamond', serif !important;
   color: #FFFFFF !important;
   font-size: 2rem !important;
-  font-weight: 400 !important;
+  font-weight: 700 !important;
   margin: 0.5rem 0 0 0 !important;
   line-height: 1.15 !important;
 }
 .recipe-hero-text .hero-sub {
   color: rgba(255,255,255,0.8);
   font-size: 1rem; margin-top: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   line-height: 1.6;
   word-wrap: break-word;
 }
@@ -508,7 +508,7 @@ div[data-testid="stTextInput"] input:focus {
 }
 .pair-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .pair-icon { font-size: 1.6rem; margin-bottom: 8px; }
-.pair-name { font-weight: 700; font-size: 0.95rem; color: var(--green-d); margin: 6px 0 2px; font-family: 'DM Serif Display', serif; }
+.pair-name { font-weight: 700; font-size: 0.95rem; color: var(--green-d); margin: 6px 0 2px; font-family: 'Cormorant Garamond', serif; }
 .pair-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--green); margin-bottom: 6px; }
 .pair-reason { font-size: 0.82rem; color: var(--ink-mid); line-height: 1.5; }
 
@@ -872,7 +872,7 @@ model = DEFAULT_MODEL
 st.markdown("""
 <div style='padding:1.5rem 0 0.5rem;'>
   <h1>Gluten-Free Spree</h1>
-  <p style='color:#8E8E9E; font-size:1rem; margin-top:8px; line-height:1.7; font-style:italic; max-width:600px;'>
+  <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.7; font-style:italic; max-width:600px;'>
     Craving something delicious but need it gluten-free? You're in the right place!
     Type any dish and we'll recreate it with GF swaps, brand suggestions,
     and step-by-step instructions tailored to your country and other dietary needs.
