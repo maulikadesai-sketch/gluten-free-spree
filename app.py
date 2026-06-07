@@ -1119,9 +1119,9 @@ if "recipe" in st.session_state:
             st.session_state["unit_pref"] = new_unit
 
     with col_right:
-        col_steps_hdr, col_steps_dl = st.columns([3, 1])
+        col_steps_hdr, col_steps_dl = st.columns([3, 1], vertical_alignment="center")
         with col_steps_hdr:
-            st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
+            st.markdown("<div class='sec-hdr' style='margin-bottom:0;'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
         with col_steps_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
         steps_html = "".join(
