@@ -1119,11 +1119,13 @@ if "recipe" in st.session_state:
             st.session_state["unit_pref"] = new_unit
 
     with col_right:
-        col_steps_hdr, col_steps_dl = st.columns([3, 1], vertical_alignment="center")
-        with col_steps_hdr:
-            st.markdown("<div class='sec-hdr' style='margin-bottom:0;'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
-        with col_steps_dl:
-            st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
+        st.markdown(f"""
+        <div style='display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--green); padding-bottom:8px; margin:3rem 0 0;'>
+          <span style='font-family:Cormorant Garamond,serif; font-size:1.35rem; font-weight:700; color:var(--green-d);'>👨‍🍳 Cooking Steps</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt")
+        st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
         steps_html = "".join(
             f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
             for idx, step in enumerate(recipe.get("steps", []), 1)
