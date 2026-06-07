@@ -1072,12 +1072,6 @@ if "recipe" in st.session_state:
             st.session_state["current_servings"] = new_sv
             st.rerun()
 
-        # Units preference — below servings
-        new_unit = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
-                                index=0 if "Metric" in unit_sys else 1, key="unit_select")
-        if new_unit != st.session_state.get("unit_pref"):
-            st.session_state["unit_pref"] = new_unit
-
         if scale != 1:
             st.markdown(f"<p style='font-size:0.82rem;color:#B26225;font-weight:600;'>📐 Quantities adjusted for {cur_sv} servings (recipe base: {base_sv})</p>", unsafe_allow_html=True)
 
@@ -1105,6 +1099,12 @@ if "recipe" in st.session_state:
                 file_name="shopping_list.txt",
                 help="Downloads only the ingredients you ticked above."
             )
+
+        # Units preference — below ingredients
+        new_unit = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
+                                index=0 if "Metric" in unit_sys else 1, key="unit_select")
+        if new_unit != st.session_state.get("unit_pref"):
+            st.session_state["unit_pref"] = new_unit
 
     with col_right:
         st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
