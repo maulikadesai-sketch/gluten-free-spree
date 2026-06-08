@@ -983,6 +983,7 @@ if go:
             dietary_str = "|".join(dietary) if dietary else ""
             recipe = cached_generate(keys_str, dish.strip(), model, country, dietary_str, unit_val)
             st.session_state["recipe"] = recipe
+            st.session_state["recipe_country"] = country
             st.session_state["base_servings"] = int(recipe.get("servings", 4) or 4)
             st.session_state["current_servings"] = st.session_state.get("current_servings", 4)
         except Exception as e:
@@ -1251,7 +1252,8 @@ if "recipe" in st.session_state:
     # ── REGIONAL BRANDS AND SOURCING ──
     brands = recipe.get("brands_panel") or []
     if brands:
-        c_name = country.split(' ', 1)[-1] if country != "🌍 Global" else "your region"
+        r_country = st.session_state.get("recipe_country", country)
+        c_name = r_country.split(' ', 1)[-1] if r_country != "🌍 Global" else "your region"
         st.markdown(f"<div class='sec-hdr'>🏪 Recommended Brands in {c_name}</div>", unsafe_allow_html=True)
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
@@ -1366,6 +1368,7 @@ if "recipe" in st.session_state:
                     dietary_str = "|".join(dietary) if dietary else ""
                     recipe = cached_generate(keys_str, qd, model, country, dietary_str, unit_val)
                     st.session_state["recipe"] = recipe
+                    st.session_state["recipe_country"] = country
                     st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                     st.session_state["current_servings"] = servings
                     st.rerun()
