@@ -611,6 +611,10 @@ to what is realistically available in that country.
 {dietary_note}
 
 Your job: produce a complete, cookable gluten-free version of the dish that preserves original flavour/texture.
+Use spelling conventions appropriate for the user's country: \
+for India, UK, Australia use British spellings (flavour, colour, metre, litre, specialise). \
+For USA use American spellings (flavor, color, meter, liter, specialize). \
+For other countries, default to British spellings.
 Tailor all quantities and temperatures to the {unit_system} system (e.g. Metric: grams, ml, Celsius; or Imperial: cups, oz, Fahrenheit).
 
 Process:
@@ -900,7 +904,7 @@ model = DEFAULT_MODEL
 st.markdown("""
 <div style='padding:0; margin:0;'>
   <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
-  <p style='color:#6A7E6E; font-size:0.95rem; margin:0 0 8px 0; line-height:1.5; font-style:italic;'>
+  <p style='color:#6A7E6E; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
@@ -999,6 +1003,10 @@ if go:
 # Output Recipe Render Engine
 # ─────────────────────────────────────────────
 if "recipe" in st.session_state:
+    # Scroll to top if coming from an "also try" click
+    if st.session_state.pop("_scroll_to_top", False):
+        st.markdown("<script>window.parent.document.querySelector('section.main').scrollTop = 0;</script>", unsafe_allow_html=True)
+        st.toast("⬆️ New recipe loaded! Scroll up to see it.", icon="🍴")
     recipe = st.session_state["recipe"]
     try:
         base_sv = int(st.session_state.get("base_servings", 4) or 4)
@@ -1221,7 +1229,7 @@ if "recipe" in st.session_state:
             """
                 components.html(timer_html, height=160)
             else:
-                st.info("Enter the number of minutes above to start your timer.")
+                st.empty()
 
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
@@ -1344,6 +1352,7 @@ if "recipe" in st.session_state:
             with try_cols[i]:
                 if st.button(f"🍴 {at.get('dish','')}", key=f"try_{i}", use_container_width=True):
                     st.session_state["_queued_dish"] = at.get("dish", "")
+                    st.session_state["_scroll_to_top"] = True
                     st.rerun()
                 st.markdown(f"<p style='font-size:0.8rem; text-align:center; color:var(--ink-soft);'>{at.get('reason','')}</p>", unsafe_allow_html=True)
 
