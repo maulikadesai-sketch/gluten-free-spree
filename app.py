@@ -919,23 +919,6 @@ dish = st.text_input(
     key="dish_input",
 )
 
-# Enable autocorrect/spellcheck on the text input
-import streamlit.components.v1 as _comp
-_comp.html("""
-<script>
-try {
-  var inputs = window.parent.document.querySelectorAll('input[type="text"]');
-  inputs.forEach(function(inp) {
-    inp.setAttribute('autocorrect', 'on');
-    inp.setAttribute('autocomplete', 'on');
-    inp.setAttribute('spellcheck', 'true');
-    inp.setAttribute('autocapitalize', 'sentences');
-  });
-} catch(e) {}
-</script>
-""", height=0)
-st.markdown("<div style='margin-top:-1rem;'></div>", unsafe_allow_html=True)
-
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
