@@ -214,6 +214,9 @@ html, body, [data-testid="stAppViewContainer"] {
   font-family: 'Outfit', sans-serif !important;
   color: var(--ink) !important;
 }
+/* Kill the big empty space at top of page */
+[data-testid="stAppViewBlockContainer"], .block-container { padding-top: 1rem !important; }
+section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
 
 /* Force ALL text dark */
 [data-testid="stAppViewContainer"] p, [data-testid="stAppViewContainer"] span,
@@ -895,9 +898,9 @@ model = DEFAULT_MODEL
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:0; margin-top:-1rem;'>
-  <h1>Gluten-Free Spree</h1>
-  <p style='color:#6A7E6E; font-size:1rem; margin-top:8px; line-height:1.6; font-style:italic;'>
+<div style='padding:0; margin:0;'>
+  <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
+  <p style='color:#6A7E6E; font-size:0.95rem; margin:0 0 8px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
