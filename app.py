@@ -934,6 +934,7 @@ try {
 } catch(e) {}
 </script>
 """, height=0)
+st.markdown("<div style='margin-top:-1rem;'></div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
