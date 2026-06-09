@@ -39,6 +39,28 @@ API_KEYS = [
     "",    # ← Key 3 (optional): from another Gmail account
 ]
 
+# ─────────────────────────────────────────────
+# 📊 ANALYTICS — Log every search to Google Sheets
+#    Set up instructions in GLUTEN_FREE_SPREE_SUMMARY.txt
+# ─────────────────────────────────────────────
+SHEET_WEBHOOK = ""   # ← Paste your Google Apps Script webhook URL here
+
+def log_search(dish_name, country, dietary, source="search"):
+    """Silently log search to Google Sheets. Never breaks the app if it fails."""
+    if not SHEET_WEBHOOK:
+        return
+    try:
+        from datetime import datetime
+        requests.post(SHEET_WEBHOOK, json={
+            "dish": dish_name,
+            "country": country,
+            "dietary": ", ".join(dietary) if dietary else "None",
+            "source": source,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }, timeout=3)
+    except Exception:
+        pass
+
 COUNTRIES = [
     "🌍 Global",
     "🇦🇫 Afghanistan", "🇦🇱 Albania", "🇩🇿 Algeria", "🇦🇩 Andorra",
@@ -898,6 +920,13 @@ except Exception:
     pass
 model = DEFAULT_MODEL
 
+# Load analytics webhook from secrets if available
+if not SHEET_WEBHOOK:
+    try:
+        SHEET_WEBHOOK = st.secrets.get("SHEET_WEBHOOK", "")
+    except Exception:
+        pass
+
 # ─────────────────────────────────────────────
 # Main App Header
 # ─────────────────────────────────────────────
@@ -986,6 +1015,7 @@ if go:
             st.session_state["recipe_country"] = country
             st.session_state["base_servings"] = int(recipe.get("servings", 4) or 4)
             st.session_state["current_servings"] = st.session_state.get("current_servings", 4)
+            log_search(dish.strip(), country, dietary, source="search")
         except Exception as e:
             err = str(e)
             if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded", "combinations")):
@@ -1371,6 +1401,7 @@ if "recipe" in st.session_state:
                     st.session_state["recipe_country"] = country
                     st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                     st.session_state["current_servings"] = servings
+                    log_search(qd, country, dietary, source="also_try")
                     st.rerun()
                 except Exception as e:
                     err = str(e)
