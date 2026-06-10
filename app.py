@@ -645,11 +645,19 @@ Your job: produce a complete, cookable gluten-free version of the dish that pres
 Use spelling conventions appropriate for the user's country: \
 for India, UK, Australia use British spellings (flavour, colour, metre, litre, specialise). \
 For USA use American spellings (flavor, color, meter, liter, specialize). \
-For other countries, default to British spellings.
+For other countries, default to British spellings. \
+IMPORTANT: You must generate a valid recipe for ANY country selected, even less common ones like Afghanistan, \
+Mongolia, or smaller nations. Adapt the dish to use locally available ingredients and brands from that country. \
+If the dish is not traditional in that country, still provide the recipe but note how it might be adapted locally.
 Tailor all quantities and temperatures to the {unit_system} system (e.g. Metric: grams, ml, Celsius; or Imperial: cups, oz, Fahrenheit).
 
 Process:
-1. Identify EVERY gluten source (obvious + sneaky: soy sauce, malt vinegar, roux, seitan, spice blends, couscous).
+1. Identify EVERY gluten source that ACTUALLY exists in the traditional/authentic version of this dish. \
+Do NOT assume or invent gluten ingredients that are not part of the real recipe. \
+For example: dhansak does NOT traditionally contain cornstarch or wheat flour — it is lentil-based. \
+Soy sauce, malt vinegar, roux, seitan, spice blends with fillers, couscous, and regular flour ARE common gluten sources. \
+Cornstarch, rice flour, besan/chickpea flour, and tapioca are naturally gluten-free — do NOT list them as gluten sources. \
+If the dish is naturally gluten-free, say so and still provide the recipe with any cross-contamination warnings.
 2. For each, choose a substitution matching its FUNCTION (structure/binding/thickening/crisp coating/flavour) — not just "GF flour". Give realistic ratios (GF subs rarely swap 1:1; may need xanthan gum, starch blends).
 3. Write complete recipe with real quantities and clear steps. Each step MUST include specific time durations \
 in minutes or hours (e.g. "Sauté onions for 5 minutes", "Bake for 25 minutes at 180°C", "Let rest for 10 minutes"). \
@@ -940,9 +948,9 @@ if not SHEET_WEBHOOK:
 # Main App Header
 # ─────────────────────────────────────────────
 st.markdown("""
-<div style='padding:0; margin-top:1.5rem;'>
-  <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
-  <p style='color:#7A7A7A; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
+<div style='padding:0; margin-top:1.5rem; text-align:center;'>
+  <h1 style='margin-bottom:6px; font-size:2.8rem; background:linear-gradient(135deg, #4A9B6D, #2E7D32); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;'>Gluten-Free Spree</h1>
+  <p style='color:#7A7A7A; font-size:0.95rem; margin:0 auto 12px; line-height:1.5; font-style:italic; max-width:650px;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
@@ -1021,6 +1029,33 @@ GENERIC_DISHES = {
         "🥤 Base": ["Banana", "Mango", "Berry Mix", "Green (Spinach/Kale)", "Tropical", "Chocolate", "Peanut Butter"],
         "🥛 Liquid": ["Milk", "Almond Milk", "Coconut Milk", "Yogurt", "Oat Milk", "Juice"],
     },
+    "sushi": {
+        "🍣 Sushi type": ["Maki (Roll)", "Nigiri", "Temaki (Hand Roll)", "Uramaki (Inside-out)", "Chirashi (Bowl)", "Onigiri (Rice Ball)"],
+        "🐟 Filling": ["Salmon", "Tuna", "Prawn", "Avocado", "Cucumber", "Tofu", "Crab Stick", "Mixed Veggie"],
+    },
+    "pie": {
+        "🥧 Pie type": ["Chicken Pie", "Shepherd's Pie", "Apple Pie", "Pumpkin Pie", "Banoffee Pie", "Key Lime Pie", "Meat Pie", "Spinach & Feta Pie"],
+    },
+    "cookie": {
+        "🍪 Cookie type": ["Chocolate Chip", "Oatmeal Raisin", "Peanut Butter", "Snickerdoodle", "Shortbread", "Macaron", "Sugar Cookie", "Double Chocolate"],
+    },
+    "stir fry": {
+        "🥘 Protein": ["Chicken", "Tofu", "Beef", "Prawns", "Pork", "Mixed Vegetables"],
+        "🫕 Sauce style": ["Soy & Garlic", "Sweet Chilli", "Black Bean", "Teriyaki", "Oyster Sauce", "Kung Pao"],
+    },
+    "biryani": {
+        "🍚 Biryani type": ["Chicken Biryani", "Mutton Biryani", "Veg Biryani", "Egg Biryani", "Prawn Biryani", "Paneer Biryani", "Mushroom Biryani"],
+        "🌶️ Style": ["Hyderabadi (Dum)", "Lucknowi (Awadhi)", "Kolkata", "Malabar", "Ambur"],
+    },
+    "dosa": {
+        "🫓 Dosa type": ["Plain Dosa", "Masala Dosa", "Rava Dosa", "Onion Dosa", "Mysore Masala Dosa", "Set Dosa", "Neer Dosa", "Paper Dosa"],
+    },
+    "paratha": {
+        "🫓 Paratha type": ["Aloo Paratha", "Gobhi Paratha", "Paneer Paratha", "Methi Paratha", "Plain Paratha", "Mooli Paratha", "Laccha Paratha", "Stuffed Paratha"],
+    },
+    "chaat": {
+        "🍽️ Chaat type": ["Pani Puri/Golgappa", "Bhel Puri", "Sev Puri", "Dahi Puri", "Aloo Tikki Chaat", "Papdi Chaat", "Samosa Chaat", "Ragda Pattice"],
+    },
 }
 
 dish_extra = ""
@@ -1029,7 +1064,7 @@ if dish:
     # Check for generic match
     matched_key = None
     for key in GENERIC_DISHES:
-        if dish_lower in [key, key + "s", key + "es"] or key in dish_lower.split():
+        if dish_lower in [key, key + "s", key + "es"] or key in dish_lower.split() or dish_lower.startswith(key) or (len(key) > 3 and key in dish_lower):
             matched_key = key
             break
     
