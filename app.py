@@ -986,7 +986,7 @@ dish = st.text_input(
 # Smart sub-options — AI detects vague dishes dynamically
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_dish_options(dish_name, keys_str):
+def get_dish_options(dish_name, keys_str, _v=2):
     """Ask Gemini if dish is vague. If yes, return sub-categories. Cached 24hrs."""
     import json as _j
     api_keys = [k for k in keys_str.split("|") if k]
@@ -995,14 +995,18 @@ If YES, return a JSON object with 1-3 category keys, each containing a list of 6
 Categories should be the most USEFUL choices a home cook would make — focus on what changes the dish the most.
 If NO (the dish is already specific like "chicken tikka masala" or "pad thai"), return exactly: {{"specific": true}}
 
+IMPORTANT: "noodles" and "pasta" are DIFFERENT. Noodles are Asian (ramen, udon, soba, rice noodles, hakka). Pasta is Italian (penne, spaghetti, fusilli). Never mix them.
+
 Examples of GOOD categories:
 - "pasta" → {{"Pasta Type": ["Penne","Spaghetti","Fusilli","Macaroni","Fettuccine","Rigatoni","Farfalle","Lasagne","Tagliatelle","Linguine"], "Sauce": ["Tomato (Red)","Alfredo (White/Cream)","Pesto (Green)","Pink (Rosé)","Arrabbiata (Spicy)","Aglio e Olio","Carbonara","Bolognese","Puttanesca","Cacio e Pepe"]}}
+- "noodles" → {{"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka Noodles","Glass Noodles","Pad Thai Noodles","Chow Mein","Lo Mein","Vermicelli"], "Style": ["Stir-fried","Soup/Broth","Dry/Tossed","Spicy Szechuan","Thai","Japanese","Indo-Chinese"]}}
 - "curry" → {{"Curry Style": ["Butter Curry","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag","Madras","Rendang"], "Main Ingredient": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Mixed Vegetables","Prawns","Fish","Mushroom","Egg"]}}
 - "chicken tikka masala" → {{"specific": true}}
 - "sushi" → {{"Sushi Style": ["Maki Roll","Nigiri","Hand Roll","Inside-out Roll","Poke Bowl","Onigiri"], "Main Filling": ["Salmon","Tuna","Prawn","Avocado","Cucumber","Tofu","Crab"]}}
 
 BAD categories (avoid these):
 - "Pasta Shape" (say "Pasta Type" instead)
+- Showing pasta types for noodles or vice versa
 - "Difficulty Level" (not useful)
 - "Serving Size" (handled elsewhere)
 
@@ -1032,7 +1036,7 @@ if dish and dish.strip():
     if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
-            options = get_dish_options(dish_lower, keys_for_check)
+            options = get_dish_options(dish_lower, keys_for_check, _v=2)
             if options and isinstance(options, dict) and not options.get("specific"):
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
