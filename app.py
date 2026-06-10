@@ -941,7 +941,7 @@ if not SHEET_WEBHOOK:
 # ─────────────────────────────────────────────
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem;'>
-  <h1 style='margin-bottom:4px;'>🍳 Gluten-Free Spree 🌾</h1>
+  <h1 style='margin-bottom:4px;'> Gluten-Free Spree </h1>
   <p style='color:#7A7A7A; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
