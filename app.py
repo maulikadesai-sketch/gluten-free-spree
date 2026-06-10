@@ -215,8 +215,8 @@ CUSTOM_CSS = """
   --pastel-blue-b: #BBDEFB;
   --pastel-pink-b: #F8BBD0;
   --pastel-green-b:#C8E6C9;
-  --pastel-yellow:  #FFF9C4;
-  --pastel-yellow-b:#FFF176;
+  --pastel-yellow:  #E8DEF8;
+  --pastel-yellow-b:#D0BCFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -252,11 +252,11 @@ section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=1920&q=80');
+  background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.15;
+  opacity: 0.22;
   pointer-events: none;
   z-index: 0;
 }
