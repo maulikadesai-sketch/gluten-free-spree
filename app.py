@@ -209,10 +209,10 @@ CUSTOM_CSS = """
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.10);
   --r:         14px;
   /* Pastel section colors */
-  --pastel-blue:   #E3F2FD;
+  --pastel-blue:   #DBEAFE;
   --pastel-pink:   #FCE4EC;
   --pastel-green:  #E8F5E9;
-  --pastel-blue-b: #BBDEFB;
+  --pastel-blue-b: #93C5FD;
   --pastel-pink-b: #F8BBD0;
   --pastel-green-b:#C8E6C9;
   --pastel-yellow:  #FFF9C4;
