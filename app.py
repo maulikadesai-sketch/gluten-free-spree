@@ -401,8 +401,8 @@ div[data-testid="stTextInput"] input:focus {
 }
 [data-testid="stMetricLabel"] { overflow: visible !important; white-space: normal !important; }
 [data-testid="stMetric"] {
-  background: var(--pastel-yellow);
-  border: 1px solid var(--pastel-yellow-b);
+  background: var(--pastel-green);
+  border: 1px solid var(--pastel-green-b);
   border-radius: var(--r);
   padding: 16px 14px;
   text-align: center;
@@ -532,8 +532,8 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Pairing cards ── */
 .pair-card {
-  background: var(--pastel-yellow);
-  border: 1px solid var(--pastel-yellow-b); border-radius: var(--r);
+  background: var(--pastel-green);
+  border: 1px solid var(--pastel-green-b); border-radius: var(--r);
   padding: 24px 20px; text-align: center; height: 100%;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1181,22 +1181,16 @@ if "recipe" in st.session_state:
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
-        # Kitchen Timer — defaults to recipe's prep time
-        with st.expander("⏱️ Kitchen Timer — click to open"):
-            # Extract minutes from recipe's prep_time
-            default_mins = 10
-            for time_field in ["prep_time", "cook_time"]:
-                time_str = recipe.get(time_field, "") or ""
-                import re as _re
-                nums = _re.findall(r'(\d+)', time_str)
-                if nums:
-                    if "hour" in time_str.lower():
-                        default_mins = int(nums[0]) * 60 + (int(nums[1]) if len(nums) > 1 else 0)
-                    else:
-                        default_mins = int(nums[0])
-                    break
-            default_mins = max(1, min(180, default_mins))
-            timer_min = st.number_input("⏱️ Set your timer (minutes):", min_value=1, max_value=180, value=None, step=1, key="timer_mins", placeholder="Enter minutes...")
+        # Kitchen Timer — easy presets + custom
+        with st.expander("⏱️ Kitchen Timer"):
+            st.markdown("**Quick presets:**")
+            p_cols = st.columns(6)
+            for pi, pm in enumerate([1, 3, 5, 10, 15, 20]):
+                with p_cols[pi]:
+                    if st.button(f"{pm} min", key=f"preset_{pm}", use_container_width=True):
+                        st.session_state["timer_mins"] = pm
+            timer_min = st.number_input("Or set custom minutes:", min_value=1, max_value=180,
+                value=st.session_state.get("timer_mins", None), step=1, key="timer_mins_input", placeholder="Minutes...")
             if timer_min and timer_min > 0:
                 import streamlit.components.v1 as components
                 timer_html = f"""
