@@ -941,7 +941,7 @@ if not SHEET_WEBHOOK:
 # ─────────────────────────────────────────────
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem;'>
-  <h1 style='margin-bottom:4px;'> Gluten-Free Spree </h1>
+  <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
   <p style='color:#7A7A7A; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
@@ -1004,7 +1004,7 @@ col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
 with col_btn_m:
     go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
 
-st.markdown("<p style='text-align:center;font-size:1.2rem;letter-spacing:10px;margin:8px 0;opacity:0.4;'>🔪 🧄 🧅 🍋 🌶️ 🧈 🍯</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;font-size:1.2rem;letter-spacing:6px;margin:8px 0;opacity:0.85;'>🔪 🧄 🧅 🍋 🌶️ 🧈 🍯 🫚 🌿 🧂 🥄 🍶 🫗 🥣</p>", unsafe_allow_html=True)
 st.divider()
 
 if go:
@@ -1184,16 +1184,23 @@ if "recipe" in st.session_state:
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
-        # Kitchen Timer — easy presets + custom
+        # Kitchen Timer
         with st.expander("⏱️ Kitchen Timer"):
             st.markdown("**Quick presets:**")
             p_cols = st.columns(6)
             for pi, pm in enumerate([1, 3, 5, 10, 15, 20]):
                 with p_cols[pi]:
                     if st.button(f"{pm} min", key=f"preset_{pm}", use_container_width=True):
-                        st.session_state["timer_mins"] = pm
-            timer_min = st.number_input("Or set custom minutes:", min_value=1, max_value=180,
-                value=st.session_state.get("timer_mins", None), step=1, key="timer_mins_input", placeholder="Minutes...")
+                        st.session_state["_timer_val"] = pm
+                        st.rerun()
+
+            saved_time = st.session_state.get("_timer_val", None)
+            timer_min = st.slider("Or set custom minutes:", 1, 60, saved_time if saved_time else 5, key="timer_slider") if not saved_time else saved_time
+            if saved_time:
+                st.markdown(f"**Timer set to: {saved_time} minutes**")
+                if st.button("✏️ Change", key="change_timer"):
+                    del st.session_state["_timer_val"]
+                    st.rerun()
             if timer_min and timer_min > 0:
                 import streamlit.components.v1 as components
                 timer_html = f"""
@@ -1416,7 +1423,7 @@ if "recipe" in st.session_state:
                     else:
                         st.error(f"Error: {err}")
 
-    st.markdown("<p style='text-align:center;font-size:1.3rem;letter-spacing:10px;margin:1.5rem 0 0.5rem;opacity:0.4;'>🍽️ 👨‍🍳 🥄 🍴 🫕 🥘 🍲</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;font-size:1.3rem;letter-spacing:6px;margin:1.5rem 0 0.5rem;opacity:0.85;'>🍽️ 👨‍🍳 🥄 🍴 🫕 🥘 🍲 🧑‍🍳 🥟 🫔 🥙 🌮 🍕 🍝</p>", unsafe_allow_html=True)
 
     # ── DISCLAIMER FOOTER ──
     if st.session_state.pop("_from_also_try", False):
