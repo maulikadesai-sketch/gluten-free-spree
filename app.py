@@ -399,8 +399,8 @@ div[data-testid="stTextInput"] input:focus {
 }
 [data-testid="stMetricLabel"] { overflow: visible !important; white-space: normal !important; }
 [data-testid="stMetric"] {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--pastel-blue);
+  border: 1px solid var(--pastel-blue-b);
   border-radius: var(--r);
   padding: 16px 14px;
   text-align: center;
@@ -530,7 +530,7 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Pairing cards ── */
 .pair-card {
-  background: var(--card);
+  background: var(--pastel-green);
   border: 1px solid var(--border); border-radius: var(--r);
   padding: 24px 20px; text-align: center; height: 100%;
   box-shadow: var(--shadow);
@@ -544,7 +544,7 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Brands ── */
 .brands-panel {
-  background: var(--card); border: 1px solid var(--border);
+  background: var(--pastel-pink); border: 1px solid var(--pastel-pink-b);
   border-radius: var(--r); padding: 20px; margin-bottom: 16px;
   box-shadow: var(--shadow);
 }
@@ -564,7 +564,7 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Substitution cards ── */
 .sub-card {
-  background: var(--card); border: 1px solid var(--border);
+  background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b);
   border-radius: var(--r); padding: 18px; margin-bottom: 14px;
   box-shadow: var(--shadow);
 }
@@ -604,7 +604,7 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
-.info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--card); border: 1px solid var(--border); }
+.info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
 
 /* ── Mobile spacing — more breathing room on phones ── */
 @media (max-width: 768px) {
@@ -1065,9 +1065,16 @@ if "recipe" in st.session_state:
 
     # ── AI GENERATED DISH IMAGE ──
     import urllib.parse as _up
-    img_prompt = _up.quote(f"a beautiful plate of {title}, professional food photography, top view, white plate, natural lighting, appetizing")
+    img_prompt = _up.quote(f"{title}, food photography, appetizing, restaurant quality")
     img_url = f"https://image.pollinations.ai/prompt/{img_prompt}?width=600&height=400&nologo=true"
-    st.image(img_url, caption=f"AI-generated image of {title}", use_container_width=True)
+    st.markdown(
+        f"<div style='text-align:center;margin:1rem 0;'>"
+        f"<img src='{img_url}' alt='{title}' style='max-width:100%;border-radius:var(--r);box-shadow:var(--shadow);' "
+        f"onerror=\"this.style.display='none'\" loading='lazy'>"
+        f"<p style='font-size:0.75rem;color:var(--ink-soft);margin-top:6px;'>AI-generated image</p>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
 
 
     # ── DIETARY ADAPTATION NOTICE ──
@@ -1174,7 +1181,7 @@ if "recipe" in st.session_state:
             for idx, step in enumerate(recipe.get("steps", []), 1)
         )
         st.markdown(
-            f"<div style='background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
+            f"<div style='background:var(--pastel-green);border:1px solid var(--pastel-green-b);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
             unsafe_allow_html=True,
         )
 
@@ -1339,15 +1346,15 @@ if "recipe" in st.session_state:
     if tips:
         st.markdown("<div class='sec-hdr'>💡 Tips for Best Results</div>", unsafe_allow_html=True)
         tips_html = "".join(f"<div class='tip-row'><span>🌿</span><span>{t}</span></div>" for t in tips)
-        st.markdown(f"<div style='background:var(--card); border:1px solid var(--border); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background:var(--pastel-pink); border:1px solid var(--pastel-pink-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
 
     bot1, bot2 = st.columns(2)
     with bot1:
         if recipe.get("storage_info"):
-            st.markdown(f"<div class='info-box'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='info-box' style='background:var(--pastel-green);border-color:var(--pastel-green-b);'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
     with bot2:
         if recipe.get("nutrition_notes"):
-            st.markdown(f"<div class='info-box'><strong>🥦 Nutrition Notes:</strong><br>{recipe.get('nutrition_notes')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='info-box' style='background:var(--pastel-pink);border-color:var(--pastel-pink-b);'><strong>🥦 Nutrition Notes:</strong><br>{recipe.get('nutrition_notes')}</div>", unsafe_allow_html=True)
 
     # ── PERFECT PAIRINGS / ACCOMPANIMENTS ──
     accompaniments = recipe.get("accompaniments") or []
