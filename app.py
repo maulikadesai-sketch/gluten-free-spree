@@ -247,6 +247,21 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stAppViewBlockContainer"], .block-container { padding-top: 1rem !important; }
 section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
 
+/* Subtle food background image */
+[data-testid="stAppViewContainer"]::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+[data-testid="stAppViewContainer"] > div { position: relative; z-index: 1; }
+
 /* Force ALL text dark */
 [data-testid="stAppViewContainer"] p, [data-testid="stAppViewContainer"] span,
 [data-testid="stAppViewContainer"] div, [data-testid="stAppViewContainer"] label,
