@@ -402,14 +402,27 @@ div[data-testid="stTextInput"] input:focus {
   white-space: normal !important; overflow: visible !important; text-overflow: unset !important;
 }
 [data-testid="stMetricLabel"] { overflow: visible !important; white-space: normal !important; }
+/* ── Metric cards — alternating pastel colors ── */
 [data-testid="stMetric"] {
-  background: var(--pastel-green);
-  border: 1px solid var(--pastel-green-b);
+  background: var(--pastel-blue);
+  border: 1px solid var(--pastel-blue-b);
   border-radius: var(--r);
   padding: 16px 14px;
   text-align: center;
   box-shadow: var(--shadow);
   overflow: visible !important;
+}
+/* 2nd and 5th card: pastel yellow */
+[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) > div:nth-child(2) [data-testid="stMetric"],
+[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) > div:nth-child(5) [data-testid="stMetric"] {
+  background: var(--pastel-yellow) !important;
+  border-color: var(--pastel-yellow-b) !important;
+}
+/* 3rd and 6th card: pastel pink */
+[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) > div:nth-child(3) [data-testid="stMetric"],
+[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) > div:nth-child(6) [data-testid="stMetric"] {
+  background: var(--pastel-pink) !important;
+  border-color: var(--pastel-pink-b) !important;
 }
 [data-testid="stMetric"] > div, [data-testid="stMetric"] > div > div { overflow: visible !important; }
 [data-testid="stMetricValue"] { color: var(--green) !important; }
@@ -950,7 +963,7 @@ if not SHEET_WEBHOOK:
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem; text-align:center;'>
   <h1 style='margin-bottom:6px; font-size:2.8rem; background:linear-gradient(135deg, #4A9B6D, #2E7D32); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;'>Gluten-Free Spree</h1>
-  <p style='color:#7A7A7A; font-size:0.95rem; margin:0 auto 12px; line-height:1.5; font-style:italic; max-width:650px;'>
+  <p style='color:#7A7A7A; font-size:0.95rem; margin:0 auto 12px; line-height:1.5; font-style:italic; max-width:800px;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
@@ -966,120 +979,61 @@ dish = st.text_input(
 )
 
 # ─────────────────────────────────────────────
-# Smart sub-options for generic dishes
+# Smart sub-options — AI detects vague dishes dynamically
 # ─────────────────────────────────────────────
-GENERIC_DISHES = {
-    "pasta": {
-        "🍝 Pasta type": ["Penne", "Spaghetti", "Fusilli", "Macaroni", "Fettuccine", "Rigatoni", "Farfalle", "Lasagne sheets", "Orzo"],
-        "🫕 Sauce": ["Tomato (Red)", "Alfredo (White/Cream)", "Pesto (Green)", "Pink (Rosé)", "Arrabbiata (Spicy Red)", "Aglio e Olio (Garlic & Oil)", "Carbonara", "Bolognese"],
-    },
-    "pizza": {
-        "🍕 Crust style": ["Thin crust", "Thick crust", "Deep dish", "Neapolitan", "Stuffed crust", "Flatbread"],
-        "🧀 Topping style": ["Margherita", "Pepperoni", "BBQ Chicken", "Veggie", "Four Cheese", "Mushroom & Truffle", "Hawaiian"],
-    },
-    "curry": {
-        "🍛 Curry type": ["Butter Curry", "Tikka Masala", "Korma", "Vindaloo", "Madras", "Green Thai", "Red Thai", "Rendang", "Rogan Josh", "Saag"],
-        "🥩 Main ingredient": ["Chicken", "Paneer", "Tofu", "Lamb", "Chickpeas", "Mixed Vegetables", "Prawns", "Fish", "Mushroom", "Egg"],
-    },
-    "rice": {
-        "🍚 Rice dish": ["Fried Rice", "Biryani", "Pulao", "Risotto", "Jeera Rice", "Lemon Rice", "Coconut Rice", "Mexican Rice", "Sushi Rice"],
-        "🥩 Main ingredient": ["Vegetable", "Chicken", "Egg", "Prawn", "Mushroom", "Paneer", "Lamb"],
-    },
-    "bread": {
-        "🍞 Bread type": ["Sandwich Bread", "Focaccia", "Naan", "Roti/Chapati", "Pita", "Baguette", "Brioche", "Ciabatta", "Sourdough", "Banana Bread"],
-    },
-    "cake": {
-        "🎂 Cake type": ["Chocolate Cake", "Vanilla Sponge", "Red Velvet", "Carrot Cake", "Cheesecake", "Lemon Drizzle", "Black Forest", "Banana Cake", "Coffee Cake"],
-        "🍰 Frosting": ["Buttercream", "Cream Cheese", "Ganache", "Whipped Cream", "Fondant", "No frosting"],
-    },
-    "soup": {
-        "🍲 Soup type": ["Tomato Soup", "Mushroom Soup", "Chicken Soup", "Minestrone", "Broccoli & Cheese", "Corn Chowder", "Hot & Sour", "Lentil Soup", "Pumpkin Soup", "French Onion"],
-    },
-    "salad": {
-        "🥗 Salad type": ["Caesar", "Greek", "Cobb", "Garden", "Quinoa", "Thai", "Waldorf", "Caprese", "Fattoush", "Coleslaw"],
-        "🥩 Protein": ["Chicken", "Tofu", "Paneer", "Prawns", "Boiled Egg", "Chickpeas", "No protein"],
-    },
-    "sandwich": {
-        "🥪 Sandwich type": ["Club Sandwich", "Grilled Cheese", "BLT", "Veggie Wrap", "Panini", "Open-face", "Submarine/Hoagie"],
-        "🍞 Bread": ["White bread", "Multigrain", "Wrap/Tortilla", "Ciabatta", "Sourdough", "Brioche bun"],
-    },
-    "noodles": {
-        "🍜 Noodle type": ["Ramen", "Pad Thai", "Lo Mein", "Chow Mein", "Udon", "Soba", "Rice Noodles", "Glass Noodles", "Hakka Noodles"],
-        "🫕 Style": ["Stir-fried", "Soup/Broth", "Dry/Tossed", "Spicy Szechuan"],
-    },
-    "pancake": {
-        "🥞 Pancake type": ["American (fluffy)", "French Crêpes", "Dutch Baby", "Japanese Soufflé", "Dosa-style", "Banana Pancakes", "Blueberry Pancakes"],
-    },
-    "dumpling": {
-        "🥟 Dumpling type": ["Gyoza (Japanese)", "Momo (Tibetan/Nepali)", "Wontons (Chinese)", "Pierogi (Polish)", "Ravioli (Italian)", "Samosa (Indian)", "Empanada"],
-        "🍳 Cooking method": ["Steamed", "Pan-fried", "Deep-fried", "Boiled in soup"],
-    },
-    "taco": {
-        "🌮 Filling": ["Chicken", "Beef", "Fish", "Shrimp", "Black Bean", "Carnitas (Pork)", "Veggie"],
-        "🌯 Shell": ["Hard shell", "Soft tortilla", "Lettuce wrap"],
-    },
-    "burger": {
-        "🍔 Patty type": ["Beef", "Chicken", "Veggie/Bean", "Paneer", "Fish", "Lamb", "Mushroom"],
-        "🧀 Style": ["Classic", "Smash burger", "Double stack", "BBQ", "Spicy", "Gourmet"],
-    },
-    "wrap": {
-        "🌯 Wrap filling": ["Chicken Tikka", "Falafel", "Grilled Paneer", "Fish", "Veggie & Hummus", "Egg & Cheese", "BBQ Pulled"],
-    },
-    "smoothie": {
-        "🥤 Base": ["Banana", "Mango", "Berry Mix", "Green (Spinach/Kale)", "Tropical", "Chocolate", "Peanut Butter"],
-        "🥛 Liquid": ["Milk", "Almond Milk", "Coconut Milk", "Yogurt", "Oat Milk", "Juice"],
-    },
-    "sushi": {
-        "🍣 Sushi type": ["Maki (Roll)", "Nigiri", "Temaki (Hand Roll)", "Uramaki (Inside-out)", "Chirashi (Bowl)", "Onigiri (Rice Ball)"],
-        "🐟 Filling": ["Salmon", "Tuna", "Prawn", "Avocado", "Cucumber", "Tofu", "Crab Stick", "Mixed Veggie"],
-    },
-    "pie": {
-        "🥧 Pie type": ["Chicken Pie", "Shepherd's Pie", "Apple Pie", "Pumpkin Pie", "Banoffee Pie", "Key Lime Pie", "Meat Pie", "Spinach & Feta Pie"],
-    },
-    "cookie": {
-        "🍪 Cookie type": ["Chocolate Chip", "Oatmeal Raisin", "Peanut Butter", "Snickerdoodle", "Shortbread", "Macaron", "Sugar Cookie", "Double Chocolate"],
-    },
-    "stir fry": {
-        "🥘 Protein": ["Chicken", "Tofu", "Beef", "Prawns", "Pork", "Mixed Vegetables"],
-        "🫕 Sauce style": ["Soy & Garlic", "Sweet Chilli", "Black Bean", "Teriyaki", "Oyster Sauce", "Kung Pao"],
-    },
-    "biryani": {
-        "🍚 Biryani type": ["Chicken Biryani", "Mutton Biryani", "Veg Biryani", "Egg Biryani", "Prawn Biryani", "Paneer Biryani", "Mushroom Biryani"],
-        "🌶️ Style": ["Hyderabadi (Dum)", "Lucknowi (Awadhi)", "Kolkata", "Malabar", "Ambur"],
-    },
-    "dosa": {
-        "🫓 Dosa type": ["Plain Dosa", "Masala Dosa", "Rava Dosa", "Onion Dosa", "Mysore Masala Dosa", "Set Dosa", "Neer Dosa", "Paper Dosa"],
-    },
-    "paratha": {
-        "🫓 Paratha type": ["Aloo Paratha", "Gobhi Paratha", "Paneer Paratha", "Methi Paratha", "Plain Paratha", "Mooli Paratha", "Laccha Paratha", "Stuffed Paratha"],
-    },
-    "chaat": {
-        "🍽️ Chaat type": ["Pani Puri/Golgappa", "Bhel Puri", "Sev Puri", "Dahi Puri", "Aloo Tikki Chaat", "Papdi Chaat", "Samosa Chaat", "Ragda Pattice"],
-    },
-}
+@st.cache_data(ttl=86400, show_spinner=False)
+def get_dish_options(dish_name, keys_str):
+    """Ask Gemini if dish is vague. If yes, return sub-categories. Cached 24hrs."""
+    import json as _j
+    api_keys = [k for k in keys_str.split("|") if k]
+    prompt = f"""Is "{dish_name}" a generic or vague dish name that has multiple specific variations?
+If YES, return a JSON object with 1-3 category keys, each containing a list of 6-12 common variations.
+If NO (the dish is already specific like "chicken tikka masala" or "pad thai"), return exactly: {{"specific": true}}
+
+Examples:
+- "pasta" → {{"Pasta Shape": ["Penne","Spaghetti","Fusilli","Macaroni","Fettuccine","Rigatoni","Farfalle","Lasagne","Orzo","Tagliatelle"], "Sauce Type": ["Tomato (Red)","Alfredo (White)","Pesto (Green)","Pink (Rosé)","Arrabbiata","Aglio e Olio","Carbonara","Bolognese","Puttanesca","Cacio e Pepe"]}}
+- "chicken tikka masala" → {{"specific": true}}
+- "cake" → {{"Cake Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest","Banana","Pineapple","Coconut","Marble"]}}
+
+Return ONLY valid JSON, no other text."""
+    for key in api_keys[:2]:
+        try:
+            r = requests.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
+                json={"contents": [{"parts": [{"text": prompt}]}]},
+                timeout=10
+            )
+            text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            text = text.strip().strip("`").strip()
+            if text.startswith("json"): text = text[4:].strip()
+            data = _j.loads(text)
+            if data.get("specific"): return None
+            return data
+        except Exception:
+            continue
+    return None
 
 dish_extra = ""
-if dish:
+if dish and dish.strip():
     dish_lower = dish.strip().lower()
-    # Check for generic match
-    matched_key = None
-    for key in GENERIC_DISHES:
-        if dish_lower in [key, key + "s", key + "es"] or key in dish_lower.split() or dish_lower.startswith(key) or (len(key) > 3 and key in dish_lower):
-            matched_key = key
-            break
-    
-    if matched_key:
-        st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-        options = GENERIC_DISHES[matched_key]
-        cols = st.columns(len(options))
-        selections = []
-        for idx, (label, choices) in enumerate(options.items()):
-            with cols[idx]:
-                sel = st.selectbox(label, ["— Choose (optional) —"] + choices, key=f"generic_{matched_key}_{idx}")
-                if sel != "— Choose (optional) —":
-                    selections.append(sel)
-        if selections:
-            dish_extra = " — " + ", ".join(selections)
+    # Only check for vague dishes (1-2 words, no very specific names)
+    word_count = len(dish_lower.split())
+    if word_count <= 2 and len(dish_lower) <= 25:
+        keys_for_check = "|".join(all_api_keys)
+        if keys_for_check:
+            options = get_dish_options(dish_lower, keys_for_check)
+            if options and isinstance(options, dict):
+                st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+                cols = st.columns(min(len(options), 3))
+                selections = []
+                for idx, (label, choices) in enumerate(options.items()):
+                    if isinstance(choices, list) and len(choices) > 0:
+                        with cols[idx % 3]:
+                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices, key=f"generic_{idx}")
+                            if sel != "— Choose (optional) —":
+                                selections.append(sel)
+                if selections:
+                    dish_extra = " — " + ", ".join(selections)
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
