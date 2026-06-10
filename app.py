@@ -247,20 +247,7 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stAppViewBlockContainer"], .block-container { padding-top: 1rem !important; }
 section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
 
-/* Subtle food background image */
-[data-testid="stAppViewContainer"]::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.12;
-  pointer-events: none;
-  z-index: 0;
-}
-[data-testid="stAppViewContainer"] > div { position: relative; z-index: 1; }
+
 
 /* Force ALL text dark */
 [data-testid="stAppViewContainer"] p, [data-testid="stAppViewContainer"] span,
@@ -954,7 +941,7 @@ if not SHEET_WEBHOOK:
 # ─────────────────────────────────────────────
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem;'>
-  <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
+  <h1 style='margin-bottom:4px;'>🍳 Gluten-Free Spree 🌾</h1>
   <p style='color:#7A7A7A; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
@@ -1017,6 +1004,7 @@ col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
 with col_btn_m:
     go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
 
+st.markdown("<p style='text-align:center;font-size:1.2rem;letter-spacing:10px;margin:8px 0;opacity:0.4;'>🔪 🧄 🧅 🍋 🌶️ 🧈 🍯</p>", unsafe_allow_html=True)
 st.divider()
 
 if go:
@@ -1138,7 +1126,7 @@ if "recipe" in st.session_state:
     col_left, col_right = st.columns([2, 3], gap="large")
 
     with col_left:
-        st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>📋🧺 Ingredients Checklist</div>", unsafe_allow_html=True)
 
         # Adjust servings — directly above ingredients
         new_sv = st.slider("🍽️ How many people are you cooking for?", 1, 20, int(cur_sv), key="adjust_servings_slider")
@@ -1279,7 +1267,7 @@ if "recipe" in st.session_state:
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
     if subs:
-        st.markdown("<div class='sec-hdr'>🔄 What Was Swapped & Why</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🔄🔀 What Was Swapped & Why</div>", unsafe_allow_html=True)
         sub_cols = st.columns(2)
         for idx, s in enumerate(subs):
             brands_html = f"<div class='sub-brands'>🛒 Suggested: {s.get('local_brands', '')}</div>" if s.get('local_brands') else ""
@@ -1344,7 +1332,7 @@ if "recipe" in st.session_state:
     # ── PRO TIPS, STORAGE, NUTRITION ──
     tips = recipe.get("tips") or []
     if tips:
-        st.markdown("<div class='sec-hdr'>💡 Tips for Best Results</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>💡✨ Tips for Best Results</div>", unsafe_allow_html=True)
         tips_html = "".join(f"<div class='tip-row'><span>🌿</span><span>{t}</span></div>" for t in tips)
         st.markdown(f"<div style='background:var(--pastel-yellow); border:1px solid var(--pastel-yellow-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
 
@@ -1359,7 +1347,7 @@ if "recipe" in st.session_state:
     # ── PERFECT PAIRINGS / ACCOMPANIMENTS ──
     accompaniments = recipe.get("accompaniments") or []
     if accompaniments:
-        st.markdown("<div class='sec-hdr'>🍴 Potential Pairings</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🍴🤝 Potential Pairings</div>", unsafe_allow_html=True)
         st.markdown(
             "<p style='font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.8rem;'>"
             "Gluten-free sides, drinks and extras that round out the meal.</p>",
@@ -1387,7 +1375,7 @@ if "recipe" in st.session_state:
     # ── ALTERNATIVE NAVIGATIONAL LINKS ──
     also_try = recipe.get("also_try") or []
     if also_try:
-        st.markdown("<div class='sec-hdr'>🍽️ Other Dishes You Might Like to Try</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🍽️🌟 Other Dishes You Might Like to Try</div>", unsafe_allow_html=True)
         st.markdown(
             "<p style='font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.8rem;'>"
             "Tap any dish to instantly generate its gluten-free recipe.</p>",
@@ -1427,6 +1415,8 @@ if "recipe" in st.session_state:
                         st.warning("🕐 Daily API limit reached. Please try again after midnight US Pacific time.")
                     else:
                         st.error(f"Error: {err}")
+
+    st.markdown("<p style='text-align:center;font-size:1.3rem;letter-spacing:10px;margin:1.5rem 0 0.5rem;opacity:0.4;'>🍽️ 👨‍🍳 🥄 🍴 🫕 🥘 🍲</p>", unsafe_allow_html=True)
 
     # ── DISCLAIMER FOOTER ──
     if st.session_state.pop("_from_also_try", False):
