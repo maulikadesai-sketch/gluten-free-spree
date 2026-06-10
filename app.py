@@ -62,7 +62,7 @@ def log_search(dish_name, country, dietary, source="search"):
         pass
 
 COUNTRIES = [
-    "🌍 Global",
+    "🌍 Choose your country from the dropdown",
     "🇦🇫 Afghanistan", "🇦🇱 Albania", "🇩🇿 Algeria", "🇦🇩 Andorra",
     "🇦🇴 Angola", "🇦🇬 Antigua and Barbuda", "🇦🇷 Argentina", "🇦🇲 Armenia",
     "🇦🇺 Australia", "🇦🇹 Austria", "🇦🇿 Azerbaijan", "🇧🇸 Bahamas",
@@ -191,44 +191,49 @@ CUSTOM_CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
-  --ink: #1C2A1E;
-  --ink-mid: #3D4F40;
-  --ink-soft: #6A7E6E;
-  --bg: #EBF1EC;
-  --bg2: #DCE4DC;
-  --border: #CCD5CD;
-  --green: #2F5435;
-  --green-l: #E2ECE5;
-  --green-d: #1C3321;
-  --amber: #B26225;
-  --amber-l: #FDF3EB;
-  --red-l: #FCECEC;
-  --red: #9E2A2B;
-  --card: #FFFFFF;
-  --shadow: 0 8px 30px rgba(28,42,30,0.08);
-  --shadow-lg: 0 8px 30px rgba(28,42,30,0.12);
-  --r: 14px;
+  --ink:       #1A1A1A;
+  --ink-mid:   #4A4A4A;
+  --ink-soft:  #7A7A7A;
+  --bg:        #FFFDF7;
+  --bg2:       #FFF8F0;
+  --border:    #E0D8CF;
+  --green:     #4A9B6D;
+  --green-l:   #E8F5E9;
+  --green-d:   #2E7D32;
+  --amber:     #E67E22;
+  --amber-l:   #FEF3E2;
+  --red-l:     #FCE4EC;
+  --red:       #C62828;
+  --card:      #FFFFFF;
+  --shadow:    0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.10);
+  --r:         14px;
+  /* Pastel section colors */
+  --pastel-blue:   #E3F2FD;
+  --pastel-pink:   #FCE4EC;
+  --pastel-green:  #E8F5E9;
+  --pastel-blue-b: #BBDEFB;
+  --pastel-pink-b: #F8BBD0;
+  --pastel-green-b:#C8E6C9;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #1C2A1E; --ink-mid: #3D4F40; --ink-soft: #6A7E6E;
-    --bg: #EBF1EC; --bg2: #DCE4DC; --border: #CCD5CD;
-    --green: #2F5435; --green-l: #E2ECE5; --card: #FFFFFF;
-    --shadow: 0 8px 30px rgba(28,42,30,0.08);
+    --ink: #1A1A1A; --ink-mid: #4A4A4A; --ink-soft: #7A7A7A;
+    --bg: #FFFDF7; --bg2: #FFF8F0; --border: #E0D8CF;
+    --green: #4A9B6D; --green-l: #E8F5E9; --card: #FFFFFF;
   }
 }
 [data-theme="dark"] {
-  --ink: #1C2A1E; --ink-mid: #3D4F40; --ink-soft: #6A7E6E;
-  --bg: #EBF1EC; --bg2: #DCE4DC; --border: #CCD5CD;
-  --green: #2F5435; --green-l: #E2ECE5; --card: #FFFFFF;
+  --ink: #1A1A1A; --bg: #FFFDF7; --bg2: #FFF8F0;
+  --border: #E0D8CF; --green: #4A9B6D; --card: #FFFFFF;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  background-color: #EBF1EC !important;
-  color: #1C2A1E !important;
+  background-color: #FFFDF7 !important;
+  color: #1A1A1A !important;
   -webkit-text-size-adjust: 100%;
 }
 html, body, [data-testid="stAppViewContainer"] {
@@ -933,7 +938,7 @@ if not SHEET_WEBHOOK:
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem;'>
   <h1 style='margin-bottom:4px;'>Gluten-Free Spree</h1>
-  <p style='color:#6A7E6E; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
+  <p style='color:#7A7A7A; font-size:0.95rem; margin:0 0 20px 0; line-height:1.5; font-style:italic;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
 </div>
@@ -1034,10 +1039,6 @@ if go:
 # Output Recipe Render Engine
 # ─────────────────────────────────────────────
 if "recipe" in st.session_state:
-    # Scroll to top if coming from an "also try" click
-    if st.session_state.pop("_scroll_to_top", False):
-        st.markdown("<script>window.parent.document.querySelector('section.main').scrollTop = 0;</script>", unsafe_allow_html=True)
-        st.toast("⬆️ New recipe loaded! Scroll up to see it.", icon="🍴")
     recipe = st.session_state["recipe"]
     try:
         base_sv = int(st.session_state.get("base_servings", 4) or 4)
@@ -1061,6 +1062,12 @@ if "recipe" in st.session_state:
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── AI GENERATED DISH IMAGE ──
+    import urllib.parse as _up
+    img_prompt = _up.quote(f"a beautiful plate of {title}, professional food photography, top view, white plate, natural lighting, appetizing")
+    img_url = f"https://image.pollinations.ai/prompt/{img_prompt}?width=600&height=400&nologo=true"
+    st.image(img_url, caption=f"AI-generated image of {title}", use_container_width=True)
 
 
     # ── DIETARY ADAPTATION NOTICE ──
@@ -1201,18 +1208,18 @@ if "recipe" in st.session_state:
             <style>
               * {{ margin:0; padding:0; box-sizing:border-box; }}
               body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
-              #display {{ font-size:3.2rem; font-weight:700; color:#2F5435; letter-spacing:3px; margin-bottom:14px; }}
+              #display {{ font-size:3.2rem; font-weight:700; color:#4A9B6D; letter-spacing:3px; margin-bottom:14px; }}
               #display.warn {{ color:#9E2A2B; }}
               .btns {{ display:flex; gap:10px; justify-content:center; }}
               .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
                       font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
               .btn:hover {{ transform:translateY(-1px); }}
-              .btn-start {{ background:#FFFFFF; color:#2F5435; border:2px solid #2F5435; }}
-              .btn-pause {{ background:#FFFFFF; color:#2F5435; border:2px solid #2F5435; font-weight:700; }}
-              .btn-reset {{ background:#FFFFFF; color:#2F5435; border:2px solid #CCD5CD; }}
+              .btn-start {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #2F5435; }}
+              .btn-pause {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #2F5435; font-weight:700; }}
+              .btn-reset {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #CCD5CD; }}
               .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
               #done {{ display:none; margin-top:12px; padding:10px; background:#FFFFFF;
-                       border-radius:8px; color:#2F5435; font-weight:600; font-size:0.9rem; border:1px solid #CCD5CD; }}
+                       border-radius:8px; color:#4A9B6D; font-weight:600; font-size:0.9rem; border:1px solid #E0D8CF; }}
             </style>
             </head>
             <body>
@@ -1283,7 +1290,7 @@ if "recipe" in st.session_state:
     brands = recipe.get("brands_panel") or []
     if brands:
         r_country = st.session_state.get("recipe_country", country)
-        c_name = r_country.split(' ', 1)[-1] if r_country != "🌍 Global" else "your region"
+        c_name = r_country.split(' ', 1)[-1] if r_country != "🌍 Choose your country from the dropdown" else "your region"
         st.markdown(f"<div class='sec-hdr'>🏪 Recommended Brands in {c_name}</div>", unsafe_allow_html=True)
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
@@ -1292,10 +1299,10 @@ if "recipe" in st.session_state:
 
             if is_fully_gf:
                 # Green — certified safe
-                logo_style = "color:#2F5435 !important;background:#E2ECE5 !important;"
-                badge_style = "color:#2F5435 !important;background:#E2ECE5 !important;border:1px solid #CCD5CD;"
+                logo_style = "color:#4A9B6D !important;background:#E8F5E9 !important;"
+                badge_style = "color:#4A9B6D !important;background:#E8F5E9 !important;border:1px solid #E0D8CF;"
                 card_style = ""
-                name_style = "color:#2F5435;"
+                name_style = "color:#4A9B6D;"
                 desc_style = ""
             else:
                 # Amber — contamination risk, entire card amber-tinted
@@ -1384,7 +1391,6 @@ if "recipe" in st.session_state:
             with try_cols[i]:
                 if st.button(f"🍴 {at.get('dish','')}", key=f"try_{i}", use_container_width=True):
                     st.session_state["_queued_dish"] = at.get("dish", "")
-                    st.session_state["_scroll_to_top"] = True
                     st.rerun()
                 st.markdown(f"<p style='font-size:0.8rem; text-align:center; color:var(--ink-soft);'>{at.get('reason','')}</p>", unsafe_allow_html=True)
 
@@ -1402,6 +1408,7 @@ if "recipe" in st.session_state:
                     st.session_state["base_servings"] = int(recipe.get("servings", servings) or servings)
                     st.session_state["current_servings"] = servings
                     log_search(qd, country, dietary, source="also_try")
+                    st.session_state["_from_also_try"] = True
                     st.rerun()
                 except Exception as e:
                     err = str(e)
@@ -1411,6 +1418,11 @@ if "recipe" in st.session_state:
                         st.error(f"Error: {err}")
 
     # ── DISCLAIMER FOOTER ──
+    if st.session_state.pop("_from_also_try", False):
+        st.markdown(
+            "<p style='text-align:center;color:#4A9B6D;font-weight:600;font-size:0.9rem;margin:1.5rem 0 0.5rem;'>⬆️ New recipe loaded! Scroll up to view it.</p>",
+            unsafe_allow_html=True,
+        )
     st.markdown(
         "<div class='info-box' style='font-size:0.79rem;margin-top:1rem;'>ℹ️ AI-generated guidance only, not medical advice. "
         "If you have coeliac disease or serious gluten sensitivity, verify every ingredient label independently "
