@@ -667,11 +667,15 @@ Tailor all quantities and temperatures to the {unit_system} system (e.g. Metric:
 Process:
 1. Identify EVERY gluten source that ACTUALLY exists in the traditional/authentic version of this dish. \
 Do NOT assume or invent gluten ingredients that are not part of the real recipe. \
-For example: dhansak does NOT traditionally contain cornstarch or wheat flour — it is lentil-based. \
-Soy sauce, malt vinegar, roux, seitan, spice blends with fillers, couscous, and regular flour ARE common gluten sources. \
-Cornstarch, rice flour, besan/chickpea flour, and tapioca are naturally gluten-free — do NOT list them as gluten sources. \
-If the dish is naturally gluten-free, say so and still provide the recipe with any cross-contamination warnings.
-2. For each, choose a substitution matching its FUNCTION (structure/binding/thickening/crisp coating/flavour) — not just "GF flour". Give realistic ratios (GF subs rarely swap 1:1; may need xanthan gum, starch blends).
+RESEARCH the authentic recipe first — use only ingredients that are genuinely part of the dish. \
+For example: Parsi dhansak is a lentil and vegetable stew — it does NOT contain cornstarch, wheat flour, or any gluten. \
+Soy sauce, wheat noodles, roux, seitan, couscous, regular flour, and malt vinegar ARE common gluten sources. \
+Cornstarch, rice flour, besan/chickpea flour, tapioca, and arrowroot are naturally GF — NEVER list these as gluten sources. \
+If the dish is naturally gluten-free, clearly state so and provide the authentic recipe with cross-contamination warnings only.
+2. For each gluten ingredient, choose a substitution matching its FUNCTION (structure/binding/thickening/crisp coating/flavour) — not just "GF flour". Give realistic ratios (GF subs rarely swap 1:1; may need xanthan gum, starch blends). \
+Do NOT substitute ingredients that are already gluten-free. Every ingredient must be accurate and traditionally part of this dish. \
+Do not add random ingredients. Do not confuse one dish with another. \
+Verify quantities are realistic — a curry for 4 should not need 2 kg of onions or 500g of spice.
 3. Write complete recipe with real quantities and clear steps. Each step MUST include specific time durations \
 in minutes or hours (e.g. "Sauté onions for 5 minutes", "Bake for 25 minutes at 180°C", "Let rest for 10 minutes"). \
 Never use vague timing like "until done" or "for a while" — always give exact minutes.
@@ -1016,24 +1020,26 @@ Return ONLY valid JSON, no other text."""
 dish_extra = ""
 if dish and dish.strip():
     dish_lower = dish.strip().lower()
-    # Only check for vague dishes (1-2 words, no very specific names)
+    # Only check for vague dishes (1-2 common words, short names)
     word_count = len(dish_lower.split())
-    if word_count <= 2 and len(dish_lower) <= 25:
+    if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
             options = get_dish_options(dish_lower, keys_for_check)
-            if options and isinstance(options, dict):
-                st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                cols = st.columns(min(len(options), 3))
-                selections = []
-                for idx, (label, choices) in enumerate(options.items()):
-                    if isinstance(choices, list) and len(choices) > 0:
+            if options and isinstance(options, dict) and not options.get("specific"):
+                # Filter out any non-list values (cleanup AI response)
+                valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
+                if valid_options:
+                    st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+                    cols = st.columns(min(len(valid_options), 3))
+                    selections = []
+                    for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % 3]:
-                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices, key=f"generic_{idx}")
+                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{idx}")
                             if sel != "— Choose (optional) —":
                                 selections.append(sel)
-                if selections:
-                    dish_extra = " — " + ", ".join(selections)
+                    if selections:
+                        dish_extra = " — " + ", ".join(selections)
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
