@@ -909,6 +909,48 @@ def cached_generate(keys_str, dish, model, country, dietary_str, unit_system):
 st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+# Force all dropdowns to open downward on every device
+import streamlit.components.v1 as _fix_comp
+_fix_comp.html("""
+<script>
+try {
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) {
+          // Find all popovers (dropdown menus)
+          const popovers = node.querySelectorAll ? 
+            [node, ...node.querySelectorAll('[data-baseweb="popover"]')] : [node];
+          popovers.forEach(function(el) {
+            if (el.getAttribute && el.getAttribute('data-baseweb') === 'popover') {
+              // Force dropdown below the trigger element
+              const rect = el.getBoundingClientRect();
+              if (rect.top < window.innerHeight / 2) {
+                // Already in top half — it's opening downward, leave it
+              } else {
+                // In bottom half — force it to top of viewport area
+                el.style.position = 'fixed';
+                el.style.top = '120px';
+                el.style.bottom = 'auto';
+                el.style.left = '5%';
+                el.style.right = '5%';
+                el.style.maxHeight = '50vh';
+                el.style.overflowY = 'auto';
+                el.style.zIndex = '99999';
+                el.style.borderRadius = '12px';
+                el.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
+              }
+            }
+          });
+        }
+      });
+    });
+  });
+  observer.observe(window.parent.document.body, { childList: true, subtree: true });
+} catch(e) {}
+</script>
+""", height=0)
+
 # ─────────────────────────────────────────────
 # API Key — loaded silently in background
 # ─────────────────────────────────────────────
