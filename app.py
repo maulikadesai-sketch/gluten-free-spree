@@ -1042,7 +1042,7 @@ if dish and dish.strip():
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % 3]:
-                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{idx}")
+                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
                             if sel != "— Choose (optional) —":
                                 selections.append(sel)
                     if selections:
