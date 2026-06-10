@@ -992,12 +992,19 @@ def get_dish_options(dish_name, keys_str):
     api_keys = [k for k in keys_str.split("|") if k]
     prompt = f"""Is "{dish_name}" a generic or vague dish name that has multiple specific variations?
 If YES, return a JSON object with 1-3 category keys, each containing a list of 6-12 common variations.
+Categories should be the most USEFUL choices a home cook would make — focus on what changes the dish the most.
 If NO (the dish is already specific like "chicken tikka masala" or "pad thai"), return exactly: {{"specific": true}}
 
-Examples:
-- "pasta" → {{"Pasta Shape": ["Penne","Spaghetti","Fusilli","Macaroni","Fettuccine","Rigatoni","Farfalle","Lasagne","Orzo","Tagliatelle"], "Sauce Type": ["Tomato (Red)","Alfredo (White)","Pesto (Green)","Pink (Rosé)","Arrabbiata","Aglio e Olio","Carbonara","Bolognese","Puttanesca","Cacio e Pepe"]}}
+Examples of GOOD categories:
+- "pasta" → {{"Pasta Type": ["Penne","Spaghetti","Fusilli","Macaroni","Fettuccine","Rigatoni","Farfalle","Lasagne","Tagliatelle","Linguine"], "Sauce": ["Tomato (Red)","Alfredo (White/Cream)","Pesto (Green)","Pink (Rosé)","Arrabbiata (Spicy)","Aglio e Olio","Carbonara","Bolognese","Puttanesca","Cacio e Pepe"]}}
+- "curry" → {{"Curry Style": ["Butter Curry","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag","Madras","Rendang"], "Main Ingredient": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Mixed Vegetables","Prawns","Fish","Mushroom","Egg"]}}
 - "chicken tikka masala" → {{"specific": true}}
-- "cake" → {{"Cake Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest","Banana","Pineapple","Coconut","Marble"]}}
+- "sushi" → {{"Sushi Style": ["Maki Roll","Nigiri","Hand Roll","Inside-out Roll","Poke Bowl","Onigiri"], "Main Filling": ["Salmon","Tuna","Prawn","Avocado","Cucumber","Tofu","Crab"]}}
+
+BAD categories (avoid these):
+- "Pasta Shape" (say "Pasta Type" instead)
+- "Difficulty Level" (not useful)
+- "Serving Size" (handled elsewhere)
 
 Return ONLY valid JSON, no other text."""
     for key in api_keys[:2]:
