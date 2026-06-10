@@ -401,8 +401,8 @@ div[data-testid="stTextInput"] input:focus {
 }
 [data-testid="stMetricLabel"] { overflow: visible !important; white-space: normal !important; }
 [data-testid="stMetric"] {
-  background: var(--pastel-blue);
-  border: 1px solid var(--pastel-blue-b);
+  background: var(--pastel-yellow);
+  border: 1px solid var(--pastel-yellow-b);
   border-radius: var(--r);
   padding: 16px 14px;
   text-align: center;
@@ -1387,10 +1387,14 @@ if "recipe" in st.session_state:
         try_cols = st.columns(len(also_try))
         for i, at in enumerate(also_try):
             with try_cols[i]:
-                if st.button(f"🍴 {at.get('dish','')}", key=f"try_{i}", use_container_width=True):
+                st.markdown(f"""<div style='background:var(--pastel-yellow);border:1px solid var(--pastel-yellow-b);
+                    border-radius:var(--r);padding:16px;text-align:center;'>
+                    <p style='font-weight:600;font-size:0.95rem;color:var(--ink);margin-bottom:6px;'>🍴 {at.get('dish','')}</p>
+                    <p style='font-size:0.8rem;color:var(--ink-soft);'>{at.get('reason','')}</p>
+                </div>""", unsafe_allow_html=True)
+                if st.button(f"Make this →", key=f"try_{i}", use_container_width=True):
                     st.session_state["_queued_dish"] = at.get("dish", "")
                     st.rerun()
-                st.markdown(f"<p style='font-size:0.8rem; text-align:center; color:var(--ink-soft);'>{at.get('reason','')}</p>", unsafe_allow_html=True)
 
     if "_queued_dish" in st.session_state:
         qd = st.session_state.pop("_queued_dish")
