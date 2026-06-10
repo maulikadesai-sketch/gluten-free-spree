@@ -958,6 +958,95 @@ dish = st.text_input(
 )
 
 # ─────────────────────────────────────────────
+# Smart sub-options for generic dishes
+# ─────────────────────────────────────────────
+GENERIC_DISHES = {
+    "pasta": {
+        "🍝 Pasta type": ["Penne", "Spaghetti", "Fusilli", "Macaroni", "Fettuccine", "Rigatoni", "Farfalle", "Lasagne sheets", "Orzo"],
+        "🫕 Sauce": ["Tomato (Red)", "Alfredo (White/Cream)", "Pesto (Green)", "Pink (Rosé)", "Arrabbiata (Spicy Red)", "Aglio e Olio (Garlic & Oil)", "Carbonara", "Bolognese"],
+    },
+    "pizza": {
+        "🍕 Crust style": ["Thin crust", "Thick crust", "Deep dish", "Neapolitan", "Stuffed crust", "Flatbread"],
+        "🧀 Topping style": ["Margherita", "Pepperoni", "BBQ Chicken", "Veggie", "Four Cheese", "Mushroom & Truffle", "Hawaiian"],
+    },
+    "curry": {
+        "🍛 Curry type": ["Butter Curry", "Tikka Masala", "Korma", "Vindaloo", "Madras", "Green Thai", "Red Thai", "Rendang", "Rogan Josh", "Saag"],
+        "🥩 Main ingredient": ["Chicken", "Paneer", "Tofu", "Lamb", "Chickpeas", "Mixed Vegetables", "Prawns", "Fish", "Mushroom", "Egg"],
+    },
+    "rice": {
+        "🍚 Rice dish": ["Fried Rice", "Biryani", "Pulao", "Risotto", "Jeera Rice", "Lemon Rice", "Coconut Rice", "Mexican Rice", "Sushi Rice"],
+        "🥩 Main ingredient": ["Vegetable", "Chicken", "Egg", "Prawn", "Mushroom", "Paneer", "Lamb"],
+    },
+    "bread": {
+        "🍞 Bread type": ["Sandwich Bread", "Focaccia", "Naan", "Roti/Chapati", "Pita", "Baguette", "Brioche", "Ciabatta", "Sourdough", "Banana Bread"],
+    },
+    "cake": {
+        "🎂 Cake type": ["Chocolate Cake", "Vanilla Sponge", "Red Velvet", "Carrot Cake", "Cheesecake", "Lemon Drizzle", "Black Forest", "Banana Cake", "Coffee Cake"],
+        "🍰 Frosting": ["Buttercream", "Cream Cheese", "Ganache", "Whipped Cream", "Fondant", "No frosting"],
+    },
+    "soup": {
+        "🍲 Soup type": ["Tomato Soup", "Mushroom Soup", "Chicken Soup", "Minestrone", "Broccoli & Cheese", "Corn Chowder", "Hot & Sour", "Lentil Soup", "Pumpkin Soup", "French Onion"],
+    },
+    "salad": {
+        "🥗 Salad type": ["Caesar", "Greek", "Cobb", "Garden", "Quinoa", "Thai", "Waldorf", "Caprese", "Fattoush", "Coleslaw"],
+        "🥩 Protein": ["Chicken", "Tofu", "Paneer", "Prawns", "Boiled Egg", "Chickpeas", "No protein"],
+    },
+    "sandwich": {
+        "🥪 Sandwich type": ["Club Sandwich", "Grilled Cheese", "BLT", "Veggie Wrap", "Panini", "Open-face", "Submarine/Hoagie"],
+        "🍞 Bread": ["White bread", "Multigrain", "Wrap/Tortilla", "Ciabatta", "Sourdough", "Brioche bun"],
+    },
+    "noodles": {
+        "🍜 Noodle type": ["Ramen", "Pad Thai", "Lo Mein", "Chow Mein", "Udon", "Soba", "Rice Noodles", "Glass Noodles", "Hakka Noodles"],
+        "🫕 Style": ["Stir-fried", "Soup/Broth", "Dry/Tossed", "Spicy Szechuan"],
+    },
+    "pancake": {
+        "🥞 Pancake type": ["American (fluffy)", "French Crêpes", "Dutch Baby", "Japanese Soufflé", "Dosa-style", "Banana Pancakes", "Blueberry Pancakes"],
+    },
+    "dumpling": {
+        "🥟 Dumpling type": ["Gyoza (Japanese)", "Momo (Tibetan/Nepali)", "Wontons (Chinese)", "Pierogi (Polish)", "Ravioli (Italian)", "Samosa (Indian)", "Empanada"],
+        "🍳 Cooking method": ["Steamed", "Pan-fried", "Deep-fried", "Boiled in soup"],
+    },
+    "taco": {
+        "🌮 Filling": ["Chicken", "Beef", "Fish", "Shrimp", "Black Bean", "Carnitas (Pork)", "Veggie"],
+        "🌯 Shell": ["Hard shell", "Soft tortilla", "Lettuce wrap"],
+    },
+    "burger": {
+        "🍔 Patty type": ["Beef", "Chicken", "Veggie/Bean", "Paneer", "Fish", "Lamb", "Mushroom"],
+        "🧀 Style": ["Classic", "Smash burger", "Double stack", "BBQ", "Spicy", "Gourmet"],
+    },
+    "wrap": {
+        "🌯 Wrap filling": ["Chicken Tikka", "Falafel", "Grilled Paneer", "Fish", "Veggie & Hummus", "Egg & Cheese", "BBQ Pulled"],
+    },
+    "smoothie": {
+        "🥤 Base": ["Banana", "Mango", "Berry Mix", "Green (Spinach/Kale)", "Tropical", "Chocolate", "Peanut Butter"],
+        "🥛 Liquid": ["Milk", "Almond Milk", "Coconut Milk", "Yogurt", "Oat Milk", "Juice"],
+    },
+}
+
+dish_extra = ""
+if dish:
+    dish_lower = dish.strip().lower()
+    # Check for generic match
+    matched_key = None
+    for key in GENERIC_DISHES:
+        if dish_lower in [key, key + "s", key + "es"] or key in dish_lower.split():
+            matched_key = key
+            break
+    
+    if matched_key:
+        st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+        options = GENERIC_DISHES[matched_key]
+        cols = st.columns(len(options))
+        selections = []
+        for idx, (label, choices) in enumerate(options.items()):
+            with cols[idx]:
+                sel = st.selectbox(label, ["— Choose (optional) —"] + choices, key=f"generic_{matched_key}_{idx}")
+                if sel != "— Choose (optional) —":
+                    selections.append(sel)
+        if selections:
+            dish_extra = " — " + ", ".join(selections)
+
+# ─────────────────────────────────────────────
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
 # Location
@@ -1020,12 +1109,13 @@ if go:
             unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
             keys_str = "|".join(all_api_keys)
             dietary_str = "|".join(dietary) if dietary else ""
-            recipe = cached_generate(keys_str, dish.strip(), model, country, dietary_str, unit_val)
+            full_dish = dish.strip() + dish_extra
+            recipe = cached_generate(keys_str, full_dish, model, country, dietary_str, unit_val)
             st.session_state["recipe"] = recipe
             st.session_state["recipe_country"] = country
             st.session_state["base_servings"] = int(recipe.get("servings", 4) or 4)
             st.session_state["current_servings"] = st.session_state.get("current_servings", 4)
-            log_search(dish.strip(), country, dietary, source="search")
+            log_search(full_dish, country, dietary, source="search")
         except Exception as e:
             err = str(e)
             if any(x in err for x in ("429", "503", "404", "daily limit", "quota", "overloaded", "combinations")):
@@ -1186,21 +1276,7 @@ if "recipe" in st.session_state:
 
         # Kitchen Timer
         with st.expander("⏱️ Kitchen Timer"):
-            st.markdown("**Quick presets:**")
-            p_cols = st.columns(6)
-            for pi, pm in enumerate([1, 3, 5, 10, 15, 20]):
-                with p_cols[pi]:
-                    if st.button(f"{pm} min", key=f"preset_{pm}", use_container_width=True):
-                        st.session_state["_timer_val"] = pm
-                        st.rerun()
-
-            saved_time = st.session_state.get("_timer_val", None)
-            timer_min = st.slider("Or set custom minutes:", 1, 60, saved_time if saved_time else 5, key="timer_slider") if not saved_time else saved_time
-            if saved_time:
-                st.markdown(f"**Timer set to: {saved_time} minutes**")
-                if st.button("✏️ Change", key="change_timer"):
-                    del st.session_state["_timer_val"]
-                    st.rerun()
+            timer_min = st.slider("Set minutes:", 1, 60, 5, key="timer_slider")
             if timer_min and timer_min > 0:
                 import streamlit.components.v1 as components
                 timer_html = f"""
