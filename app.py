@@ -215,6 +215,8 @@ CUSTOM_CSS = """
   --pastel-blue-b: #BBDEFB;
   --pastel-pink-b: #F8BBD0;
   --pastel-green-b:#C8E6C9;
+  --pastel-yellow:  #FFF9C4;
+  --pastel-yellow-b:#FFF176;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -530,8 +532,8 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Pairing cards ── */
 .pair-card {
-  background: var(--pastel-green);
-  border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--pastel-yellow);
+  border: 1px solid var(--pastel-yellow-b); border-radius: var(--r);
   padding: 24px 20px; text-align: center; height: 100%;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -544,7 +546,7 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Brands ── */
 .brands-panel {
-  background: var(--pastel-pink); border: 1px solid var(--pastel-pink-b);
+  background: var(--pastel-green); border: 1px solid var(--pastel-green-b);
   border-radius: var(--r); padding: 20px; margin-bottom: 16px;
   box-shadow: var(--shadow);
 }
@@ -564,7 +566,7 @@ div[data-testid="stTextInput"] input:focus {
 
 /* ── Substitution cards ── */
 .sub-card {
-  background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b);
+  background: var(--pastel-pink); border: 1px solid var(--pastel-pink-b);
   border-radius: var(--r); padding: 18px; margin-bottom: 14px;
   box-shadow: var(--shadow);
 }
@@ -1063,18 +1065,7 @@ if "recipe" in st.session_state:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── AI GENERATED DISH IMAGE ──
-    import urllib.parse as _up
-    img_prompt = _up.quote(f"{title}, food photography, appetizing, restaurant quality")
-    img_url = f"https://image.pollinations.ai/prompt/{img_prompt}?width=600&height=400&nologo=true"
-    st.markdown(
-        f"<div style='text-align:center;margin:1rem 0;'>"
-        f"<img src='{img_url}' alt='{title}' style='max-width:100%;border-radius:var(--r);box-shadow:var(--shadow);' "
-        f"onerror=\"this.style.display='none'\" loading='lazy'>"
-        f"<p style='font-size:0.75rem;color:var(--ink-soft);margin-top:6px;'>AI-generated image</p>"
-        f"</div>",
-        unsafe_allow_html=True,
-    )
+
 
 
     # ── DIETARY ADAPTATION NOTICE ──
@@ -1181,7 +1172,7 @@ if "recipe" in st.session_state:
             for idx, step in enumerate(recipe.get("steps", []), 1)
         )
         st.markdown(
-            f"<div style='background:var(--pastel-green);border:1px solid var(--pastel-green-b);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
+            f"<div style='background:var(--pastel-blue);border:1px solid var(--pastel-blue-b);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
             unsafe_allow_html=True,
         )
 
@@ -1346,12 +1337,12 @@ if "recipe" in st.session_state:
     if tips:
         st.markdown("<div class='sec-hdr'>💡 Tips for Best Results</div>", unsafe_allow_html=True)
         tips_html = "".join(f"<div class='tip-row'><span>🌿</span><span>{t}</span></div>" for t in tips)
-        st.markdown(f"<div style='background:var(--pastel-pink); border:1px solid var(--pastel-pink-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background:var(--pastel-yellow); border:1px solid var(--pastel-yellow-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
 
     bot1, bot2 = st.columns(2)
     with bot1:
         if recipe.get("storage_info"):
-            st.markdown(f"<div class='info-box' style='background:var(--pastel-green);border-color:var(--pastel-green-b);'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='info-box' style='background:var(--pastel-blue);border-color:var(--pastel-blue-b);'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
     with bot2:
         if recipe.get("nutrition_notes"):
             st.markdown(f"<div class='info-box' style='background:var(--pastel-pink);border-color:var(--pastel-pink-b);'><strong>🥦 Nutrition Notes:</strong><br>{recipe.get('nutrition_notes')}</div>", unsafe_allow_html=True)
