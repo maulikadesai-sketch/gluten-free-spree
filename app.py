@@ -215,8 +215,8 @@ CUSTOM_CSS = """
   --pastel-blue-b: #BBDEFB;
   --pastel-pink-b: #F8BBD0;
   --pastel-green-b:#C8E6C9;
-  --pastel-yellow:  #E8DEF8;
-  --pastel-yellow-b:#D0BCFF;
+  --pastel-yellow:  #FFF9C4;
+  --pastel-yellow-b:#FFF176;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -256,7 +256,7 @@ section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.22;
+  opacity: 0.12;
   pointer-events: none;
   z-index: 0;
 }
