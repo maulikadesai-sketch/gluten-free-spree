@@ -256,7 +256,7 @@ section[data-testid="stMain"] > div:first-child { padding-top: 0 !important; }
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.06;
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
 }
