@@ -921,6 +921,51 @@ def scale_amount(amount_str, factor):
     except Exception:
         return amount_str
 
+# ─────────────────────────────────────────────
+# Post-generation gluten safety scan
+# ─────────────────────────────────────────────
+GLUTEN_BLOCKLIST = [
+    "wheat flour", "all-purpose flour", "plain flour", "self-raising flour", "bread flour",
+    "cake flour", "semolina", "durum", "spelt", "kamut", "farro", "bulgur", "couscous",
+    "barley", "rye", "triticale", "seitan", "vital wheat gluten", "wheat starch",
+    "wheat germ", "wheat bran", "wheat berries", "einkorn", "emmer",
+    "regular soy sauce", "soy sauce", "malt vinegar", "malt extract", "malt syrup",
+    "beer", "lager", "ale", "stout",
+    "regular breadcrumbs", "breadcrumbs", "panko", "croutons",
+    "regular pasta", "wheat noodles", "udon noodles",
+    "flour tortilla", "wheat tortilla", "pita bread", "naan",
+    "oreo", "graham cracker",
+]
+
+# Items that are OK despite sounding suspicious
+GLUTEN_SAFE = [
+    "gluten-free", "gf", "rice flour", "almond flour", "coconut flour", "oat flour",
+    "tapioca", "cornstarch", "corn flour", "chickpea flour", "besan", "buckwheat",
+    "arrowroot", "potato starch", "sorghum", "millet", "teff", "amaranth",
+    "tamari", "coconut aminos", "gf soy sauce", "gluten-free soy sauce",
+    "rice noodles", "glass noodles", "gf pasta", "gluten-free pasta",
+    "gf breadcrumbs", "gluten-free breadcrumbs", "gf panko",
+    "corn tortilla", "gf tortilla",
+]
+
+def scan_recipe_safety(recipe):
+    """Scan all ingredients for potential gluten contamination. Returns list of warnings."""
+    warnings = []
+    for ing in recipe.get("ingredients", []):
+        item = (ing.get("item", "") + " " + ing.get("note", "")).lower()
+        # Skip if marked as GF swap
+        if ing.get("swap", False):
+            continue
+        # Skip if contains a safe term
+        if any(safe in item for safe in GLUTEN_SAFE):
+            continue
+        # Check against blocklist
+        for blocked in GLUTEN_BLOCKLIST:
+            if blocked in item:
+                warnings.append(f"⚠️ **{ing.get('item', '')}** may contain gluten ({blocked}). Please verify this ingredient is gluten-free before using.")
+                break
+    return warnings
+
 def recipe_to_text(recipe, servings_label):
     lines = [
         f"GLUTEN-FREE SPREE — {recipe.get('dish_name','').upper()}",
@@ -1198,6 +1243,19 @@ if "recipe" in st.session_state:
         </div>
         """, unsafe_allow_html=True)
 
+    # ── SAFETY SCAN — check for potential gluten ingredients ──
+    safety_warnings = scan_recipe_safety(recipe)
+    if safety_warnings:
+        st.markdown("<div class='sec-hdr' style='color:#C62828;'>🚨 Safety Alert — Potential Gluten Detected</div>", unsafe_allow_html=True)
+        for w in safety_warnings:
+            st.warning(w)
+        st.markdown(
+            "<p style='font-size:0.82rem;color:var(--ink-soft);margin-bottom:1rem;'>"
+            "These ingredients were flagged by our automated safety scan. "
+            "The AI may have included a non-GF ingredient by mistake. Please verify before cooking.</p>",
+            unsafe_allow_html=True,
+        )
+
     # ── METRICS STRIP ──
     col_m1, col_m2, col_m3, col_m4, col_m5 = st.columns(5)
     with col_m1:
@@ -1240,7 +1298,7 @@ if "recipe" in st.session_state:
     col_left, col_right = st.columns([2, 3], gap="large")
 
     with col_left:
-        st.markdown("<div class='sec-hdr'>📋🧺 Ingredients Checklist</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
 
         # Adjust servings — directly above ingredients
         new_sv = st.slider("🍽️ How many people are you cooking for?", 1, 20, int(cur_sv), key="adjust_servings_slider")
@@ -1257,11 +1315,11 @@ if "recipe" in st.session_state:
         for idx, ing in enumerate(recipe.get("ingredients", [])):
             amount = scale_amount(ing.get("amount", ""), scale) if scale != 1 else ing.get("amount", "")
             item_name = ing.get("item", "")
-            emoji = (ing.get("emoji", "") or "🍽️").strip()
+            emoji = ""  # emojis removed for cleaner look
             note = f" ({ing.get('note')})" if ing.get("note") else ""
             swap_indicator = " [GF Swap]" if ing.get("swap", False) else ""
 
-            full_line = f"{emoji} {amount} {item_name}{note}{swap_indicator}"
+            full_line = f"{amount} {item_name}{note}{swap_indicator}"
 
             needs_to_buy = st.checkbox(full_line, key=f"ing_check_{idx}")
             if needs_to_buy:
@@ -1376,7 +1434,7 @@ if "recipe" in st.session_state:
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
     if subs:
-        st.markdown("<div class='sec-hdr'>🔄🔀 What Was Swapped & Why</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🔄 What Was Swapped & Why</div>", unsafe_allow_html=True)
         sub_cols = st.columns(2)
         for idx, s in enumerate(subs):
             brands_html = f"<div class='sub-brands'>🛒 Suggested: {s.get('local_brands', '')}</div>" if s.get('local_brands') else ""
@@ -1441,8 +1499,8 @@ if "recipe" in st.session_state:
     # ── PRO TIPS, STORAGE, NUTRITION ──
     tips = recipe.get("tips") or []
     if tips:
-        st.markdown("<div class='sec-hdr'>💡✨ Tips for Best Results</div>", unsafe_allow_html=True)
-        tips_html = "".join(f"<div class='tip-row'><span>🌿</span><span>{t}</span></div>" for t in tips)
+        st.markdown("<div class='sec-hdr'>💡 Tips for Best Results</div>", unsafe_allow_html=True)
+        tips_html = "".join(f"<div class='tip-row'><span>{t}</span></div>" for t in tips)
         st.markdown(f"<div style='background:var(--pastel-yellow); border:1px solid var(--pastel-yellow-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
 
     bot1, bot2 = st.columns(2)
@@ -1456,7 +1514,7 @@ if "recipe" in st.session_state:
     # ── PERFECT PAIRINGS / ACCOMPANIMENTS ──
     accompaniments = recipe.get("accompaniments") or []
     if accompaniments:
-        st.markdown("<div class='sec-hdr'>🍴🤝 Potential Pairings</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🍴 Potential Pairings</div>", unsafe_allow_html=True)
         st.markdown(
             "<p style='font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.8rem;'>"
             "Gluten-free sides, drinks and extras that round out the meal.</p>",
@@ -1473,7 +1531,6 @@ if "recipe" in st.session_state:
             with pair_cols[i]:
                 st.markdown(
                     f"<div class='pair-card'>"
-                    f"<div class='pair-icon'>{ic}</div>"
                     f"<div class='pair-name'>{ac.get('name','')}</div>"
                     f"<div class='pair-type'>{ac.get('type','')}</div>"
                     f"<div class='pair-reason'>{ac.get('reason','')}</div>"
@@ -1484,7 +1541,7 @@ if "recipe" in st.session_state:
     # ── ALTERNATIVE NAVIGATIONAL LINKS ──
     also_try = recipe.get("also_try") or []
     if also_try:
-        st.markdown("<div class='sec-hdr'>🍽️🌟 Other Dishes You Might Like to Try</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sec-hdr'>🍽️ Other Dishes You Might Like to Try</div>", unsafe_allow_html=True)
         st.markdown(
             "<p style='font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.8rem;'>"
             "Tap any dish to instantly generate its gluten-free recipe.</p>",
@@ -1533,6 +1590,14 @@ if "recipe" in st.session_state:
             "<p style='text-align:center;color:#D4603A;font-weight:600;font-size:0.9rem;margin:1.5rem 0 0.5rem;'>⬆️ New recipe loaded! Scroll up to view it.</p>",
             unsafe_allow_html=True,
         )
+
+    # Report button
+    col_report_l, col_report_m, col_report_r = st.columns([3, 2, 3])
+    with col_report_m:
+        if st.button("🚩 Report incorrect recipe", key="report_btn", use_container_width=True):
+            log_search(f"REPORT: {recipe.get('dish_name','unknown')}", country, dietary, source="report")
+            st.success("Thank you! Your report has been logged. We'll review this recipe.")
+
     st.markdown(
         "<div class='info-box' style='font-size:0.79rem;margin-top:1rem;'>ℹ️ AI-generated guidance only, not medical advice. "
         "If you have coeliac disease or serious gluten sensitivity, verify every ingredient label independently "
