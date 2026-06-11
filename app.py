@@ -805,7 +805,7 @@ Double-check every single ingredient against ALL restrictions before including i
             combos_tried += 1
             url = f"{API_BASE}/{m}:generateContent?key={key}"
             try:
-                resp = requests.post(url, json=payload, timeout=60)
+                resp = requests.post(url, json=payload, timeout=30)
             except requests.exceptions.RequestException as e:
                 last_err = RuntimeError(f"Network error: {e}")
                 resp = None
@@ -1053,33 +1053,18 @@ def get_dish_options(dish_name, keys_str, _v=2):
     """Ask Gemini if dish is vague. If yes, return sub-categories. Cached 24hrs."""
     import json as _j
     api_keys = [k for k in keys_str.split("|") if k]
-    prompt = f"""Is "{dish_name}" a generic or vague dish name that has multiple specific variations?
-If YES, return a JSON object with 1-3 category keys, each containing a list of 6-12 common variations.
-Categories should be the most USEFUL choices a home cook would make — focus on what changes the dish the most.
-If NO (the dish is already specific like "chicken tikka masala" or "pad thai"), return exactly: {{"specific": true}}
-
-IMPORTANT: "noodles" and "pasta" are DIFFERENT. Noodles are Asian (ramen, udon, soba, rice noodles, hakka). Pasta is Italian (penne, spaghetti, fusilli). Never mix them.
-
-Examples of GOOD categories:
-- "pasta" → {{"Pasta Type": ["Penne","Spaghetti","Fusilli","Macaroni","Fettuccine","Rigatoni","Farfalle","Lasagne","Tagliatelle","Linguine"], "Sauce": ["Tomato (Red)","Alfredo (White/Cream)","Pesto (Green)","Pink (Rosé)","Arrabbiata (Spicy)","Aglio e Olio","Carbonara","Bolognese","Puttanesca","Cacio e Pepe"]}}
-- "noodles" → {{"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka Noodles","Glass Noodles","Pad Thai Noodles","Chow Mein","Lo Mein","Vermicelli"], "Style": ["Stir-fried","Soup/Broth","Dry/Tossed","Spicy Szechuan","Thai","Japanese","Indo-Chinese"]}}
-- "curry" → {{"Curry Style": ["Butter Curry","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag","Madras","Rendang"], "Main Ingredient": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Mixed Vegetables","Prawns","Fish","Mushroom","Egg"]}}
-- "chicken tikka masala" → {{"specific": true}}
-- "sushi" → {{"Sushi Style": ["Maki Roll","Nigiri","Hand Roll","Inside-out Roll","Poke Bowl","Onigiri"], "Main Filling": ["Salmon","Tuna","Prawn","Avocado","Cucumber","Tofu","Crab"]}}
-
-BAD categories (avoid these):
-- "Pasta Shape" (say "Pasta Type" instead)
-- Showing pasta types for noodles or vice versa
-- "Difficulty Level" (not useful)
-- "Serving Size" (handled elsewhere)
-
-Return ONLY valid JSON, no other text."""
+    prompt = f"""Is "{dish_name}" generic? If YES: return JSON with 1-2 keys, each a list of 8-10 variations. If specific: return {{"specific":true}}
+Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
+Examples: "pasta"->{{"Pasta Type":["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"],"Sauce":["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"]}}
+"noodles"->{{"Noodle Type":["Ramen","Udon","Soba","Rice Noodles","Hakka","Glass Noodles","Chow Mein","Vermicelli"],"Style":["Stir-fried","Soup","Dry","Spicy","Thai","Japanese"]}}
+"chicken tikka masala"->{{"specific":true}}
+JSON only, no text."""
     for key in api_keys[:2]:
         try:
             r = requests.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
-                timeout=10
+                timeout=5
             )
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = text.strip().strip("`").strip()
@@ -1340,81 +1325,6 @@ if "recipe" in st.session_state:
         if new_unit != st.session_state.get("unit_pref"):
             st.session_state["unit_pref"] = new_unit
 
-
-        # Kitchen Timer — inline (no expander = no collapsing)
-        st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
-        timer_min = st.number_input("Set minutes and press Enter:", min_value=1, max_value=180, value=5, step=1, key="timer_slider")
-        if timer_min and timer_min > 0:
-            import streamlit.components.v1 as components
-            timer_html = f"""
-            <html>
-            <head>
-            <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-            <style>
-              * {{ margin:0; padding:0; box-sizing:border-box; }}
-              body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
-              #display {{ font-size:3.2rem; font-weight:700; color:#D4603A; letter-spacing:3px; margin-bottom:14px; }}
-              #display.warn {{ color:#9E2A2B; }}
-              .btns {{ display:flex; gap:10px; justify-content:center; }}
-              .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
-                      font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
-              .btn:hover {{ transform:translateY(-1px); }}
-              .btn-start {{ background:#FFFFFF; color:#D4603A; border:2px solid #2F5435; }}
-              .btn-pause {{ background:#FFFFFF; color:#D4603A; border:2px solid #2F5435; font-weight:700; }}
-              .btn-reset {{ background:#FFFFFF; color:#D4603A; border:2px solid #CCD5CD; }}
-              .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
-              #done {{ display:none; margin-top:12px; padding:10px; background:#FFFFFF;
-                       border-radius:8px; color:#D4603A; font-weight:600; font-size:0.9rem; border:1px solid #E0D8CF; }}
-            </style>
-            </head>
-            <body>
-              <div id="display">{timer_min:02d}:00</div>
-              <div class="btns">
-                <button class="btn btn-start" id="startBtn" onclick="doStart()">▶ Start</button>
-                <button class="btn btn-pause" id="pauseBtn" onclick="doPause()" disabled>⏸ Pause</button>
-                <button class="btn btn-reset" id="resetBtn" onclick="doReset()">↺ Reset</button>
-              </div>
-              <div id="done">🔔 Time's up!</div>
-              <script>
-                var total = {timer_min}*60, rem = total, iv = null;
-                var d = document.getElementById('display');
-                var sb = document.getElementById('startBtn');
-                var pb = document.getElementById('pauseBtn');
-                var dm = document.getElementById('done');
-                function show() {{
-                  var m=Math.floor(rem/60), s=rem%60;
-                  d.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
-                }}
-                function doStart() {{
-                  if(iv) return;
-                  dm.style.display='none'; d.className='';
-                  sb.disabled=true; pb.disabled=false;
-                  iv=setInterval(function(){{
-                    rem--;show();
-                    if(rem<=10&&rem>0) d.className='warn';
-                    if(rem<=0){{ clearInterval(iv);iv=null;d.textContent='00:00';
-                      dm.style.display='block';sb.disabled=false;pb.disabled=true;
-                      sb.textContent='▶ Start'; }}
-                  }},1000);
-                }}
-                function doPause() {{
-                  if(iv){{ clearInterval(iv);iv=null;
-                    sb.disabled=false;sb.textContent='▶ Resume';pb.disabled=true; }}
-                }}
-                function doReset() {{
-                  clearInterval(iv);iv=null;rem=total;show();
-                  d.className='';dm.style.display='none';
-                  sb.disabled=false;sb.textContent='▶ Start';pb.disabled=true;
-                }}
-              </script>
-            </body>
-            </html>
-            """
-            components.html(timer_html, height=180)
-        else:
-            st.empty()
-
-
     with col_right:
         st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
         steps_html = "".join(
@@ -1427,9 +1337,70 @@ if "recipe" in st.session_state:
         )
 
         # Download button — bottom right after steps
-        col_empty, col_dl = st.columns([3, 1])
+        col_empty, col_dl, col_rpt = st.columns([2, 1, 1])
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
+        with col_rpt:
+            if st.button("🚩 Report Issue", key="report_btn", use_container_width=True):
+                log_search(f"REPORT: {recipe.get('dish_name','unknown')}", country, dietary, source="report")
+                st.success("Thanks! Report logged.")
+
+        # Timer: show here if >10 ingredients
+        if not _show_timer_left:
+            st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
+            _timer_val = st.number_input("Set minutes and press Enter:", min_value=1, max_value=180, value=5, step=1, key="timer_right")
+
+    # Render timer component (works for either position)
+    if '_timer_val' in dir() and _timer_val and _timer_val > 0:
+        import streamlit.components.v1 as components
+        timer_html = f"""
+        <html><head>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+          * {{ margin:0; padding:0; box-sizing:border-box; }}
+          body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
+          #display {{ font-size:3.2rem; font-weight:700; color:#D4603A; letter-spacing:3px; margin-bottom:14px; }}
+          #display.warn {{ color:#9E2A2B; }}
+          .btns {{ display:flex; gap:10px; justify-content:center; }}
+          .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
+                  font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
+          .btn:hover {{ transform:translateY(-1px); }}
+          .btn-start {{ background:#D4603A; color:#fff; }}
+          .btn-pause {{ background:#C17817; color:#fff; }}
+          .btn-reset {{ background:#FFFFFF; color:#D4603A; border:2px solid #E8DDD0; }}
+          .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
+          #done {{ display:none; margin-top:12px; padding:10px; background:#DEF2D6;
+                   border-radius:8px; color:#2E7D32; font-weight:700; font-size:0.9rem; }}
+        </style></head>
+        <body>
+          <div id="display">{_timer_val:02d}:00</div>
+          <div class="btns">
+            <button class="btn btn-start" id="startBtn" onclick="doStart()">▶ Start</button>
+            <button class="btn btn-pause" id="pauseBtn" onclick="doPause()" disabled>⏸ Pause</button>
+            <button class="btn btn-reset" id="resetBtn" onclick="doReset()">↺ Reset</button>
+          </div>
+          <div id="done">🔔 Time's up!</div>
+          <script>
+            var total={_timer_val}*60,rem=total,iv=null;
+            var d=document.getElementById('display'),sb=document.getElementById('startBtn'),
+                pb=document.getElementById('pauseBtn'),dm=document.getElementById('done');
+            function show(){{ var m=Math.floor(rem/60),s=rem%60;
+              d.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s; }}
+            function doStart(){{ if(iv)return; dm.style.display='none';d.className='';
+              sb.disabled=true;pb.disabled=false;
+              iv=setInterval(function(){{ rem--;show();
+                if(rem<=10&&rem>0)d.className='warn';
+                if(rem<=0){{ clearInterval(iv);iv=null;d.textContent='00:00';
+                  dm.style.display='block';sb.disabled=false;pb.disabled=true;sb.textContent='▶ Start'; }}
+              }},1000); }}
+            function doPause(){{ if(iv){{ clearInterval(iv);iv=null;
+              sb.disabled=false;sb.textContent='▶ Resume';pb.disabled=true; }} }}
+            function doReset(){{ clearInterval(iv);iv=null;rem=total;show();
+              d.className='';dm.style.display='none';sb.disabled=false;sb.textContent='▶ Start';pb.disabled=true; }}
+          </script>
+        </body></html>
+        """
+        components.html(timer_html, height=180)
 
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
@@ -1590,13 +1561,6 @@ if "recipe" in st.session_state:
             "<p style='text-align:center;color:#D4603A;font-weight:600;font-size:0.9rem;margin:1.5rem 0 0.5rem;'>⬆️ New recipe loaded! Scroll up to view it.</p>",
             unsafe_allow_html=True,
         )
-
-    # Report button
-    col_report_l, col_report_m, col_report_r = st.columns([3, 2, 3])
-    with col_report_m:
-        if st.button("🚩 Report incorrect recipe", key="report_btn", use_container_width=True):
-            log_search(f"REPORT: {recipe.get('dish_name','unknown')}", country, dietary, source="report")
-            st.success("Thank you! Your report has been logged. We'll review this recipe.")
 
     st.markdown(
         "<div class='info-box' style='font-size:0.79rem;margin-top:1rem;'>ℹ️ AI-generated guidance only, not medical advice. "
