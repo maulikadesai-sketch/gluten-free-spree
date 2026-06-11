@@ -1282,21 +1282,6 @@ if "recipe" in st.session_state:
         if new_unit != st.session_state.get("unit_pref"):
             st.session_state["unit_pref"] = new_unit
 
-    with col_right:
-        st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
-        steps_html = "".join(
-            f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
-            for idx, step in enumerate(recipe.get("steps", []), 1)
-        )
-        st.markdown(
-            f"<div style='background:var(--pastel-blue);border:1px solid var(--pastel-blue-b);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
-            unsafe_allow_html=True,
-        )
-
-        # Download button — bottom right after steps
-        col_empty, col_dl = st.columns([3, 1])
-        with col_dl:
-            st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
         # Kitchen Timer — inline (no expander = no collapsing)
         st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
@@ -1370,6 +1355,23 @@ if "recipe" in st.session_state:
             components.html(timer_html, height=180)
         else:
             st.empty()
+
+
+    with col_right:
+        st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
+        steps_html = "".join(
+            f"<div class='step-block'><div class='step-n'>{idx}.</div><div class='step-t'>{step}</div></div>"
+            for idx, step in enumerate(recipe.get("steps", []), 1)
+        )
+        st.markdown(
+            f"<div style='background:var(--pastel-blue);border:1px solid var(--pastel-blue-b);border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:var(--shadow);'>{steps_html}</div>",
+            unsafe_allow_html=True,
+        )
+
+        # Download button — bottom right after steps
+        col_empty, col_dl = st.columns([3, 1])
+        with col_dl:
+            st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
