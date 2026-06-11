@@ -1327,6 +1327,36 @@ if "recipe" in st.session_state:
         if new_unit != st.session_state.get("unit_pref"):
             st.session_state["unit_pref"] = new_unit
 
+        # Kitchen Timer — compact, inside left column
+        st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
+        _timer_val = st.number_input("Set minutes and press Enter:", min_value=1, max_value=180, value=5, step=1, key="timer_left")
+        if _timer_val and _timer_val > 0:
+            import streamlit.components.v1 as components
+            components.html(f"""
+            <html><head><style>
+              *{{margin:0;padding:0;box-sizing:border-box;}}
+              body{{font-family:sans-serif;background:transparent;text-align:center;padding:8px 0;}}
+              #d{{font-size:2rem;font-weight:700;color:#D4603A;letter-spacing:2px;margin-bottom:8px;}}
+              #d.w{{color:#C62828;}}
+              .b{{display:flex;gap:8px;justify-content:center;}}
+              .b button{{border:none;border-radius:6px;padding:6px 16px;font-weight:600;font-size:0.8rem;cursor:pointer;}}
+              .s{{background:#D4603A;color:#fff;}}.p{{background:#C17817;color:#fff;}}.r{{background:#fff;color:#D4603A;border:1px solid #E8DDD0;}}
+              button:disabled{{opacity:0.3;}}
+              #dn{{display:none;margin-top:8px;padding:8px;background:#DEF2D6;border-radius:6px;color:#2E7D32;font-weight:700;font-size:0.85rem;}}
+            </style></head><body>
+              <div id="d">{_timer_val:02d}:00</div>
+              <div class="b">
+                <button class="s" id="sb" onclick="go()">▶ Start</button>
+                <button class="p" id="pb" onclick="pa()" disabled>⏸ Pause</button>
+                <button class="r" onclick="re()">↺ Reset</button>
+              </div><div id="dn">🔔 Time's up!</div>
+              <script>var t={_timer_val}*60,r=t,i=null,d=document.getElementById('d'),s=document.getElementById('sb'),p=document.getElementById('pb'),dn=document.getElementById('dn');
+              function sh(){{var m=Math.floor(r/60),sec=r%60;d.textContent=(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;}}
+              function go(){{if(i)return;dn.style.display='none';d.className='';s.disabled=true;p.disabled=false;i=setInterval(function(){{r--;sh();if(r<=10&&r>0)d.className='w';if(r<=0){{clearInterval(i);i=null;d.textContent='00:00';dn.style.display='block';s.disabled=false;p.disabled=true;s.textContent='▶ Start';}}}},1000);}}
+              function pa(){{if(i){{clearInterval(i);i=null;s.disabled=false;s.textContent='▶ Resume';p.disabled=true;}}}}
+              function re(){{clearInterval(i);i=null;r=t;sh();d.className='';dn.style.display='none';s.disabled=false;s.textContent='▶ Start';p.disabled=true;}}</script>
+            </body></html>""", height=120)
+
     with col_right:
         st.markdown("<div class='sec-hdr'>👨‍🍳 Cooking Steps</div>", unsafe_allow_html=True)
         steps_html = "".join(
@@ -1350,57 +1380,6 @@ if "recipe" in st.session_state:
 
 
     # Render timer component (works for either position)
-    if '_timer_val' in dir() and _timer_val and _timer_val > 0:
-        import streamlit.components.v1 as components
-        timer_html = f"""
-        <html><head>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-        <style>
-          * {{ margin:0; padding:0; box-sizing:border-box; }}
-          body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
-          #display {{ font-size:3.2rem; font-weight:700; color:#D4603A; letter-spacing:3px; margin-bottom:14px; }}
-          #display.warn {{ color:#9E2A2B; }}
-          .btns {{ display:flex; gap:10px; justify-content:center; }}
-          .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
-                  font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
-          .btn:hover {{ transform:translateY(-1px); }}
-          .btn-start {{ background:#D4603A; color:#fff; }}
-          .btn-pause {{ background:#C17817; color:#fff; }}
-          .btn-reset {{ background:#FFFFFF; color:#D4603A; border:2px solid #E8DDD0; }}
-          .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
-          #done {{ display:none; margin-top:12px; padding:10px; background:#DEF2D6;
-                   border-radius:8px; color:#2E7D32; font-weight:700; font-size:0.9rem; }}
-        </style></head>
-        <body>
-          <div id="display">{_timer_val:02d}:00</div>
-          <div class="btns">
-            <button class="btn btn-start" id="startBtn" onclick="doStart()">▶ Start</button>
-            <button class="btn btn-pause" id="pauseBtn" onclick="doPause()" disabled>⏸ Pause</button>
-            <button class="btn btn-reset" id="resetBtn" onclick="doReset()">↺ Reset</button>
-          </div>
-          <div id="done">🔔 Time's up!</div>
-          <script>
-            var total={_timer_val}*60,rem=total,iv=null;
-            var d=document.getElementById('display'),sb=document.getElementById('startBtn'),
-                pb=document.getElementById('pauseBtn'),dm=document.getElementById('done');
-            function show(){{ var m=Math.floor(rem/60),s=rem%60;
-              d.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s; }}
-            function doStart(){{ if(iv)return; dm.style.display='none';d.className='';
-              sb.disabled=true;pb.disabled=false;
-              iv=setInterval(function(){{ rem--;show();
-                if(rem<=10&&rem>0)d.className='warn';
-                if(rem<=0){{ clearInterval(iv);iv=null;d.textContent='00:00';
-                  dm.style.display='block';sb.disabled=false;pb.disabled=true;sb.textContent='▶ Start'; }}
-              }},1000); }}
-            function doPause(){{ if(iv){{ clearInterval(iv);iv=null;
-              sb.disabled=false;sb.textContent='▶ Resume';pb.disabled=true; }} }}
-            function doReset(){{ clearInterval(iv);iv=null;rem=total;show();
-              d.className='';dm.style.display='none';sb.disabled=false;sb.textContent='▶ Start';pb.disabled=true; }}
-          </script>
-        </body></html>
-        """
-        components.html(timer_html, height=180)
-
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
     if subs:
