@@ -191,16 +191,16 @@ CUSTOM_CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
-  --ink:       #1A1A1A;
-  --ink-mid:   #4A4A4A;
-  --ink-soft:  #7A7A7A;
-  --bg:        #FFFDF7;
-  --bg2:       #FFF8F0;
-  --border:    #E0D8CF;
-  --green:     #4A9B6D;
-  --green-l:   #E8F5E9;
-  --green-d:   #2E7D32;
-  --amber:     #E67E22;
+  --ink:       #2D2319;
+  --ink-mid:   #5C4B3A;
+  --ink-soft:  #8B7D6B;
+  --bg:        #FFF9F0;
+  --bg2:       #FFF3E6;
+  --border:    #E8DDD0;
+  --green:     #D4603A;
+  --green-l:   #FFE8D6;
+  --green-d:   #B84A2A;
+  --amber:     #C17817;
   --amber-l:   #FEF3E2;
   --red-l:     #FCE4EC;
   --red:       #C62828;
@@ -209,21 +209,21 @@ CUSTOM_CSS = """
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.10);
   --r:         14px;
   /* Pastel section colors */
-  --pastel-blue:   #DBEAFE;
-  --pastel-pink:   #FCE4EC;
-  --pastel-green:  #E8F5E9;
-  --pastel-blue-b: #93C5FD;
-  --pastel-pink-b: #F8BBD0;
-  --pastel-green-b:#C8E6C9;
-  --pastel-yellow:  #FFF9C4;
-  --pastel-yellow-b:#FFF176;
+  --pastel-blue:   #DCEEFB;
+  --pastel-pink:   #FFE0D6;
+  --pastel-green:  #DEF2D6;
+  --pastel-blue-b: #A8D4F0;
+  --pastel-pink-b: #F5B8A8;
+  --pastel-green-b:#B8DBA8;
+  --pastel-yellow:  #FFF2D6;
+  --pastel-yellow-b:#FFE0A0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #1A1A1A; --ink-mid: #4A4A4A; --ink-soft: #7A7A7A;
-    --bg: #FFFDF7; --bg2: #FFF8F0; --border: #E0D8CF;
-    --green: #4A9B6D; --green-l: #E8F5E9; --card: #FFFFFF;
+    --ink: #2D2319; --ink-mid: #5C4B3A; --ink-soft: #8B7D6B;
+    --bg: #FFF9F0; --bg2: #FFF3E6; --border: #E8DDD0;
+    --green: #D4603A; --green-l: #FFE8D6; --card: #FFFFFF;
   }
 }
 [data-theme="dark"] {
@@ -234,7 +234,7 @@ CUSTOM_CSS = """
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  background-color: #FFFDF7 !important;
+  background-color: #FFF9F0 !important;
   color: #1A1A1A !important;
   -webkit-text-size-adjust: 100%;
 }
@@ -619,6 +619,24 @@ div.stFormSubmitButton > button p, div.stFormSubmitButton > button span,
 /* ── Divider ── */
 hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
+
+/* ── Decorative cooking elements ── */
+.decor-strip {
+  text-align: center;
+  font-size: 2.5rem;
+  letter-spacing: 15px;
+  opacity: 0.15;
+  margin: 1rem 0;
+  user-select: none;
+  line-height: 1;
+}
+.decor-float {
+  text-align: center;
+  font-size: 4rem;
+  opacity: 0.08;
+  margin: 0.5rem 0;
+  user-select: none;
+}
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
 .info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
@@ -966,7 +984,7 @@ if not SHEET_WEBHOOK:
 # ─────────────────────────────────────────────
 st.markdown("""
 <div style='padding:0; margin-top:1.5rem; text-align:center;'>
-  <h1 style='margin-bottom:6px; font-size:2.8rem; background:linear-gradient(135deg, #4A9B6D, #2E7D32); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;'>Gluten-Free Spree</h1>
+  <h1 style='margin-bottom:6px; font-size:2.8rem; background:linear-gradient(135deg, #D4603A, #C17817); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;'>Gluten-Free Spree</h1>
   <p style='color:#7A7A7A; font-size:0.95rem; margin:0 auto 12px; line-height:1.5; font-style:italic; max-width:800px;'>
     Craving something delicious but need it gluten-free? You're in the right place! Type any dish and we'll recreate it with GF swaps, brand suggestions, and step-by-step instructions tailored to your dietary needs.
   </p>
@@ -1099,7 +1117,7 @@ col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
 with col_btn_m:
     go = st.button("✨ Make My Recipe!", type="primary", use_container_width=True)
 
-st.markdown("<p style='text-align:center;font-size:1.2rem;letter-spacing:6px;margin:8px 0;opacity:0.85;'>🔪 🧄 🧅 🍋 🌶️ 🧈 🍯 🫚 🌿 🧂 🥄 🍶 🫗 🥣</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;font-size:1.2rem;letter-spacing:6px;margin:8px 0;opacity:1;'><span style='font-size:2rem;letter-spacing:12px;'>🔪 🧄 🧅 🍋 🌶️ 🧈 🍯 🫚 🌿 🧂 🥄 🍶 🫗 🥣</span></p>", unsafe_allow_html=True)
 st.divider()
 
 if go:
@@ -1166,6 +1184,8 @@ if "recipe" in st.session_state:
 
 
 
+
+    st.markdown("<div class='decor-float'>👨‍🍳</div>", unsafe_allow_html=True)
 
     # ── DIETARY ADAPTATION NOTICE ──
     adaptation = recipe.get("dietary_adaptation") or ""
@@ -1280,6 +1300,8 @@ if "recipe" in st.session_state:
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
+        st.markdown("<div class='decor-strip'>🍴🫕🥄🍳🔪</div>", unsafe_allow_html=True)
+
         # Kitchen Timer
         with st.expander("⏱️ Kitchen Timer"):
             timer_min = st.slider("Set minutes:", 1, 60, 5, key="timer_slider")
@@ -1292,18 +1314,18 @@ if "recipe" in st.session_state:
             <style>
               * {{ margin:0; padding:0; box-sizing:border-box; }}
               body {{ font-family:'Outfit',sans-serif; background:#FFFFFF; text-align:center; padding:12px 0; }}
-              #display {{ font-size:3.2rem; font-weight:700; color:#4A9B6D; letter-spacing:3px; margin-bottom:14px; }}
+              #display {{ font-size:3.2rem; font-weight:700; color:#D4603A; letter-spacing:3px; margin-bottom:14px; }}
               #display.warn {{ color:#9E2A2B; }}
               .btns {{ display:flex; gap:10px; justify-content:center; }}
               .btn {{ border:none; border-radius:8px; padding:9px 22px; font-weight:600;
                       font-size:0.88rem; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }}
               .btn:hover {{ transform:translateY(-1px); }}
-              .btn-start {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #2F5435; }}
-              .btn-pause {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #2F5435; font-weight:700; }}
-              .btn-reset {{ background:#FFFFFF; color:#4A9B6D; border:2px solid #CCD5CD; }}
+              .btn-start {{ background:#FFFFFF; color:#D4603A; border:2px solid #2F5435; }}
+              .btn-pause {{ background:#FFFFFF; color:#D4603A; border:2px solid #2F5435; font-weight:700; }}
+              .btn-reset {{ background:#FFFFFF; color:#D4603A; border:2px solid #CCD5CD; }}
               .btn:disabled {{ opacity:0.4; cursor:default; transform:none; }}
               #done {{ display:none; margin-top:12px; padding:10px; background:#FFFFFF;
-                       border-radius:8px; color:#4A9B6D; font-weight:600; font-size:0.9rem; border:1px solid #E0D8CF; }}
+                       border-radius:8px; color:#D4603A; font-weight:600; font-size:0.9rem; border:1px solid #E0D8CF; }}
             </style>
             </head>
             <body>
@@ -1383,10 +1405,10 @@ if "recipe" in st.session_state:
 
             if is_fully_gf:
                 # Green — certified safe
-                logo_style = "color:#4A9B6D !important;background:#E8F5E9 !important;"
-                badge_style = "color:#4A9B6D !important;background:#E8F5E9 !important;border:1px solid #E0D8CF;"
+                logo_style = "color:#D4603A !important;background:#E8F5E9 !important;"
+                badge_style = "color:#D4603A !important;background:#E8F5E9 !important;border:1px solid #E0D8CF;"
                 card_style = ""
-                name_style = "color:#4A9B6D;"
+                name_style = "color:#D4603A;"
                 desc_style = ""
             else:
                 # Amber — contamination risk, entire card amber-tinted
@@ -1427,6 +1449,8 @@ if "recipe" in st.session_state:
 
     bot1, bot2 = st.columns(2)
     with bot1:
+        st.markdown("<div class='decor-strip'>🧂🌿🫚🌶️🧄</div>", unsafe_allow_html=True)
+
         if recipe.get("storage_info"):
             st.markdown(f"<div class='info-box' style='background:var(--pastel-blue);border-color:var(--pastel-blue-b);'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
     with bot2:
@@ -1505,12 +1529,12 @@ if "recipe" in st.session_state:
                     else:
                         st.error(f"Error: {err}")
 
-    st.markdown("<p style='text-align:center;font-size:1.3rem;letter-spacing:6px;margin:1.5rem 0 0.5rem;opacity:0.85;'>🍽️ 👨‍🍳 🥄 🍴 🫕 🥘 🍲 🧑‍🍳 🥟 🫔 🥙 🌮 🍕 🍝</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;font-size:1.3rem;letter-spacing:6px;margin:1.5rem 0 0.5rem;opacity:1;'><span style='font-size:2rem;letter-spacing:12px;'>🍽️ 👨‍🍳 🥄 🍴 🫕 🥘 🍲 🧑‍🍳 🥟 🫔 🥙 🌮 🍕 🍝</span></p>", unsafe_allow_html=True)
 
     # ── DISCLAIMER FOOTER ──
     if st.session_state.pop("_from_also_try", False):
         st.markdown(
-            "<p style='text-align:center;color:#4A9B6D;font-weight:600;font-size:0.9rem;margin:1.5rem 0 0.5rem;'>⬆️ New recipe loaded! Scroll up to view it.</p>",
+            "<p style='text-align:center;color:#D4603A;font-weight:600;font-size:0.9rem;margin:1.5rem 0 0.5rem;'>⬆️ New recipe loaded! Scroll up to view it.</p>",
             unsafe_allow_html=True,
         )
     st.markdown(
