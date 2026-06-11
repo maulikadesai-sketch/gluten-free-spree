@@ -1281,6 +1281,8 @@ if "recipe" in st.session_state:
 
     # ── TWO COLUMN MAIN INTERACTIVE WORKSPACE ──
     col_left, col_right = st.columns([2, 3], gap="large")
+    _show_timer_left = len(recipe.get("ingredients", [])) <= 10
+    _timer_val = 5
 
     with col_left:
         st.markdown("<div class='sec-hdr'>📋 Ingredients Checklist</div>", unsafe_allow_html=True)
