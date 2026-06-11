@@ -1185,8 +1185,6 @@ if "recipe" in st.session_state:
 
 
 
-    st.markdown("<div class='decor-float'>👨‍🍳</div>", unsafe_allow_html=True)
-
     # ── DIETARY ADAPTATION NOTICE ──
     adaptation = recipe.get("dietary_adaptation") or ""
     if adaptation:
@@ -1300,14 +1298,12 @@ if "recipe" in st.session_state:
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
 
-        st.markdown("<div class='decor-strip'>🍴🫕🥄🍳🔪</div>", unsafe_allow_html=True)
-
-        # Kitchen Timer
-        with st.expander("⏱️ Kitchen Timer"):
-            timer_min = st.slider("Set minutes:", 1, 60, 5, key="timer_slider")
-            if timer_min and timer_min > 0:
-                import streamlit.components.v1 as components
-                timer_html = f"""
+        # Kitchen Timer — inline (no expander = no collapsing)
+        st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
+        timer_min = st.number_input("Set minutes and press Enter:", min_value=1, max_value=180, value=5, step=1, key="timer_slider")
+        if timer_min and timer_min > 0:
+            import streamlit.components.v1 as components
+            timer_html = f"""
             <html>
             <head>
             <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1371,9 +1367,9 @@ if "recipe" in st.session_state:
             </body>
             </html>
             """
-                components.html(timer_html, height=160)
-            else:
-                st.empty()
+            components.html(timer_html, height=180)
+        else:
+            st.empty()
 
     # ── SUBSTITUTION ARCHITECTURE ──
     subs = recipe.get("substitutions") or []
@@ -1449,8 +1445,6 @@ if "recipe" in st.session_state:
 
     bot1, bot2 = st.columns(2)
     with bot1:
-        st.markdown("<div class='decor-strip'>🧂🌿🫚🌶️🧄</div>", unsafe_allow_html=True)
-
         if recipe.get("storage_info"):
             st.markdown(f"<div class='info-box' style='background:var(--pastel-blue);border-color:var(--pastel-blue-b);'><strong>🫙 Storage:</strong><br>{recipe.get('storage_info')}</div>", unsafe_allow_html=True)
     with bot2:
