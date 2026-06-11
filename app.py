@@ -1281,7 +1281,7 @@ if "recipe" in st.session_state:
 
     # ── TWO COLUMN MAIN INTERACTIVE WORKSPACE ──
     col_left, col_right = st.columns([2, 3], gap="large")
-    _show_timer_left = len(recipe.get("ingredients", [])) <= 10
+    _show_timer_left = True
     _timer_val = 5
 
     with col_left:
@@ -1343,14 +1343,11 @@ if "recipe" in st.session_state:
         with col_dl:
             st.download_button("📋 Download Recipe", recipe_text, file_name=f"{title.lower().replace(' ','_')}_recipe.txt", use_container_width=True)
         with col_rpt:
-            if st.button("🚩 Report Issue", key="report_btn", use_container_width=True):
+            if st.button("🚩 Incorrect Recipe", key="report_btn", use_container_width=True):
                 log_search(f"REPORT: {recipe.get('dish_name','unknown')}", country, dietary, source="report")
                 st.success("Thanks! Report logged.")
 
-        # Timer: show here if >10 ingredients
-        if not _show_timer_left:
-            st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
-            _timer_val = st.number_input("Set minutes and press Enter:", min_value=1, max_value=180, value=5, step=1, key="timer_right")
+
 
     # Render timer component (works for either position)
     if '_timer_val' in dir() and _timer_val and _timer_val > 0:
