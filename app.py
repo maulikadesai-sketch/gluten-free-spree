@@ -1039,10 +1039,13 @@ st.markdown("""
 # ─────────────────────────────────────────────
 # DISH INPUT — first thing users see and type
 # ─────────────────────────────────────────────
+_default_dish = st.session_state.pop("_new_dish_name", "")
+_dish_key = f"dish_input_{hash(_default_dish) if _default_dish else 0}"
 dish = st.text_input(
     "🍳 What dish would you like to make gluten-free?",
+    value=_default_dish if _default_dish else "",
     placeholder="Type any dish — e.g., Biryani, Pizza, Croissants, Pad Thai...",
-    key="dish_input",
+    key=_dish_key,
 )
 
 # ─────────────────────────────────────────────
@@ -1553,7 +1556,7 @@ if "recipe" in st.session_state:
 
     if "_queued_dish" in st.session_state:
         qd = st.session_state.pop("_queued_dish")
-        st.session_state["dish_input"] = qd  # Update the dish name field
+        st.session_state["_new_dish_name"] = qd  # Pass to text input on next rerun
         if qd and all_api_keys:
             with st.spinner(f"Recreating recipe for {qd}..."):
                 try:
