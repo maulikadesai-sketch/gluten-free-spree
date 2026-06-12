@@ -787,7 +787,7 @@ Double-check every single ingredient against ALL restrictions before including i
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"parts": [{"text": f"Create a gluten-free recipe for: {dish}.{serving_note}{dietary_user_note}"}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.7},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.4, "max_output_tokens": 4096},
     }
 
     # Ensure api_keys is a list
@@ -1418,7 +1418,7 @@ if "recipe" in st.session_state:
         with col_rpt:
             if st.button("🚩 Incorrect Recipe", key="report_btn", use_container_width=True):
                 log_search(f"REPORT: {recipe.get('dish_name','unknown')}", country, dietary, source="report")
-                st.success("Thanks! Report logged.")
+                st.toast("🙏 Thank you for the feedback! We will work towards correcting this recipe.", icon="✅")
 
 
 
@@ -1553,6 +1553,7 @@ if "recipe" in st.session_state:
 
     if "_queued_dish" in st.session_state:
         qd = st.session_state.pop("_queued_dish")
+        st.session_state["dish_input"] = qd  # Update the dish name field
         if qd and all_api_keys:
             with st.spinner(f"Recreating recipe for {qd}..."):
                 try:
