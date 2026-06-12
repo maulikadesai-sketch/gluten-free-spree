@@ -638,39 +638,7 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
   user-select: none;
 }
 
-/* ── FORCE DROPDOWNS DOWNWARD ── */
-/* 1. Massive padding below all content */
-[data-testid="stAppViewBlockContainer"]::after {
-  content: '';
-  display: block;
-  height: 100vh;
-  pointer-events: none;
-}
-/* 2. Container must be very tall and allow overflow */
-[data-testid="stAppViewBlockContainer"] {
-  min-height: 250vh !important;
-  overflow: visible !important;
-}
-/* 3. Main section must allow overflow for padding to work */
-section[data-testid="stMain"],
-section[data-testid="stMain"] > div,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > div {
-  overflow: visible !important;
-}
-/* 4. Force popover positioning */
-[data-baseweb="popover"] {
-  margin-top: 4px !important;
-}
-[data-baseweb="popover"] > div:first-child {
-  top: auto !important;
-  bottom: auto !important;
-}
-/* 5. Add space below each dropdown widget */
-[data-testid="stSelectbox"],
-[data-testid="stMultiSelect"] {
-  padding-bottom: 8px !important;
-}
+
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
 .info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
@@ -1160,15 +1128,8 @@ JSON only."""
 # Location — select before customization options
 country_choice = st.radio("📍 Which country are you in?", ["India", "🌍 Other"], horizontal=True, key="country_radio")
 if country_choice == "🌍 Other":
-    country_typed = st.text_input("Type your country:", placeholder="e.g. United States, United Kingdom...", key="country_search")
-    if country_typed.strip():
-        # Find closest match
-        matches = [c for c in COUNTRIES if country_typed.strip().lower() in c.lower() and "India" not in c]
-        country = matches[0] if matches else country_typed.strip()
-        if len(matches) > 1:
-            st.caption(f"Matched: {country}")
-    else:
-        country = "United States"
+    other_countries = [c for c in COUNTRIES if "India" not in c]
+    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
 else:
     country = "India"
 
@@ -1272,30 +1233,29 @@ if dish and dish.strip():
                         valid_options = {"🥩 Non-Veg Protein": protein_list, **valid_options}
 
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+                    cols = st.columns(min(len(valid_options), 3))
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
-                        st.markdown(f"<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🍽️ {label}:</p>", unsafe_allow_html=True)
-                        sel = st.radio(label, ["Skip"] + choices[:10], horizontal=True, key=f"generic_{dish_lower}_{idx}", label_visibility="collapsed")
-                        if sel != "Skip":
-                            selections.append(sel)
-                            if label == "🥩 Non-Veg Protein":
-                                nonveg_proteins.append(sel)
+                        with cols[idx % 3]:
+                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
+                            if sel != "— Choose (optional) —":
+                                selections.append(sel)
+                                if label == "🥩 Non-Veg Protein":
+                                    nonveg_proteins.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = get_culture_proteins(_current_country)
-                    st.markdown("<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🥩 Non-Veg Protein:</p>", unsafe_allow_html=True)
-                    sel = st.radio("protein", ["Skip"] + protein_list, horizontal=True, key=f"protein_only_{dish_lower}", label_visibility="collapsed")
-                    if sel != "Skip":
+                    sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_only_{dish_lower}")
+                    if sel != "— Choose (optional) —":
                         nonveg_proteins.append(sel)
                         dish_extra = " — " + sel
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = get_culture_proteins(_current_country)
-                st.markdown("<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🥩 Non-Veg Protein:</p>", unsafe_allow_html=True)
-                sel = st.radio("protein2", ["Skip"] + protein_list, horizontal=True, key=f"protein_spec_{dish_lower}", label_visibility="collapsed")
-                if sel != "Skip":
+                sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_spec_{dish_lower}")
+                if sel != "— Choose (optional) —":
                     nonveg_proteins.append(sel)
                     dish_extra = " — " + sel
 
