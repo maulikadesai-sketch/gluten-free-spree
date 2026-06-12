@@ -1182,6 +1182,16 @@ if _detected_veg == "veg":
 elif _detected_veg == "nonveg":
     veg_choice = "🍗 Non-Veg"
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
+    # Still let them choose which proteins
+    all_proteins = [
+        "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
+        "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
+        "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
+    ]
+    nonveg_proteins = st.multiselect(
+        "🥩 Choose your preferred non-veg (optional — leave empty to use what's in the dish name)",
+        all_proteins, default=[], key="nonveg_proteins_auto"
+    )
 else:
     # Not clear from dish name — show selector
     veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
