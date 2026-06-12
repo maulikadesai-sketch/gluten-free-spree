@@ -674,6 +674,38 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 # ─────────────────────────────────────────────
 # Prompts
 # ─────────────────────────────────────────────
+
+def get_culture_proteins(country_str):
+    """Return culture-appropriate protein list based on country."""
+    c = country_str.lower()
+    
+    # Hindu-majority: no beef, no pork
+    _HINDU = ["india", "nepal"]
+    # Muslim-majority: no pork
+    _MUSLIM = ["pakistan", "bangladesh", "afghanistan", "saudi", "uae", "emirates", "qatar", "kuwait", 
+               "bahrain", "oman", "iran", "iraq", "jordan", "egypt", "morocco", "tunisia", "algeria", 
+               "libya", "sudan", "somalia", "yemen", "syria", "lebanon", "turkey", "indonesia", 
+               "malaysia", "brunei", "maldives", "uzbekistan", "turkmenistan", "tajikistan", 
+               "kyrgyzstan", "kazakhstan", "azerbaijan", "senegal", "mali", "niger", "mauritania",
+               "gambia", "guinea", "sierra leone", "djibouti", "comoros", "palestine"]
+    # Jewish: no pork, no shellfish
+    _JEWISH = ["israel"]
+    # Buddhist (some): vegetarian-leaning but varied
+    _NO_BEEF = ["sri lanka", "myanmar", "bhutan"]
+    
+    base = ["Chicken", "Mutton/Lamb", "Eggs", "Fish"]
+    
+    if any(h in c for h in _HINDU):
+        return base + ["Prawns/Shrimp", "Crab", "Duck", "Turkey"]
+    elif any(m in c for m in _MUSLIM):
+        return base + ["Beef", "Prawns/Shrimp", "Duck", "Turkey", "Crab", "Salmon", "Tuna"]
+    elif any(j in c for j in _JEWISH):
+        return base + ["Beef", "Duck", "Turkey", "Salmon", "Tuna"]  # No shellfish
+    elif any(b in c for b in _NO_BEEF):
+        return base + ["Prawns/Shrimp", "Pork", "Crab", "Duck", "Squid/Calamari"]
+    else:
+        return base + ["Prawns/Shrimp", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck", "Turkey", "Salmon", "Tuna", "Lobster"]
+
 SYSTEM_INSTRUCTION_TEMPLATE = """You are an expert recipe developer and food scientist who specialises in \
 gluten-free cooking. The user is located in: {country}. Tailor ALL ingredient suggestions and brand recommendations \
 to what is realistically available in that country.
@@ -1102,6 +1134,9 @@ _VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", 
 _NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
 
 _dish_lower = (dish or "").strip().lower()
+_SPECIFIC_PROTEINS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "squid", "calamari", "keema", "seekh"}
+_has_specific_protein = any(w in _dish_lower for w in _SPECIFIC_PROTEINS)
+_current_country = st.session_state.get("country_radio", "🇮🇳 India")
 _detected_veg = None
 if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
     _detected_veg = "nonveg"
@@ -1117,7 +1152,7 @@ elif _detected_veg == "nonveg":
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
 else:
     # Not clear from dish name — show selector
-    veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
+    veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🥚 Eggetarian", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
     
     # Non-veg protein selector moved to customization area
     if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
@@ -1175,8 +1210,8 @@ if dish and dish.strip():
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
                     # Add protein selector as first option if non-veg
-                    if veg_choice == "🍗 Non-Veg":
-                        protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck", "Turkey", "Salmon", "Tuna"]
+                    if veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
+                        protein_list = get_culture_proteins(_current_country)
                         valid_options = {"🥩 Non-Veg Protein": protein_list, **valid_options}
 
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
@@ -1191,18 +1226,16 @@ if dish and dish.strip():
                                     nonveg_proteins.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
-                elif veg_choice == "🍗 Non-Veg":
-                    # No generic options but non-veg selected — show just protein selector
+                elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                    protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck"]
+                    protein_list = get_culture_proteins(_current_country)
                     sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_only_{dish_lower}")
                     if sel != "— Choose (optional) —":
                         nonveg_proteins.append(sel)
                         dish_extra = " — " + sel
-            elif veg_choice == "🍗 Non-Veg" and word_count <= 2:
-                # Specific dish detected by AI but user chose non-veg — show protein option
+            elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck"]
+                protein_list = get_culture_proteins(_current_country)
                 sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_spec_{dish_lower}")
                 if sel != "— Choose (optional) —":
                     nonveg_proteins.append(sel)
@@ -1249,6 +1282,8 @@ dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)"
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
     dietary = ["Vegetarian"] + list(dietary)
+elif veg_choice == "🥚 Eggetarian":
+    dietary = ["Eggetarian (vegetarian + eggs only, no meat/fish)"] + list(dietary)
 elif veg_choice == "🍗 Non-Veg" and "Non-Vegetarian" not in dietary:
     protein_note = f"Non-Vegetarian (use these proteins: {", ".join(nonveg_proteins)})" if nonveg_proteins else "Non-Vegetarian (must include meat/seafood/eggs)"
     dietary = [protein_note] + list(dietary)
