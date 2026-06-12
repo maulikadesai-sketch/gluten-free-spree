@@ -1096,6 +1096,34 @@ JSON only."""
             continue
     return None
 
+
+# Veg / Non-veg — auto-detect from dish name
+_VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
+_NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
+
+_dish_lower = (dish or "").strip().lower()
+_detected_veg = None
+if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
+    _detected_veg = "nonveg"
+elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
+    _detected_veg = "veg"
+
+nonveg_proteins = []
+if _detected_veg == "veg":
+    veg_choice = "🥦 Veg"
+    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🥦 <em>Detected as vegetarian from dish name</em></p>", unsafe_allow_html=True)
+elif _detected_veg == "nonveg":
+    veg_choice = "🍗 Non-Veg"
+    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
+else:
+    # Not clear from dish name — show selector
+    veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
+    
+    # Non-veg protein selector moved to customization area
+    if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
+        pass  # Proteins shown in customize section above
+
+
 dish_extra = ""
 if dish and dish.strip():
     dish_lower = dish.strip().lower()
@@ -1186,33 +1214,6 @@ if dish and dish.strip():
 # Location
 # Location
 country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
-
-# Veg / Non-veg — auto-detect from dish name
-_VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
-_NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
-
-_dish_lower = (dish or "").strip().lower()
-_detected_veg = None
-if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
-    _detected_veg = "nonveg"
-elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
-    _detected_veg = "veg"
-
-nonveg_proteins = []
-if _detected_veg == "veg":
-    veg_choice = "🥦 Veg"
-    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🥦 <em>Detected as vegetarian from dish name</em></p>", unsafe_allow_html=True)
-elif _detected_veg == "nonveg":
-    veg_choice = "🍗 Non-Veg"
-    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
-else:
-    # Not clear from dish name — show selector
-    veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
-    
-    # Non-veg protein selector moved to customization area
-    if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
-        pass  # Proteins shown in customize section above
-
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
     country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
