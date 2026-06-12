@@ -952,7 +952,7 @@ def scan_recipe_safety(recipe):
     """Scan all ingredients for potential gluten contamination. Returns list of warnings."""
     warnings = []
     for ing in recipe.get("ingredients", []):
-        item = (ing.get("item", "") + " " + ing.get("note", "")).lower()
+        item = ((ing.get("item", "") or "") + " " + (ing.get("note", "") or "")).lower()
         # Skip if marked as GF swap
         if ing.get("swap", False):
             continue
