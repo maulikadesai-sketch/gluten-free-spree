@@ -1126,12 +1126,14 @@ JSON only."""
 # Veg / Non-veg — auto-detect from dish name
 
 # Location — select before customization options
-country_choice = st.radio("📍 Which country are you in?", ["India", "🌍 Other"], horizontal=True, key="country_radio")
-if country_choice == "🌍 Other":
+country_choice = st.radio("📍 Which country are you in?", ["India", "Other"], horizontal=True, index=None, key="country_radio")
+if country_choice == "Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
     country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
-else:
+elif country_choice == "India":
     country = "India"
+else:
+    country = ""
 
 
 _VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
@@ -1237,27 +1239,31 @@ if dish and dish.strip():
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % 3]:
-                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
-                            if sel != "— Choose (optional) —":
-                                selections.append(sel)
-                                if label == "🥩 Non-Veg Protein":
-                                    nonveg_proteins.append(sel)
+                            if label == "🥩 Non-Veg Protein":
+                                sel = st.multiselect(f"🍽️ {label} (select all)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
+                                if sel:
+                                    selections.extend(sel)
+                                    nonveg_proteins.extend(sel)
+                            else:
+                                sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
+                                if sel != "— Choose (optional) —":
+                                    selections.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = get_culture_proteins(_current_country)
-                    sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_only_{dish_lower}")
-                    if sel != "— Choose (optional) —":
-                        nonveg_proteins.append(sel)
-                        dish_extra = " — " + sel
+                    sel = st.multiselect("🥩 Non-Veg Protein (select all that apply)", protein_list, default=[], key=f"protein_only_{dish_lower}")
+                    if sel:
+                        nonveg_proteins.extend(sel)
+                        dish_extra = " — " + ", ".join(sel)
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = get_culture_proteins(_current_country)
-                sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_spec_{dish_lower}")
-                if sel != "— Choose (optional) —":
-                    nonveg_proteins.append(sel)
-                    dish_extra = " — " + sel
+                sel = st.multiselect("🥩 Non-Veg Protein (select all that apply)", protein_list, default=[], key=f"protein_spec_{dish_lower}")
+                if sel:
+                    nonveg_proteins.extend(sel)
+                    dish_extra = " — " + ", ".join(sel)
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
