@@ -1146,6 +1146,11 @@ if dish and dish.strip():
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
+                    # Add protein selector as first option if non-veg
+                    if veg_choice == "🍗 Non-Veg":
+                        protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck", "Turkey", "Salmon", "Tuna"]
+                        valid_options = {"🥩 Non-Veg Protein": protein_list, **valid_options}
+
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     cols = st.columns(min(len(valid_options), 3))
                     selections = []
@@ -1154,8 +1159,26 @@ if dish and dish.strip():
                             sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
                             if sel != "— Choose (optional) —":
                                 selections.append(sel)
+                                if label == "🥩 Non-Veg Protein":
+                                    nonveg_proteins.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
+                elif veg_choice == "🍗 Non-Veg":
+                    # No generic options but non-veg selected — show just protein selector
+                    st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+                    protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck"]
+                    sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_only_{dish_lower}")
+                    if sel != "— Choose (optional) —":
+                        nonveg_proteins.append(sel)
+                        dish_extra = " — " + sel
+            elif veg_choice == "🍗 Non-Veg" and word_count <= 2:
+                # Specific dish detected by AI but user chose non-veg — show protein option
+                st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
+                protein_list = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck"]
+                sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_spec_{dish_lower}")
+                if sel != "— Choose (optional) —":
+                    nonveg_proteins.append(sel)
+                    dish_extra = " — " + sel
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
@@ -1182,31 +1205,13 @@ if _detected_veg == "veg":
 elif _detected_veg == "nonveg":
     veg_choice = "🍗 Non-Veg"
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
-    # Still let them choose which proteins
-    all_proteins = [
-        "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
-        "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
-        "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
-    ]
-    nonveg_proteins = st.multiselect(
-        "🥩 Choose your preferred non-veg (optional — leave empty to use what's in the dish name)",
-        all_proteins, default=[], key="nonveg_proteins_auto"
-    )
 else:
     # Not clear from dish name — show selector
     veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
     
-    # Non-veg protein selector
+    # Non-veg protein selector moved to customization area
     if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
-        all_proteins = [
-            "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
-            "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
-            "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
-        ]
-        nonveg_proteins = st.multiselect(
-            "🥩 What non-veg do you want in this dish? (Select all that apply)",
-            all_proteins, default=[], key="nonveg_proteins"
-        )
+        pass  # Proteins shown in customize section above
 
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
