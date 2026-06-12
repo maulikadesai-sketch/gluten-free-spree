@@ -769,6 +769,9 @@ These are hard constraints — they override the original dish if there is a con
 For example, if the user asks for "Chicken Tikka" but the restrictions include "Vegetarian",
 you MUST replace the chicken with a vegetarian protein (e.g. paneer, tofu, chickpeas) and
 rename the dish accordingly (e.g. "Paneer Tikka" or "Vegetarian Tikka").
+If the restrictions include "Non-Vegetarian (must include meat/seafood/eggs)", the recipe MUST contain \
+meat, poultry, seafood, or eggs as a main ingredient. Do NOT make it vegetarian. \
+For example, "Hakka Noodles" with Non-Vegetarian should be "Chicken Hakka Noodles" or "Egg Hakka Noodles", NOT "Vegetable Hakka Noodles".
 NEVER include any ingredient that violates ANY of these restrictions: {dietary_str}.
 Double-check every single ingredient against ALL restrictions before including it."""
 
@@ -1188,9 +1191,11 @@ all_dietary = sorted([
 ])
 dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
 
-# Add Vegetarian if veg toggle is on
+# Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🟢 Veg" and "Vegetarian" not in dietary:
     dietary = ["Vegetarian"] + list(dietary)
+elif veg_choice == "🔴 Non-Veg" and "Non-Vegetarian" not in dietary:
+    dietary = ["Non-Vegetarian (must include meat/seafood/eggs)"] + list(dietary)
 
 # Units stored in session state, configurable near recipe
 if "unit_pref" not in st.session_state:
