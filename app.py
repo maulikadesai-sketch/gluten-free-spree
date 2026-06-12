@@ -1130,13 +1130,23 @@ JSON only."""
 
 
 # Veg / Non-veg — auto-detect from dish name
+
+# Location — select before customization options
+country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+if country_choice == "🌍 Other":
+    other_countries = [c for c in COUNTRIES if "India" not in c]
+    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+else:
+    country = "🇮🇳 India"
+
+
 _VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
 _NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
 
 _dish_lower = (dish or "").strip().lower()
 _SPECIFIC_PROTEINS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "squid", "calamari", "keema", "seekh"}
 _has_specific_protein = any(w in _dish_lower for w in _SPECIFIC_PROTEINS)
-_current_country = st.session_state.get("country_radio", "🇮🇳 India")
+_current_country = country
 _detected_veg = None
 if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
     _detected_veg = "nonveg"
@@ -1244,15 +1254,6 @@ if dish and dish.strip():
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
-# Location
-# Location
-country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
-if country_choice == "🌍 Other":
-    other_countries = [c for c in COUNTRIES if "India" not in c]
-    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
-else:
-    country = "🇮🇳 India"
-
 # Default servings (adjustable in recipe display area)
 servings = st.session_state.get("current_servings", 4)
 
