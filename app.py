@@ -1160,8 +1160,15 @@ JSON only."""
 # Location — select before customization options
 country_choice = st.radio("📍 Which country are you in?", ["India", "🌍 Other"], horizontal=True, key="country_radio")
 if country_choice == "🌍 Other":
-    other_countries = [c for c in COUNTRIES if "India" not in c]
-    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+    country_typed = st.text_input("Type your country:", placeholder="e.g. United States, United Kingdom...", key="country_search")
+    if country_typed.strip():
+        # Find closest match
+        matches = [c for c in COUNTRIES if country_typed.strip().lower() in c.lower() and "India" not in c]
+        country = matches[0] if matches else country_typed.strip()
+        if len(matches) > 1:
+            st.caption(f"Matched: {country}")
+    else:
+        country = "United States"
 else:
     country = "India"
 
@@ -1241,39 +1248,54 @@ if dish and dish.strip():
                 }
                 options = _FB.get(dish_lower)
 
+            if options and isinstance(options, dict) and veg_choice == "🥦 Veg":
+                _nv = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema"}
+                options = {k: [v for v in vs if not any(n in v.lower() for n in _nv)] for k, vs in options.items() if isinstance(vs, list)}
+                options = {k: v for k, v in options.items() if v}
+                if not options:
+                    options = None
+
             if options and isinstance(options, dict) and not options.get("specific"):
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
+                    # Filter out non-veg options if veg is selected
+                    if veg_choice == "🥦 Veg":
+                        _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema"}
+                        for k in list(valid_options.keys()):
+                            valid_options[k] = [v for v in valid_options[k] if not any(nv in v.lower() for nv in _nv_words)]
+                            if not valid_options[k]:
+                                del valid_options[k]
                     # Add protein selector as first option if non-veg
                     if veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                         protein_list = get_culture_proteins(_current_country)
                         valid_options = {"🥩 Non-Veg Protein": protein_list, **valid_options}
 
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                    cols = st.columns(min(len(valid_options), 3))
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
-                        with cols[idx % 3]:
-                            sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
-                            if sel != "— Choose (optional) —":
-                                selections.append(sel)
-                                if label == "🥩 Non-Veg Protein":
-                                    nonveg_proteins.append(sel)
+                        st.markdown(f"<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🍽️ {label}:</p>", unsafe_allow_html=True)
+                        sel = st.radio(label, ["Skip"] + choices[:10], horizontal=True, key=f"generic_{dish_lower}_{idx}", label_visibility="collapsed")
+                        if sel != "Skip":
+                            selections.append(sel)
+                            if label == "🥩 Non-Veg Protein":
+                                nonveg_proteins.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = get_culture_proteins(_current_country)
-                    sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_only_{dish_lower}")
-                    if sel != "— Choose (optional) —":
+                    st.markdown("<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🥩 Non-Veg Protein:</p>", unsafe_allow_html=True)
+                    sel = st.radio("protein", ["Skip"] + protein_list, horizontal=True, key=f"protein_only_{dish_lower}", label_visibility="collapsed")
+                    if sel != "Skip":
                         nonveg_proteins.append(sel)
                         dish_extra = " — " + sel
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = get_culture_proteins(_current_country)
-                sel = st.selectbox("🥩 Non-Veg Protein", ["— Choose (optional) —"] + protein_list, key=f"protein_spec_{dish_lower}")
-                if sel != "— Choose (optional) —":
+                st.markdown("<p style='font-size:0.82rem;color:var(--ink-mid);margin:4px 0 2px;'>🥩 Non-Veg Protein:</p>", unsafe_allow_html=True)
+                sel = st.radio("protein2", ["Skip"] + protein_list, horizontal=True, key=f"protein_spec_{dish_lower}", label_visibility="collapsed")
+                if sel != "Skip":
                     nonveg_proteins.append(sel)
                     dish_extra = " — " + sel
 
