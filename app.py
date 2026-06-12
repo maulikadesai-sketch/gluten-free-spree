@@ -82,7 +82,7 @@ COUNTRIES = [
     "Ghana", "Greece", "Grenada", "Guatemala",
     "Guinea", "Guinea-Bissau", "Guyana", "Haiti",
     "Honduras", "Hong Kong", "Hungary", "Iceland",
-    "🇮🇳 India", "Indonesia", "Iran", "Iraq",
+    "India", "Indonesia", "Iran", "Iraq",
     "Ireland", "Israel", "Italy", "Ivory Coast",
     "Jamaica", "Japan", "Jordan", "Kazakhstan",
     "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan",
@@ -638,19 +638,38 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
   user-select: none;
 }
 
-/* Force dropdowns to open downward by ensuring lots of space below every widget */
+/* ── FORCE DROPDOWNS DOWNWARD ── */
+/* 1. Massive padding below all content */
 [data-testid="stAppViewBlockContainer"]::after {
   content: '';
   display: block;
   height: 100vh;
   pointer-events: none;
 }
+/* 2. Container must be very tall and allow overflow */
 [data-testid="stAppViewBlockContainer"] {
-  min-height: 200vh !important;
+  min-height: 250vh !important;
+  overflow: visible !important;
 }
-/* Push popover downward */
+/* 3. Main section must allow overflow for padding to work */
+section[data-testid="stMain"],
+section[data-testid="stMain"] > div,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > div {
+  overflow: visible !important;
+}
+/* 4. Force popover positioning */
 [data-baseweb="popover"] {
   margin-top: 4px !important;
+}
+[data-baseweb="popover"] > div:first-child {
+  top: auto !important;
+  bottom: auto !important;
+}
+/* 5. Add space below each dropdown widget */
+[data-testid="stSelectbox"],
+[data-testid="stMultiSelect"] {
+  padding-bottom: 8px !important;
 }
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
@@ -1139,7 +1158,7 @@ JSON only."""
 # Veg / Non-veg — auto-detect from dish name
 
 # Location — select before customization options
-country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+country_choice = st.radio("📍 Which country are you in?", ["India", "🌍 Other"], horizontal=True, key="country_radio")
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
     country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
