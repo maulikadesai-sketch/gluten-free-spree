@@ -1049,16 +1049,22 @@ dish = st.text_input(
 # Smart sub-options — AI detects vague dishes dynamically
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_dish_options(dish_name, keys_str, _v=2):
+def get_dish_options(dish_name, keys_str, _v=3):
     """Ask Gemini if dish is vague. If yes, return sub-categories. Cached 24hrs."""
     import json as _j
     api_keys = [k for k in keys_str.split("|") if k]
-    prompt = f"""Is "{dish_name}" generic? If YES: return JSON with 1-2 keys, each a list of 8-10 variations. If specific: return {{"specific":true}}
+    prompt = f"""The user typed "{dish_name}" as a dish. Return customization options as JSON.
+
+RULE: Single-word dishes (pizza, pasta, curry, dosa, biryani, soup, salad, burger, sushi, noodles, bread, cake, pie, wrap, taco, steak, kebab, paratha, chaat, momos, risotto, crepe, omelette, smoothie, pancake, dumpling, sandwich, etc.) are ALWAYS generic — return options.
+Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
+
+For generic dishes: return 1-2 JSON keys with 8-10 variations each.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
-Examples: "pasta"->{{"Pasta Type":["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"],"Sauce":["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"]}}
-"noodles"->{{"Noodle Type":["Ramen","Udon","Soba","Rice Noodles","Hakka","Glass Noodles","Chow Mein","Vermicelli"],"Style":["Stir-fried","Soup","Dry","Spicy","Thai","Japanese"]}}
+Examples:
+"dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa","Egg Dosa"]}}
+"pasta"->{{"Pasta Type":["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"],"Sauce":["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"]}}
 "chicken tikka masala"->{{"specific":true}}
-JSON only, no text."""
+JSON only."""
     for key in api_keys[:2]:
         try:
             r = requests.post(
@@ -1084,7 +1090,44 @@ if dish and dish.strip():
     if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
-            options = get_dish_options(dish_lower, keys_for_check, _v=2)
+            options = get_dish_options(dish_lower, keys_for_check, _v=3)
+            
+            # Fallback: if AI returns nothing for a single common word, use hardcoded
+            if not options and word_count == 1:
+                _FB = {
+                    "dosa": {"Dosa Type": ["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa","Egg Dosa"]},
+                    "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
+                    "biryani": {"Type": ["Chicken","Mutton","Veg","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar"]},
+                    "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat"]},
+                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Veg","Prawns"]},
+                    "pizza": {"Crust": ["Thin","Thick","Deep Dish","Neapolitan","Stuffed"], "Topping": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Four Cheese"]},
+                    "pasta": {"Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Pink"]},
+                    "noodles": {"Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli"], "Style": ["Stir-fried","Soup","Dry","Spicy"]},
+                    "soup": {"Type": ["Tomato","Mushroom","Chicken","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin"]},
+                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","None"]},
+                    "burger": {"Patty": ["Beef","Chicken","Veggie","Paneer","Fish","Lamb"], "Style": ["Classic","Smash","BBQ","Spicy"]},
+                    "sandwich": {"Type": ["Club","Grilled Cheese","BLT","Panini","Sub"], "Bread": ["White","Multigrain","Wrap","Sourdough"]},
+                    "cake": {"Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest"]},
+                    "bread": {"Type": ["Sandwich","Focaccia","Naan","Roti","Pita","Baguette","Sourdough","Banana Bread"]},
+                    "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu"]},
+                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"]},
+                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Veg","Paneer","Pork","Cheese"]},
+                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Doner","Shawarma"], "Protein": ["Chicken","Lamb","Paneer","Fish","Veg"]},
+                    "rice": {"Dish": ["Fried Rice","Biryani","Pulao","Risotto","Jeera Rice","Lemon Rice"], "Protein": ["Veg","Chicken","Egg","Prawn","Paneer"]},
+                    "pancake": {"Type": ["American Fluffy","French Crêpes","Banana","Blueberry","Dutch Baby","Japanese Soufflé"]},
+                    "omelette": {"Style": ["French","Spanish","Masala","Cheese","Mushroom","Western"]},
+                    "smoothie": {"Base": ["Banana","Mango","Berry","Green","Tropical","Chocolate"], "Liquid": ["Milk","Almond Milk","Coconut Milk","Yogurt"]},
+                    "dumpling": {"Type": ["Gyoza","Momo","Wonton","Pierogi","Ravioli","Samosa"], "Method": ["Steamed","Pan-fried","Deep-fried","Boiled"]},
+                    "steak": {"Cut": ["Ribeye","Sirloin","Tenderloin","T-Bone","Flank"], "Doneness": ["Rare","Medium Rare","Medium","Well Done"]},
+                    "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg"]},
+                    "idli": {"Type": ["Plain Idli","Rava Idli","Mini Idli","Masala Idli","Stuffed Idli","Kanchipuram Idli"]},
+                    "uttapam": {"Type": ["Onion","Tomato","Mixed Veg","Cheese","Masala","Plain"]},
+                    "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
+                    "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
+                    "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
+                }
+                options = _FB.get(dish_lower)
+
             if options and isinstance(options, dict) and not options.get("specific"):
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
