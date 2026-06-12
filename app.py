@@ -1157,7 +1157,20 @@ if dish and dish.strip():
 country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
 
 # Veg / Non-veg
-veg_choice = st.radio("🥗 Food preference", ["🟢 Veg", "🔴 Non-Veg"], horizontal=True, key="veg_radio")
+veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
+
+# Non-veg protein selector — only when non-veg is chosen and a dish is typed
+nonveg_proteins = []
+if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
+    all_proteins = [
+        "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
+        "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
+        "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
+    ]
+    nonveg_proteins = st.multiselect(
+        "🥩 What non-veg do you want in this dish? (Select all that apply)",
+        all_proteins, default=[], key="nonveg_proteins"
+    )
 
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
@@ -1192,10 +1205,11 @@ all_dietary = sorted([
 dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
 
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
-if veg_choice == "🟢 Veg" and "Vegetarian" not in dietary:
+if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
     dietary = ["Vegetarian"] + list(dietary)
-elif veg_choice == "🔴 Non-Veg" and "Non-Vegetarian" not in dietary:
-    dietary = ["Non-Vegetarian (must include meat/seafood/eggs)"] + list(dietary)
+elif veg_choice == "🍗 Non-Veg" and "Non-Vegetarian" not in dietary:
+    protein_note = f"Non-Vegetarian (use these proteins: {", ".join(nonveg_proteins)})" if nonveg_proteins else "Non-Vegetarian (must include meat/seafood/eggs)"
+    dietary = [protein_note] + list(dietary)
 
 # Units stored in session state, configurable near recipe
 if "unit_pref" not in st.session_state:
