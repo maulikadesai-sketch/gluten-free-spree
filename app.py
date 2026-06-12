@@ -637,6 +637,14 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
   margin: 0.5rem 0;
   user-select: none;
 }
+
+/* Force dropdowns to open downward by ensuring lots of space below every widget */
+[data-testid="stAppViewBlockContainer"]::after {
+  content: '';
+  display: block;
+  height: 80vh;
+  pointer-events: none;
+}
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
 .info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
@@ -1156,21 +1164,39 @@ if dish and dish.strip():
 # Location
 country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
 
-# Veg / Non-veg
-veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
+# Veg / Non-veg — auto-detect from dish name
+_VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
+_NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
 
-# Non-veg protein selector — only when non-veg is chosen and a dish is typed
+_dish_lower = (dish or "").strip().lower()
+_detected_veg = None
+if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
+    _detected_veg = "nonveg"
+elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
+    _detected_veg = "veg"
+
 nonveg_proteins = []
-if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
-    all_proteins = [
-        "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
-        "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
-        "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
-    ]
-    nonveg_proteins = st.multiselect(
-        "🥩 What non-veg do you want in this dish? (Select all that apply)",
-        all_proteins, default=[], key="nonveg_proteins"
-    )
+if _detected_veg == "veg":
+    veg_choice = "🥦 Veg"
+    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🥦 <em>Detected as vegetarian from dish name</em></p>", unsafe_allow_html=True)
+elif _detected_veg == "nonveg":
+    veg_choice = "🍗 Non-Veg"
+    st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
+else:
+    # Not clear from dish name — show selector
+    veg_choice = st.radio("🥗 Food preference", ["🥦 Veg", "🍗 Non-Veg"], horizontal=True, key="veg_radio")
+    
+    # Non-veg protein selector
+    if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
+        all_proteins = [
+            "Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish",
+            "Pork", "Beef", "Crab", "Squid/Calamari", "Duck",
+            "Turkey", "Salmon", "Tuna", "Lobster", "Clams/Mussels",
+        ]
+        nonveg_proteins = st.multiselect(
+            "🥩 What non-veg do you want in this dish? (Select all that apply)",
+            all_proteins, default=[], key="nonveg_proteins"
+        )
 
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
@@ -1396,8 +1422,7 @@ if "recipe" in st.session_state:
             )
 
         # Units preference — below ingredients
-        new_unit = st.selectbox("📏 How do you like your measurements?", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
-                                index=0 if "Metric" in unit_sys else 1, key="unit_select")
+        new_unit = st.radio("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], horizontal=True, key="unit_select")
         if new_unit != st.session_state.get("unit_pref"):
             st.session_state["unit_pref"] = new_unit
 
