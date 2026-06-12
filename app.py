@@ -1150,7 +1150,13 @@ if dish and dish.strip():
 # Settings Panel — country, units
 # ─────────────────────────────────────────────
 # Location
-country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+# Location and Veg/Non-veg
+col_country, col_vegnv = st.columns([3, 1])
+with col_country:
+    country_choice = st.radio("📍 Which country are you in?", ["🇮🇳 India", "🌍 Other"], horizontal=True, key="country_radio")
+with col_vegnv:
+    veg_choice = st.toggle("🥬 Veg", value=False, key="veg_toggle")
+
 if country_choice == "🌍 Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
     country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
@@ -1162,7 +1168,7 @@ servings = st.session_state.get("current_servings", 4)
 
 # Dietary needs
 all_dietary = sorted([
-    "Vegetarian", "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
+    "Vegan", "Pescatarian", "Fruitarian", "Raw Food",
     "Keto", "Paleo", "Carnivore", "Low-FODMAP", "Whole30",
     "AIP (Autoimmune Protocol)", "Mediterranean", "DASH (Heart-Healthy)",
     "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium",
@@ -1182,6 +1188,10 @@ all_dietary = sorted([
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
 dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
+
+# Add Vegetarian if veg toggle is on
+if veg_choice and "Vegetarian" not in dietary:
+    dietary = ["Vegetarian"] + list(dietary)
 
 # Units stored in session state, configurable near recipe
 if "unit_pref" not in st.session_state:
