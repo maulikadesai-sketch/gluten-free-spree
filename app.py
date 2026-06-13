@@ -1302,7 +1302,7 @@ if dish and dish.strip():
                                     nonveg_proteins.extend(sel)
                             else:
                                 # Multi-select for categories where multiple choices make sense
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "sauce", "protein", "dressing", "salsa"}
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "sauce", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "side", "garnish", "veggie", "vegetable", "ingredient"}
                                 _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
                                 if _is_multi:
                                     sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
