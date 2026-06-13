@@ -639,13 +639,32 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 }
 
 
-/* ── Content section spacing ── */
-/* Bottom padding so dropdowns have room to open downward */
+
+/* ── Dropdown cushioning — forces downward opening ── */
+[data-testid="stSelectbox"],
+[data-testid="stMultiSelect"] {
+  margin-bottom: 30px !important;
+}
+[data-testid="stSelectbox"]::after,
+[data-testid="stMultiSelect"]::after {
+  content: '';
+  display: block;
+  height: 200px;
+  pointer-events: none;
+  position: relative;
+}
+/* Page bottom cushion */
 [data-testid="stAppViewBlockContainer"]::after {
   content: '';
   display: block;
-  height: 70vh;
+  height: 100vh;
+  pointer-events: none;
 }
+[data-testid="stAppViewBlockContainer"] {
+  padding-bottom: 50vh !important;
+}
+
+/* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
 .info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
 
@@ -1349,7 +1368,7 @@ if dish and dish.strip():
                     for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % min(len(valid_options), 5)]:
                             if label == "🥩 Non-Veg Protein":
-                                sel = st.multiselect(f"🍽️ {label} (select all)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
+                                sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
                                 if sel:
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
@@ -1358,7 +1377,7 @@ if dish and dish.strip():
                                 _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient"}
                                 _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
                                 if _is_multi:
-                                    sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
+                                    sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
                                     if sel:
                                         selections.extend(sel)
                                 else:
@@ -1370,14 +1389,14 @@ if dish and dish.strip():
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein and veg_choice not in ("🥦 Veg", "🥚 Eggetarian"):
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = ALL_PROTEINS
-                    sel = st.multiselect("🥩 Non-Veg Protein (select all that apply)", protein_list, default=[], key=f"protein_only_{dish_lower}")
+                    sel = st.multiselect("🥩 Non-Veg Protein (select as many as you need)", protein_list, default=[], key=f"protein_only_{dish_lower}")
                     if sel:
                         nonveg_proteins.extend(sel)
                         dish_extra = " — " + ", ".join(sel)
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = ALL_PROTEINS
-                sel = st.multiselect("🥩 Non-Veg Protein (select all that apply)", protein_list, default=[], key=f"protein_spec_{dish_lower}")
+                sel = st.multiselect("🥩 Non-Veg Protein (select as many as you need)", protein_list, default=[], key=f"protein_spec_{dish_lower}")
                 if sel:
                     nonveg_proteins.extend(sel)
                     dish_extra = " — " + ", ".join(sel)
@@ -1409,7 +1428,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Any other dietary needs? (Select all that apply)", all_dietary, default=[], key="dietary_select")
+dietary = st.multiselect("🥗 Any other dietary needs? (select as many as you need)", all_dietary, default=[], key="dietary_select")
 
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
