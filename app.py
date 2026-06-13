@@ -54,7 +54,7 @@ def log_search(dish_name, country, dietary, source="search"):
         requests.post(SHEET_WEBHOOK, json={
             "dish": dish_name,
             "country": country,
-            "dietary": ", ".join(dietary) if dietary else "None",
+            "dietary": ", ".join(dietary) if dietary else "No Protein",
             "source": source,
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }, timeout=3)
@@ -116,7 +116,7 @@ COUNTRIES = [
 ]
 
 DIETARY_TAGS = [
-    "None",
+    "No Protein",
     # ── Lifestyle / Diet ──
     "Vegetarian",
     "Vegan",
@@ -1237,7 +1237,7 @@ elif _is_veg_or_egg:
     _detected_veg = "veg_or_egg"
 elif any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
     _detected_veg = "nonveg"
-elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
+elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "veg" in _dish_lower:
     _detected_veg = "veg"
 
 nonveg_proteins = []
@@ -1282,23 +1282,23 @@ if dish and dish.strip():
                 _FB = {
                     "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese","Podi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Coconut Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney","Peanut Chutney","Onion Chutney"]},
                     "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
-                    "biryani": {"Type": ["Chicken","Mutton","Veg","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat"]},
-                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Veg","Prawns"]},
+                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Vegetable","Prawns"]},
                     "pizza": {"Style": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Hawaiian","Mushroom","Pesto"], "Crust": ["Thin","Thick","Stuffed","Deep Dish"], "Size": ["Personal","Medium","Large"]},
                     "pasta": {"Pasta Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Pink"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "noodles": {"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli"], "Style": ["Stir-fried","Soup","Dry","Schezwan"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "soup": {"Type": ["Tomato","Mushroom","Chicken","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
-                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","None"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
+                    "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Sweet Potato","Broccoli"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
+                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
                     "burger": {"Patty": ["Beef","Chicken","Veggie","Paneer","Fish","Lamb"], "Style": ["Classic","Smash","BBQ","Spicy"]},
                     "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","Cold"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo"], "Bread": ["White","Multigrain","Wrap","Sourdough","Ciabatta","Rye"]},
                     "cake": {"Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest"]},
                     "bread": {"Type": ["Sandwich","Focaccia","Naan","Roti","Pita","Baguette","Sourdough","Banana Bread"]},
                     "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu"]},
                     "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Salsa": ["Mild","Medium","Hot","Mango","Pico de Gallo"]},
-                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Veg","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
-                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Doner","Shawarma","Satay"], "Protein": ["Chicken","Lamb","Paneer","Fish","Veg"], "Cooking": ["Grilled","Pan-fried","Oven-baked","Tandoor"]},
-                    "rice": {"Dish": ["Fried Rice","Biryani","Pulao","Risotto","Jeera Rice","Lemon Rice","Coconut Rice","Mexican Rice"], "Protein": ["Veg","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
+                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Doner","Shawarma","Satay"], "Protein": ["Chicken","Lamb","Paneer","Fish","Vegetable"], "Cooking": ["Grilled","Pan-fried","Oven-baked","Tandoor"]},
+                    "rice": {"Style": ["Fried Rice","Biryani","Pulao","Risotto","Jeera Rice","Lemon Rice","Coconut Rice","Mexican Rice"], "Protein": ["Mixed Vegetables","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "pancake": {"Type": ["American Fluffy","French Crêpes","Banana","Blueberry","Dutch Baby","Japanese Soufflé"]},
                     "omelette": {"Style": ["French","Spanish","Masala","Cheese","Mushroom","Western"], "Filling": ["Plain","Cheese","Veggies","Ham","Mushroom & Spinach"]},
                     "smoothie": {"Base": ["Banana","Mango","Berry","Green","Tropical","Chocolate"], "Liquid": ["Milk","Almond Milk","Coconut Milk","Yogurt"]},
@@ -1318,10 +1318,10 @@ if dish and dish.strip():
                     "maggi": {"Style": ["Classic Masala","Cheese","Vegetable","Atta","Schezwan","Soupy"], "Add-on": ["Vegetables","Cheese","Egg","Paneer","Corn"]},
                     "poha": {"Type": ["Kanda Poha","Indori Poha","Batata Poha","Dadpe Pohe","Chivda Poha"]},
                     "upma": {"Type": ["Rava Upma","Bread Upma","Vermicelli Upma","Oats Upma","Vegetable Upma"]},
-                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Mexican","Schezwan"], "Protein": ["Veg","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Mexican","Schezwan"], "Protein": ["Vegetable","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "garlic bread": {"Type": ["Classic","Cheese","Herb Butter","Pesto","Stuffed"], "Style": ["Baked","Grilled","Air-fried"]},
                     "french fries": {"Cut": ["Thin","Thick","Waffle","Curly","Wedge"], "Seasoning": ["Salt","Peri Peri","Cheese","Truffle","Cajun"]},
-                    "spring roll": {"Type": ["Veg","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
+                    "spring roll": {"Type": ["Vegetable","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
                     "iced tea": {"Flavour": ["Lemon","Peach","Mango","Mint","Berry","Green Tea","Passion Fruit"]},
                     "hot chocolate": {"Type": ["Classic","Dark","White","Mexican Spiced","Peppermint","Salted Caramel"]},
                     "banana bread": {"Add-in": ["Chocolate Chip","Walnut","Blueberry","Cinnamon","Peanut Butter","Plain"]},
@@ -1409,7 +1409,7 @@ if dish and dish.strip():
                                     nonveg_proteins.extend(sel)
                             else:
                                 _SINGLE_LABELS = {"type", "crust", "base", "size", "cut", "shell", "bun", "broth", "wrap", "spice", "level", "style", "method", "cooking", "consistency", "texture", "doneness", "sauce", "broth", "cuisine"}
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "herb", "seasoning"}
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "veg", "ingredient", "herb", "seasoning"}
                                 _is_single = any(s in label.lower() for s in _SINGLE_LABELS)
                                 _is_multi = any(m in label.lower() for m in _MULTI_LABELS) and not _is_single
                                 if _is_multi:
