@@ -1113,7 +1113,7 @@ with col_dish:
         key=_dish_key,
     )
 with col_reset:
-    if st.button("↺ Reset", key="reset_btn", use_container_width=True):
+    if st.button("↺ Reset", key="reset_btn", use_container_width=True, type="primary"):
         st.session_state["_reset_clicked"] = True
         st.rerun()
 
