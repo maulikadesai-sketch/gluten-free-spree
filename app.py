@@ -1124,7 +1124,7 @@ Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.)
 
 Return ALL meaningful customization choices for this dish (3-5 categories). Include: type/style, filling/protein, sauce, spice level, cooking method, toppings, add-ons, etc. Skip: oil type (part of recipe), serving size, cheese type, garnish, plating. NEVER include "gluten-free" as an option. Provide 6-10 options per category.
 CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
-- For DESSERTS/SWEETS (brownie, cake, ice cream, cookie): Only sweet add-ons like chocolate chips, nuts, caramel, berries, whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon. NEVER suggest chilli flakes, garlic, onion, soy sauce, or savory items.
+- For DESSERTS/SWEETS (brownie, cake, ice cream, cookie, pastry, halwa, barfi, kheer, chocobar): ONLY sweet/dessert-appropriate options: chocolate chips, nuts (walnut, almond, cashew, pistachio), caramel, berries (strawberry, blueberry, raspberry), whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon, coconut, banana, Oreo, cream cheese, fruit, honey, maple. ABSOLUTELY NEVER suggest: chilli, chili, pepper, garlic, onion, ginger, cumin, turmeric, masala, soy sauce, mustard, oregano, basil, sriracha, hot sauce, BBQ, mayo, ketchup, or ANY savory/spicy ingredient.
 - For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
 - For DRINKS (smoothie, milkshake, lassi): Only drink-appropriate add-ons like honey, protein powder, chia seeds, ice, whipped cream. No pasta, rice, or cooking ingredients.
 Every option in every category must make logical sense for someone actually making this dish.
@@ -1353,8 +1353,8 @@ if dish and dish.strip():
                 options = {k: v for k, v in options.items() if isinstance(v, list) and v}
 
             if options and isinstance(options, dict) and veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
-                _nv_veg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari"}
-                _nv_egg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari"}
+                _nv_veg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
+                _nv_egg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
                 _nv = _nv_veg if veg_choice == "🥦 Veg" else _nv_egg  # Eggetarian keeps "egg" out of filter
                 options = {k: [v for v in vs if not any(n in v.lower() for n in _nv)] for k, vs in options.items() if isinstance(vs, list)}
                 options = {k: v for k, v in options.items() if v}
@@ -1369,9 +1369,9 @@ if dish and dish.strip():
                     valid_options = dict(list(valid_options.items())[:5])
 
                     # Context-aware filter: remove mismatched options
-                    _dessert_words = {"brownie", "cake", "cookie", "ice cream", "icecream", "chocolate", "fudge", "pudding", "custard", "mousse", "tart", "pie", "muffin", "donut", "cupcake", "pastry", "macaron", "cheesecake", "tiramisu", "kulfi", "gelato", "barfi", "halwa", "ladoo", "kheer", "sundae", "chocobar", "waffle", "pancake", "crepe"}
-                    _savory_bad_for_dessert = {"chilli", "chili", "garlic", "onion", "ginger", "soy sauce", "mustard", "pepper flake", "jalapeno", "wasabi", "horseradish", "vinegar", "pickle", "olive", "anchovy", "bacon", "ham", "salami"}
-                    _sweet_bad_for_savory = {"chocolate chip", "caramel", "marshmallow", "sprinkle", "candy", "whipped cream", "icing", "frosting", "butterscotch", "toffee"}
+                    _dessert_words = {"brownie", "cake", "cookie", "biscuit", "ice cream", "icecream", "chocolate", "fudge", "pudding", "custard", "mousse", "tart", "pie", "muffin", "donut", "doughnut", "cupcake", "pastry", "macaron", "macaroon", "cheesecake", "tiramisu", "kulfi", "gelato", "barfi", "halwa", "ladoo", "laddu", "kheer", "sundae", "chocobar", "waffle", "pancake", "crepe", "eclair", "churro", "croissant", "scone", "panna cotta", "creme brulee", "flan", "baklava", "cannoli", "pavlova", "trifle", "lava cake", "truffle", "gulab jamun", "rasgulla", "rasmalai", "jalebi", "modak", "peda", "sandesh", "basundi", "shrikhand", "rabri", "malpua", "phirni", "banana bread", "granola bar", "protein bar", "energy ball"}
+                    _savory_bad_for_dessert = {"chilli", "chili", "chilly", "pepper flake", "red pepper", "cayenne", "paprika", "garlic", "onion", "ginger", "soy sauce", "mustard", "jalapeno", "wasabi", "horseradish", "vinegar", "pickle", "olive", "anchovy", "bacon", "ham", "salami", "oregano", "basil pesto", "cumin", "turmeric", "curry", "sriracha", "hot sauce", "tabasco", "bbq", "ketchup", "mayo", "ranch", "salsa", "tomato sauce", "marinara", "alfredo", "cheese sauce", "gravy", "soy", "fish sauce", "oyster sauce", "teriyaki", "miso", "sesame oil", "szechuan", "schezwan", "tandoori", "masala spice", "black pepper", "white pepper", "celery", "parsley", "thyme", "rosemary savory", "sage"}
+                    _sweet_bad_for_savory = {"chocolate chip", "caramel", "marshmallow", "sprinkle", "candy", "whipped cream", "icing", "frosting", "butterscotch", "toffee", "maple syrup", "honey glaze", "nutella", "jam", "jelly", "marmalade", "condensed milk", "sugar glaze", "fondant", "marzipan", "ganache", "fruit compote"}
                     
                     _is_dessert_dish = any(d in dish_lower for d in _dessert_words)
                     for k in list(valid_options.keys()):
@@ -1384,7 +1384,7 @@ if dish and dish.strip():
 
                     # Filter out non-veg options if veg is selected
                     if veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
-                        _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema", "pepperoni", "salami"}
+                        _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema", "pepperoni", "salami", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
                         if veg_choice == "🥦 Veg":
                             _nv_words.add("egg")  # Pure veg also blocks eggs
                         for k in list(valid_options.keys()):
@@ -1401,7 +1401,7 @@ if dish and dish.strip():
                     for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % min(len(valid_options), 4)]:
                             if label == "🥩 Non-Veg Protein":
-                                sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                                sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                 if sel:
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
@@ -1411,7 +1411,7 @@ if dish and dish.strip():
                                 _is_single = any(s in label.lower() for s in _SINGLE_LABELS)
                                 _is_multi = not _is_single
                                 if _is_multi:
-                                    sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                                    sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                     if sel:
                                         selections.extend(sel)
                                 else:
@@ -1423,14 +1423,14 @@ if dish and dish.strip():
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein and veg_choice not in ("🥦 Veg", "🥚 Eggetarian"):
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = ALL_PROTEINS
-                    sel = st.multiselect("🥩 Non-Veg Protein (select multiple)", protein_list, default=[], key=f"protein_only_{dish_lower}", placeholder="Make your selections")
+                    sel = st.multiselect("🥩 Non-Veg Protein (multi-select)", protein_list, default=[], key=f"protein_only_{dish_lower}", placeholder="Make your selections")
                     if sel:
                         nonveg_proteins.extend(sel)
                         dish_extra = " — " + ", ".join(sel)
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = ALL_PROTEINS
-                sel = st.multiselect("🥩 Non-Veg Protein (select multiple)", protein_list, default=[], key=f"protein_spec_{dish_lower}", placeholder="Make your selections")
+                sel = st.multiselect("🥩 Non-Veg Protein (multi-select)", protein_list, default=[], key=f"protein_spec_{dish_lower}", placeholder="Make your selections")
                 if sel:
                     nonveg_proteins.extend(sel)
                     dish_extra = " — " + ", ".join(sel)
@@ -1462,7 +1462,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Any other dietary needs? (select multiple)", all_dietary, default=[], key="dietary_select", placeholder="Make your selections")
+dietary = st.multiselect("🥗 Any other dietary needs? (multi-select)", all_dietary, default=[], key="dietary_select", placeholder="Make your selections")
 
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
