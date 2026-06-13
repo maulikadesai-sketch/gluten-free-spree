@@ -1307,7 +1307,7 @@ if dish and dish.strip():
                     "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "pav bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Jain","Cheese"]},
-                    "croissant": {"Type": ["Plain Butter","Chocolate","Almond","Cheese","Ham & Cheese","Spinach & Feta","Cinnamon","Pistachio"], "Style": ["Classic Flaky","Mini","Stuffed"]},
+                    "croissant": {"Type": ["Plain Butter","Chocolate","Almond","Cheese","Spinach & Feta","Cinnamon","Pistachio","Berry"], "Style": ["Classic Flaky","Mini","Stuffed"]},
                     "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
                     "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
                 }
