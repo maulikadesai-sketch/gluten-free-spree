@@ -763,50 +763,27 @@ Double-check every single ingredient against ALL restrictions before including i
 
     models_to_try = [model] + [m for m in FALLBACK_MODELS if m != model]
     
-    # PARALLEL: Try multiple key×model combos simultaneously, first success wins
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    
-    def _try_generate(key, m):
-        url = f"{API_BASE}/{m}:generateContent?key={key}"
-        try:
-            r = _session.post(url, json=payload, timeout=15)
-            if r.status_code == 200:
-                return r
-        except Exception:
-            pass
-        return None
-    
-    # Build list of (key, model) combos — prioritize fastest model with all keys first
-    combos = []
-    for m in models_to_try[:2]:  # Only try top 2 models in parallel
-        for key in api_keys:
-            combos.append((key, m))
-    
+    # Sequential round-robin: try each key with fastest model, then next model
     resp = None
-    with ThreadPoolExecutor(max_workers=min(len(combos), 4)) as executor:
-        futures = {executor.submit(_try_generate, k, m): (k, m) for k, m in combos}
-        for future in as_completed(futures, timeout=18):
-            result = future.result()
-            if result is not None:
-                resp = result
-                # Cancel remaining futures
-                for f in futures:
-                    f.cancel()
-                break
-    
-    # If parallel failed, try remaining models sequentially
-    if resp is None:
-        for m in models_to_try[2:]:
-            for key in api_keys[:1]:  # Just first key for fallback
-                url = f"{API_BASE}/{m}:generateContent?key={key}"
-                try:
-                    resp = _session.post(url, json=payload, timeout=15)
-                    if resp.status_code == 200:
-                        break
-                except Exception:
+    for m in models_to_try:
+        for key in api_keys:
+            url = f"{API_BASE}/{m}:generateContent?key={key}"
+            try:
+                resp = _session.post(url, json=payload, timeout=15)
+                if resp.status_code == 200:
+                    break
+                elif resp.status_code == 429:
+                    # Rate limited — try next key
+                    resp = None
                     continue
-            if resp and resp.status_code == 200:
-                break
+                else:
+                    resp = None
+                    continue
+            except Exception:
+                resp = None
+                continue
+        if resp and resp.status_code == 200:
+            break
 
     if resp is None or resp.status_code != 200:
         n_keys = len(api_keys)
@@ -1093,7 +1070,10 @@ Examples:
 "pasta"->{{"Pasta Type":["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"],"Sauce":["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"]}}
 "chicken tikka masala"->{{"specific":true}}
 JSON only."""
-    for key in api_keys[:2]:
+    import random as _rnd
+    _shuffled_keys = list(api_keys)
+    _rnd.shuffle(_shuffled_keys)
+    for key in _shuffled_keys[:3]:
         try:
             r = requests.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
@@ -1316,6 +1296,14 @@ if dish and dish.strip():
                     if isinstance(options.get(_k), list):
                         options[_k] = [v for v in options[_k] if isinstance(v, str) and "gluten" not in v.lower()]
                 options = {k: v for k, v in options.items() if isinstance(v, list) and v}
+
+            # Universal fallback — minimal but always relevant
+            if not options or (isinstance(options, dict) and options.get("specific")):
+                _sweet_dish = any(d in dish_lower for d in {"cake","brownie","cookie","ice cream","icecream","kulfi","barfi","halwa","ladoo","kheer","pudding","fudge","chocolate","chocobar","jalebi","gulab jamun","rasgulla","rasmalai","pastry","muffin","donut","cupcake","tart","pie","cheesecake","tiramisu","mousse","custard","panna cotta","waffle","pancake","crepe","macaron","eclair","churro","croissant","scone","flan","baklava","sundae","gelato","sorbet","candy","toffee"})
+                if _sweet_dish:
+                    options = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee","Coconut","Peanut Butter"]}
+                else:
+                    options = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"]}
 
             if options and isinstance(options, dict) and not options.get("specific"):
                 # Filter out any non-list values (cleanup AI response)
