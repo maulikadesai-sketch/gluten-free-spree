@@ -1088,15 +1088,16 @@ _default_dish = st.session_state.pop("_new_dish_name", "")
 if st.session_state.get("_reset_clicked"):
     _default_dish = ""
     st.session_state["_reset_clicked"] = False
-    # Clear country and veg selections
+    st.session_state["_reset_count"] = st.session_state.get("_reset_count", 0) + 1
+    # Clear country, veg, recipe, and all customization
     for k in list(st.session_state.keys()):
-        if k in ("country_radio", "veg_radio", "country_select"):
+        if k in ("country_radio", "veg_radio", "country_select", "recipe", "recipe_country", "base_servings", "current_servings"):
             del st.session_state[k]
         if k.startswith("generic_") or k.startswith("protein_") or k.startswith("nonveg_"):
             del st.session_state[k]
 
-_dish_key = f"dish_input_{hash(_default_dish) if _default_dish else 0}"
-col_dish, col_reset = st.columns([6, 1], vertical_alignment="bottom")
+_dish_key = f"dish_input_{st.session_state.get('_reset_count', 0)}"
+col_dish, col_reset = st.columns([4, 1], vertical_alignment="bottom")
 with col_dish:
     dish = st.text_input(
         "🍳 What dish would you like to make gluten-free?",
@@ -1108,6 +1109,11 @@ with col_reset:
     if st.button("↺ Reset", key="reset_btn", use_container_width=True):
         st.session_state["_reset_clicked"] = True
         st.rerun()
+
+# Style the reset button pink
+st.markdown("""<style>
+button[kind="secondary"]:first-of-type { background: #FFE0D6 !important; border-color: #F5B8A8 !important; }
+</style>""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # Smart sub-options — AI detects vague dishes dynamically
