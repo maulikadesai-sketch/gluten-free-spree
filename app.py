@@ -1317,15 +1317,6 @@ if dish and dish.strip():
                         options[_k] = [v for v in options[_k] if isinstance(v, str) and "gluten" not in v.lower()]
                 options = {k: v for k, v in options.items() if isinstance(v, list) and v}
 
-            if options and isinstance(options, dict) and veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
-                _nv_veg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
-                _nv_egg = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema", "sausage", "pepperoni", "salami", "calamari", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
-                _nv = _nv_veg if veg_choice == "🥦 Veg" else _nv_egg  # Eggetarian keeps "egg" out of filter
-                options = {k: [v for v in vs if not any(n in v.lower() for n in _nv)] for k, vs in options.items() if isinstance(vs, list)}
-                options = {k: v for k, v in options.items() if v}
-                if not options:
-                    options = None
-
             if options and isinstance(options, dict) and not options.get("specific"):
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
