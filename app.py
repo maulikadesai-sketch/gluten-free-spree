@@ -1076,9 +1076,9 @@ if st.session_state.get("_reset_clicked"):
     # Clear country, veg, recipe, and all customization
     # Clear recipe and customizations
     for k in list(st.session_state.keys()):
-        if k in ("recipe", "recipe_country", "base_servings", "current_servings"):
+        if k in ("recipe", "recipe_country", "base_servings", "current_servings", "dietary_select"):
             del st.session_state[k]
-        if k.startswith("generic_") or k.startswith("protein_") or k.startswith("nonveg_"):
+        if k.startswith("generic_") or k.startswith("protein_") or k.startswith("nonveg_") or k.startswith("veg_egg_"):
             del st.session_state[k]
 
 _dish_key = f"dish_input_{st.session_state.get('_reset_count', 0)}"
@@ -1101,7 +1101,7 @@ dish = st.text_input(
 # Smart sub-options — AI detects vague dishes dynamically
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_dish_options(dish_name, keys_str, _v=4, food_pref=""):
+def get_dish_options(dish_name, keys_str, _v=5, food_pref=""):
     """Ask Gemini for customization options based on food preference. Cached 24hrs."""
     import json as _j
     api_keys = [k for k in keys_str.split("|") if k]
@@ -1158,7 +1158,7 @@ JSON only."""
 country_choice = st.radio("📍 Which country are you in?", ["India", "Other"], horizontal=True, index=None, key=f"country_radio_{st.session_state.get('_reset_count', 0)}")
 if country_choice == "Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
-    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key=f"country_select_{st.session_state.get('_reset_count', 0)}")
+    country = st.selectbox("Choose your country", other_countries, index=0, label_visibility="collapsed", key=f"country_select_{st.session_state.get('_reset_count', 0)}")
 elif country_choice == "India":
     country = "India"
 else:
@@ -1284,7 +1284,7 @@ if dish and dish.strip():
     if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
-            options = get_dish_options(dish_lower, keys_for_check, _v=4, food_pref=veg_choice if veg_choice else "")
+            options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
             
             # Fallback: if AI returns nothing for a single common word, use hardcoded
             if not options and word_count == 1:
@@ -1343,7 +1343,8 @@ if dish and dish.strip():
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
                     # Limit to max 2 AI options (protein may add a 3rd)
-                    # No cap - show all relevant options
+                    # Cap at 4 categories max
+                    valid_options = dict(list(valid_options.items())[:4])
 
                     # Context-aware filter: remove mismatched options
                     _dessert_words = {"brownie", "cake", "cookie", "ice cream", "icecream", "chocolate", "fudge", "pudding", "custard", "mousse", "tart", "pie", "muffin", "donut", "cupcake", "pastry", "macaron", "cheesecake", "tiramisu", "kulfi", "gelato", "barfi", "halwa", "ladoo", "kheer", "sundae", "chocobar", "waffle", "pancake", "crepe"}
@@ -1378,15 +1379,16 @@ if dish and dish.strip():
                     for idx, (label, choices) in enumerate(valid_options.items()):
                         with cols[idx % min(len(valid_options), 4)]:
                             if label == "🥩 Non-Veg Protein":
-                                sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                                sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                 if sel:
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
                             else:
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient"}
-                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
+                                _SINGLE_LABELS = {"type", "style", "method", "cooking", "crust", "base", "size", "level", "consistency", "texture", "cut", "shell", "wrap", "bun", "broth", "sauce"}
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "spice", "herb", "seasoning", "garnish"}
+                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS) and not any(s in label.lower() for s in _SINGLE_LABELS)
                                 if _is_multi:
-                                    sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                                    sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                     if sel:
                                         selections.extend(sel)
                                 else:
@@ -1398,14 +1400,14 @@ if dish and dish.strip():
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein and veg_choice not in ("🥦 Veg", "🥚 Eggetarian"):
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                     protein_list = ALL_PROTEINS
-                    sel = st.multiselect("🥩 Non-Veg Protein (select as many as you need)", protein_list, default=[], key=f"protein_only_{dish_lower}", placeholder="Make your selections")
+                    sel = st.multiselect("🥩 Non-Veg Protein (select multiple)", protein_list, default=[], key=f"protein_only_{dish_lower}", placeholder="Make your selections")
                     if sel:
                         nonveg_proteins.extend(sel)
                         dish_extra = " — " + ", ".join(sel)
             elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
                 st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
                 protein_list = ALL_PROTEINS
-                sel = st.multiselect("🥩 Non-Veg Protein (select as many as you need)", protein_list, default=[], key=f"protein_spec_{dish_lower}", placeholder="Make your selections")
+                sel = st.multiselect("🥩 Non-Veg Protein (select multiple)", protein_list, default=[], key=f"protein_spec_{dish_lower}", placeholder="Make your selections")
                 if sel:
                     nonveg_proteins.extend(sel)
                     dish_extra = " — " + ", ".join(sel)
@@ -1437,7 +1439,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Any other dietary needs? (select as many as you need)", all_dietary, default=[], key="dietary_select", placeholder="Make your selections")
+dietary = st.multiselect("🥗 Any other dietary needs? (select multiple)", all_dietary, default=[], key="dietary_select", placeholder="Make your selections")
 
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
