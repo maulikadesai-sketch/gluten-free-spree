@@ -850,55 +850,20 @@ Double-check every single ingredient against ALL restrictions before including i
     except (KeyError, IndexError):
         raise RuntimeError("No content returned. Try again.")
     
-    # Robustly clean up any stray formatting tags around the JSON payload
-    text = text.strip()
-    if text.startswith("```"):
-        first_nl = text.find("\n")
-        if first_nl != -1:
-            text = text[first_nl:]
-        if text.endswith("```"):
-            text = text[:-3]
-    text = text.strip()
-    
-    brace = text.find('{')
-    if brace > 0:
-        text = text[brace:]
-    rbrace = text.rfind('}')
-    if rbrace != -1 and rbrace < len(text) - 1:
-        text = text[:rbrace + 1]
-    
     # Clean up common JSON issues from AI
     text = text.strip()
-    # Remove markdown code blocks
     if text.startswith("```"):
         text = text.split("\n", 1)[-1] if "\n" in text else text[3:]
     if text.endswith("```"):
         text = text[:-3]
     text = text.strip()
     import re as _re2
-    # Try to find JSON object in the text
     brace_start = text.find('{')
     brace_end = text.rfind('}')
     if brace_start >= 0 and brace_end > brace_start:
         text = text[brace_start:brace_end+1]
     
-    def _fix_json(t):
-        """Aggressively fix malformed JSON."""
-        # Remove control characters except newline
-        t = _re2.sub(r'[\x00-\x09\x0b-\x1f]', ' ', t)
-        # Fix trailing commas before } or ]
-        t = _re2.sub(r',\s*([}\]])', r'\1', t)
-        # Fix missing commas: value followed by key  e.g. "abc" "def" or "abc" \n "def"
-        t = _re2.sub(r'"\s*\n\s*"', '",\n"', t)
-        t = _re2.sub(r'(\})\s*"', r'},\n"', t)
-        t = _re2.sub(r'(\])\s*"', r'],\n"', t)
-        t = _re2.sub(r'(true|false|null)\s*\n\s*"', r'\1,\n"', t)
-        t = _re2.sub(r'(\d)\s*\n\s*"', r'\1,\n"', t)
-        # Fix trailing commas again after repairs
-        t = _re2.sub(r',\s*([}\]])', r'\1', t)
-        return t
-    
-    # Attempt 1: raw parse
+    # Attempt 1: parse as-is
     try:
         result = json.loads(text)
         if isinstance(result, str): result = json.loads(result)
@@ -906,41 +871,35 @@ Double-check every single ingredient against ALL restrictions before including i
     except json.JSONDecodeError:
         pass
     
-    # Attempt 2: fix and retry
-    text = _fix_json(text)
+    # Attempt 2: safe fixes only — trailing commas
+    fixed = _re2.sub(r',\s*([}\]])', r'\1', text)
     try:
-        result = json.loads(text)
+        result = json.loads(fixed)
         if isinstance(result, str): result = json.loads(result)
         return result
     except json.JSONDecodeError:
         pass
     
-    # Attempt 3: flatten to single line and fix
-    text = ' '.join(text.split())
-    text = _fix_json(text)
+    # Attempt 3: flatten and retry
+    flat = ' '.join(fixed.split())
     try:
-        result = json.loads(text)
+        result = json.loads(flat)
         if isinstance(result, str): result = json.loads(result)
         return result
     except json.JSONDecodeError:
         pass
-    
-    # Attempt 4: try to extract just the essential fields with regex
-    try:
-        # Find dish_name at minimum
-        name_match = _re2.search(r'"dish_name"\s*:\s*"([^"]+)"', text)
-        if name_match:
-            # Build a minimal valid recipe
-            return {
-                "dish_name": name_match.group(1),
-                "description": "Recipe generated — some formatting was repaired.",
-                "prep_time": "N/A", "cook_time": "N/A", "total_time": "N/A",
-                "base_servings": 4,
-                "ingredients": [], "steps": ["Please try generating this recipe again for full details."],
-                "substitutions": [], "tips": [], "pairings": [], "also_try": []
-            }
-    except Exception:
-        pass
+
+    # Attempt 4: extract dish_name and return minimal recipe
+    name_match = _re2.search(r'"dish_name"\s*:\s*"([^"]+)"', text)
+    if name_match:
+        return {
+            "dish_name": name_match.group(1),
+            "description": "Recipe generated — please try again for full details.",
+            "prep_time": "N/A", "cook_time": "N/A", "total_time": "N/A",
+            "base_servings": 4,
+            "ingredients": [], "steps": ["Please try generating this recipe again."],
+            "substitutions": [], "tips": [], "pairings": [], "also_try": []
+        }
     
     raise ValueError("Could not parse recipe. Please try again.")
 
