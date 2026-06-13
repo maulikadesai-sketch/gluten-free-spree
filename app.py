@@ -1258,6 +1258,13 @@ if dish and dish.strip():
                 }
                 options = _FB.get(dish_lower)
 
+            # Remove any "gluten free" options — entire app is GF
+            if options and isinstance(options, dict):
+                for _k in list(options.keys()):
+                    if isinstance(options.get(_k), list):
+                        options[_k] = [v for v in options[_k] if "gluten" not in v.lower()]
+                options = {k: v for k, v in options.items() if isinstance(v, list) and v}
+
             if options and isinstance(options, dict) and veg_choice == "🥦 Veg":
                 _nv = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "meat", "seafood", "squid", "keema"}
                 options = {k: [v for v in vs if not any(n in v.lower() for n in _nv)] for k, vs in options.items() if isinstance(vs, list)}
@@ -1294,9 +1301,17 @@ if dish and dish.strip():
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
                             else:
-                                sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
-                                if sel != "— Choose (optional) —":
-                                    selections.append(sel)
+                                # Multi-select for categories where multiple choices make sense
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "sauce", "protein", "dressing", "salsa"}
+                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
+                                if _is_multi:
+                                    sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
+                                    if sel:
+                                        selections.extend(sel)
+                                else:
+                                    sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
+                                    if sel != "— Choose (optional) —":
+                                        selections.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
