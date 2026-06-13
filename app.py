@@ -1062,7 +1062,7 @@ CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
 - For DESSERTS/SWEETS (brownie, cake, ice cream, cookie, pastry, halwa, barfi, kheer, chocobar): ONLY sweet/dessert-appropriate options: chocolate chips, nuts (walnut, almond, cashew, pistachio), caramel, berries (strawberry, blueberry, raspberry), whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon, coconut, banana, Oreo, cream cheese, fruit, honey, maple. ABSOLUTELY NEVER suggest: chilli, chili, pepper, garlic, onion, ginger, cumin, turmeric, masala, soy sauce, mustard, oregano, basil, sriracha, hot sauce, BBQ, mayo, ketchup, or ANY savory/spicy ingredient.
 - For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
 - For DRINKS (smoothie, milkshake, lassi): Only drink-appropriate add-ons like honey, protein powder, chia seeds, ice, whipped cream. No pasta, rice, or cooking ingredients.
-Every option in every category must make logical sense for someone actually making this dish.
+Every option in every category must make logical sense for this SPECIFIC dish. Do NOT add categories that don't apply — e.g. flatbreads have no "filling", plain snacks have no "protein". If a dish has only 1-2 meaningful categories, return only those. Never add "cooking fat", "oil type", or "dish size".
 - For SIMPLE dishes (idli, dosa, roti, naan, fries, toast, poha, upma, dal, rice): Only show Type/Style and Accompaniment. Do NOT add Filling, Protein, or Add-ons — these dishes don't have fillings.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
 Examples:
@@ -1233,60 +1233,212 @@ if dish and dish.strip():
             # Fallback: if AI returns nothing for a single common word, use hardcoded
             if not options:
                 _FB = {
+                    # === SOUTH INDIAN ===
                     "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese","Podi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Coconut Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney","Peanut Chutney","Onion Chutney"]},
-                    "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
-                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat"]},
-                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Vegetable","Prawns"]},
-                    "pizza": {"Style": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Hawaiian","Mushroom","Pesto"], "Crust": ["Thin","Thick","Stuffed","Deep Dish"], "Size": ["Personal","Medium","Large"]},
-                    "pasta": {"Pasta Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Pink"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "noodles": {"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli"], "Style": ["Stir-fried","Soup","Dry","Schezwan"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Sweet Potato","Broccoli"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
-                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
-                    "burger": {"Patty": ["Beef","Chicken","Veggie","Paneer","Fish","Lamb"], "Style": ["Classic","Smash","BBQ","Spicy"]},
-                    "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","Cold"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo"], "Bread": ["White","Multigrain","Wrap","Sourdough","Ciabatta","Rye"]},
-                    "cake": {"Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest"]},
-                    "bread": {"Type": ["Sandwich","Focaccia","Naan","Roti","Pita","Baguette","Sourdough","Banana Bread"]},
-                    "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu"]},
-                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Salsa": ["Mild","Medium","Hot","Mango","Pico de Gallo"]},
-                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
-                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Doner","Shawarma","Satay"], "Protein": ["Chicken","Lamb","Paneer","Fish","Vegetable"], "Cooking": ["Grilled","Pan-fried","Oven-baked","Tandoor"]},
-                    "rice": {"Style": ["Fried Rice","Biryani","Pulao","Risotto","Jeera Rice","Lemon Rice","Coconut Rice","Mexican Rice"], "Protein": ["Mixed Vegetables","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "pancake": {"Type": ["American Fluffy","French Crêpes","Banana","Blueberry","Dutch Baby","Japanese Soufflé"]},
-                    "omelette": {"Style": ["French","Spanish","Masala","Cheese","Mushroom","Western"], "Filling": ["Plain","Cheese","Veggies","Ham","Mushroom & Spinach"]},
-                    "smoothie": {"Base": ["Banana","Mango","Berry","Green","Tropical","Chocolate"], "Liquid": ["Milk","Almond Milk","Coconut Milk","Yogurt"]},
-                    "dumpling": {"Type": ["Gyoza","Momo","Wonton","Pierogi","Ravioli","Samosa"], "Method": ["Steamed","Pan-fried","Deep-fried","Boiled"]},
-                    "steak": {"Cut": ["Ribeye","Sirloin","Tenderloin","T-Bone","Flank"], "Doneness": ["Rare","Medium Rare","Medium","Well Done"]},
-                    "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg"], "Wrap Type": ["Tortilla","Roti","Lettuce","Rice Paper"], "Sauce": ["Mayo","Hummus","Tahini","Hot Sauce","Mint Yogurt"]},
-                    "idli": {"Type": ["Plain Idli","Rava Idli","Mini Idli","Masala Idli","Stuffed Idli","Kanchipuram Idli"]},
+                    "idli": {"Type": ["Plain","Rava","Mini","Masala","Stuffed","Kanchipuram"]},
                     "uttapam": {"Type": ["Onion","Tomato","Mixed Veg","Cheese","Masala","Plain"]},
-                    "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
-                    "paneer": {"Style": ["Butter Paneer","Paneer Tikka","Kadai Paneer","Palak Paneer","Shahi Paneer","Paneer Bhurji","Paneer Makhani","Malai Paneer","Paneer Do Pyaza","Chilli Paneer"], "Spice Level": ["Mild","Medium","Spicy","Extra Spicy"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy"]},
-                    "chicken": {"Style": ["Butter Chicken","Tandoori","Tikka","Grilled","Fried","Roasted","Curry","Stir-fry","Biryani Style","Malai","Afghani","Schezwan"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"], "Cooking Method": ["Grilled","Baked","Pan-fried","Deep-fried","Slow-cooked","Air-fried"]},
-                    "mutton": {"Style": ["Rogan Josh","Nihari","Korma","Keema","Biryani Style","Curry","Stew"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "fish": {"Type": ["Salmon","Tuna","Cod","Tilapia","Pomfret","Surmai","Rohu"], "Cooking": ["Grilled","Fried","Baked","Curry","Steamed"]},
-                    "egg": {"Style": ["Boiled","Fried","Scrambled","Poached","Omelette","Bhurji","Curry"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "tofu": {"Style": ["Stir-fried","Grilled","Scrambled","Curry","Baked","Crispy","Steamed"], "Sauce": ["Teriyaki","Soy Ginger","Thai Basil","Schezwan","Peanut"]},
-                    "mushroom": {"Type": ["Button","Shiitake","Oyster","Portobello","Mixed"], "Style": ["Stir-fried","Curry","Soup","Grilled","Stuffed"]},
-                    "maggi": {"Style": ["Classic Masala","Cheese","Vegetable","Atta","Schezwan","Soupy"], "Add-on": ["Vegetables","Cheese","Egg","Paneer","Corn"]},
-                    "poha": {"Type": ["Kanda Poha","Indori Poha","Batata Poha","Dadpe Pohe","Chivda Poha"]},
-                    "upma": {"Type": ["Rava Upma","Bread Upma","Vermicelli Upma","Oats Upma","Vegetable Upma"]},
-                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Mexican","Schezwan"], "Protein": ["Vegetable","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "garlic bread": {"Type": ["Classic","Cheese","Herb Butter","Pesto","Stuffed"], "Style": ["Baked","Grilled","Air-fried"]},
-                    "french fries": {"Cut": ["Thin","Thick","Waffle","Curly","Wedge"], "Seasoning": ["Salt","Peri Peri","Cheese","Truffle","Cajun"]},
-                    "spring roll": {"Type": ["Vegetable","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
-                    "iced tea": {"Flavour": ["Lemon","Peach","Mango","Mint","Berry","Green Tea","Passion Fruit"]},
-                    "hot chocolate": {"Type": ["Classic","Dark","White","Mexican Spiced","Peppermint","Salted Caramel"]},
-                    "banana bread": {"Add-in": ["Chocolate Chip","Walnut","Blueberry","Cinnamon","Peanut Butter","Plain"]},
+                    "upma": {"Type": ["Rava","Bread","Vermicelli","Oats","Vegetable"]},
+                    "poha": {"Type": ["Kanda Poha","Indori","Batata","Dadpe Pohe","Chivda"]},
+                    "pongal": {"Type": ["Ven Pongal","Sakkarai Pongal","Khara Pongal"]},
+                    "appam": {"Type": ["Plain","Egg","Paal","Neyyappam"]},
+                    "puttu": {"Type": ["Rice","Ragi","Wheat","Jackfruit"]},
+                    "pesarattu": {"Type": ["Plain","Upma Stuffed","Onion"]},
+                    "vada": {"Type": ["Medu","Masala","Urad Dal","Sabudana","Moong Dal","Dahi Vada"]},
+                    "sambhar": {"Style": ["Kerala","Tamil","Karnataka","Andhra"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "rasam": {"Type": ["Tomato","Pepper","Lemon","Garlic","Mysore","Pineapple"]},
+                    "kootu": {"Type": ["Mixed Veg","Chana Dal","Moong Dal","Raw Banana"]},
+                    "avial": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "payasam": {"Type": ["Semiya","Ada","Palada","Paruppu","Paal"]},
+                    
+                    # === NORTH INDIAN ===
+                    "paratha": {"Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha","Pyaaz"]},
+                    "roti": {"Type": ["Plain","Tandoori","Roomali","Missi","Makki"]},
+                    "naan": {"Type": ["Plain","Butter","Garlic","Cheese","Kulcha","Peshawari"]},
+                    "paneer": {"Style": ["Butter Paneer","Tikka","Kadai","Palak","Shahi","Bhurji","Makhani","Malai","Do Pyaza","Chilli"], "Spice Level": ["Mild","Medium","Spicy","Extra Spicy"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy"]},
+                    "dal": {"Type": ["Dal Tadka","Dal Makhani","Dal Fry","Chana Dal","Moong Dal","Masoor Dal","Toor Dal"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "chole": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Punjabi","Amritsari","Dry"]},
+                    "rajma": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Soupy"]},
+                    "kadhi": {"Style": ["Punjabi","Gujarati","Rajasthani","Sindhi"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "pulao": {"Type": ["Veg","Peas","Jeera","Coconut","Kashmiri","Corn"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "korma": {"Protein": ["Chicken","Mutton","Paneer","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Rich"]},
+                    "tikka": {"Protein": ["Paneer","Chicken","Fish","Mushroom","Soya"], "Style": ["Tandoori","Grilled","Air-fried"]},
+                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Doner","Shawarma","Satay","Galouti","Kakori"], "Protein": ["Chicken","Lamb","Paneer","Fish","Vegetable","Soya"], "Cooking": ["Grilled","Pan-fried","Oven-baked","Tandoor"]},
+                    "kofta": {"Type": ["Malai Kofta","Lauki Kofta","Paneer Kofta","Bottle Gourd"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "samosa": {"Filling": ["Potato & Peas","Onion","Paneer","Mixed Veg","Corn"]},
+                    "pakora": {"Type": ["Onion","Potato","Paneer","Spinach","Bread","Mixed Veg","Mirchi"]},
+                    "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat","Dahi Bhalla","Ragda Pattice"]},
+                    "pav bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Jain","Cheese"]},
+                    "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "aloo": {"Style": ["Jeera Aloo","Dum Aloo","Aloo Matar","Aloo Palak","Aloo Tikki","Aloo Paratha"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "butter chicken": {"Spice Level": ["Mild/Creamy","Medium","Spicy"], "Consistency": ["Thick Gravy","Medium","Thin/Soupy"]},
                     "palak paneer": {"Spice Level": ["Mild","Medium","Spicy"], "Texture": ["Smooth","Chunky"]},
                     "dal makhani": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Soupy"]},
-                    "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
-                    "pav bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Jain","Cheese"]},
+                    "malai kofta": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "raita": {"Type": ["Boondi","Cucumber","Onion-Tomato","Mint","Mixed Veg","Fruit"]},
+                    "lassi": {"Flavour": ["Sweet","Salted","Mango","Rose","Strawberry","Kesar"]},
+                    "kulfi": {"Flavour": ["Malai","Mango","Pista","Kesar","Rose","Sitaphal"]},
+                    "halwa": {"Type": ["Gajar","Sooji","Moong Dal","Badam","Besan","Lauki"]},
+                    "ladoo": {"Type": ["Besan","Rava","Motichoor","Coconut","Boondi","Pinni"]},
+                    "barfi": {"Type": ["Kaju","Coconut","Besan","Pista","Chocolate","Milk"]},
+                    "kheer": {"Type": ["Rice","Seviyan","Sabudana","Makhana","Carrot","Phirni"]},
+                    "jalebi": {"Style": ["Traditional","Paneer","Mawa","Rabri-filled"]},
+                    "gulab jamun": {"Style": ["Classic","Dry","Stuffed","Mini","Bread"]},
+                    
+                    # === GUJARATI ===
+                    "thepla": {"Type": ["Plain","Methi","Palak","Dudhi","Beetroot","Garlic","Jeera"]},
+                    "khakhra": {"Type": ["Plain","Methi","Garlic","Jeera","Pani Puri","Masala","Bajra"]},
+                    "dhokla": {"Type": ["Besan","Rava","Khaman","Green Moong","Sandwich"]},
+                    "handvo": {"Style": ["Classic","Baked","Pan-fried"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "muthiya": {"Type": ["Methi","Dudhi","Palak","Mixed Vegetable","Corn"], "Style": ["Steamed","Fried"]},
+                    "undhiyu": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "khandvi": {"Spice Level": ["Mild","Medium"]},
+                    "sev": {"Type": ["Thin","Thick","Ratlami","Nylon","Garlic"]},
+                    "fafda": {"Accompaniment": ["Jalebi","Papaya Chutney","Kadhi","Sambharo"]},
+                    "dabeli": {"Spice Level": ["Mild","Medium","Spicy"], "Topping": ["Sev","Pomegranate","Peanuts","Cheese"]},
+                    "shrikhand": {"Flavour": ["Kesar","Mango","Elaichi","Strawberry","Plain"]},
+                    "basundi": {"Flavour": ["Plain","Kesar","Sitaphal","Rose"]},
+                    
+                    # === MAHARASHTRIAN ===
+                    "misal pav": {"Spice Level": ["Mild","Medium","Spicy","Kolhapuri"]},
+                    "vada pav": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "thalipeeth": {"Type": ["Multigrain","Jowar","Bajra","Nachni"]},
+                    "puran poli": {"Filling": ["Chana Dal","Coconut","Dry Fruit"]},
+                    "bhakri": {"Type": ["Jowar","Bajra","Nachni","Rice Flour","Multigrain"]},
+                    "sabudana khichdi": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "pithla": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "modak": {"Type": ["Steamed","Fried","Chocolate","Dry Fruit","Coconut"]},
+                    "aamti": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "batata vada": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === BENGALI ===
+                    "sandesh": {"Flavour": ["Plain","Nolen Gur","Chocolate","Mango","Strawberry"]},
+                    "rasgulla": {"Type": ["Classic","Nolen Gur","Rajbhog","Mini"]},
+                    "mishti doi": {"Flavour": ["Classic","Nolen Gur"]},
+                    "luchi": {"Type": ["Plain","Stuffed"]},
+                    "shukto": {"Spice Level": ["Mild","Medium"]},
+                    
+                    # === RAJASTHANI ===
+                    "dal baati": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "gatte ki sabzi": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ker sangri": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "pyaaz kachori": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === PUNJABI ===
+                    "makki di roti": {"Accompaniment": ["Sarson ka Saag","White Butter","Jaggery"]},
+                    "sarson ka saag": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "pinni": {"Type": ["Atta","Gond","Dry Fruit"]},
+                    "amritsari kulcha": {"Filling": ["Aloo","Paneer","Mixed","Gobhi"]},
+                    
+                    # === SINDHI ===
+                    "tuk": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sindhi kadhi": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sai bhaji": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === SOUTH EAST ASIAN ===
+                    "noodles": {"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli","Glass Noodles"], "Style": ["Stir-fried","Soup","Dry","Schezwan"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu","Cucumber"]},
+                    "ramen": {"Broth": ["Shoyu","Miso","Tonkotsu","Shio","Vegetable"], "Topping": ["Chashu Pork","Soft Egg","Corn","Nori","Bamboo Shoots","Mushroom"]},
+                    "pad thai": {"Protein": ["Chicken","Prawn","Tofu","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "pho": {"Type": ["Chicken","Beef","Vegetable","Tofu"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "spring roll": {"Type": ["Vegetable","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
+                    "dim sum": {"Type": ["Har Gow","Siu Mai","Steamed Buns","Cheung Fun","Crystal Dumpling"]},
+                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
+                    
+                    # === ITALIAN ===
+                    "pasta": {"Pasta Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle","Farfalle"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink/Rosé"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "pizza": {"Style": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Hawaiian","Mushroom","Pesto","Meat Feast"], "Crust": ["Thin","Thick","Stuffed","Deep Dish"]},
+                    "risotto": {"Type": ["Mushroom","Asparagus","Pumpkin","Truffle","Lemon","Seafood","Pea & Mint"]},
+                    "gnocchi": {"Sauce": ["Tomato","Pesto","Brown Butter & Sage","Cream","Gorgonzola"]},
+                    "bruschetta": {"Topping": ["Tomato Basil","Mushroom","Ricotta","Olive Tapenade","Roasted Pepper"]},
+                    
+                    # === MEXICAN ===
+                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie","Carnitas"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Salsa": ["Mild","Medium","Hot","Mango","Pico de Gallo"]},
+                    "burrito": {"Filling": ["Chicken","Beef","Bean","Veggie","Carnitas"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "quesadilla": {"Filling": ["Cheese","Chicken","Veggie","Mushroom","Spinach","Bean"]},
+                    "nachos": {"Topping": ["Cheese","Jalapeños","Guacamole","Sour Cream","Beans","Salsa","Corn"]},
+                    "enchilada": {"Filling": ["Chicken","Beef","Bean","Cheese","Vegetable"], "Sauce": ["Red","Green","Cream"]},
+                    
+                    # === MIDDLE EASTERN ===
+                    "falafel": {"Style": ["Classic","Baked","Air-fried"], "Accompaniment": ["Hummus","Tahini","Pickles","Salad"]},
+                    "hummus": {"Flavour": ["Classic","Roasted Garlic","Red Pepper","Beetroot","Avocado","Spicy"]},
+                    "shawarma": {"Protein": ["Chicken","Lamb","Falafel","Mixed"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === AMERICAN / WESTERN ===
+                    "burger": {"Patty": ["Chicken","Veggie","Paneer","Fish","Lamb","Beef","Mushroom","Black Bean","Sweet Potato"], "Style": ["Classic","Smash","BBQ","Spicy","Gourmet","Double Stack"], "Bun": ["Regular","Brioche","Lettuce Wrap","Pretzel","Sesame"]},
+                    "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","Cold"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo"], "Bread": ["White","Multigrain","Wrap","Sourdough","Ciabatta","Rye"]},
+                    "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg"], "Wrap Type": ["Tortilla","Roti","Lettuce","Rice Paper"], "Sauce": ["Mayo","Hummus","Tahini","Hot Sauce","Mint Yogurt"]},
+                    "steak": {"Cut": ["Ribeye","Sirloin","Tenderloin","T-Bone","Flank"]},
+                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf","Fattoush"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","Paneer","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
+                    "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Sweet Potato","Broccoli","French Onion"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
+                    "french fries": {"Cut": ["Thin","Thick","Waffle","Curly","Wedge"], "Seasoning": ["Salt","Peri Peri","Cheese","Truffle","Cajun","Garlic"]},
+                    "mac and cheese": {"Style": ["Classic","Baked","Truffle","Spicy","Loaded"]},
+                    
+                    # === PROTEINS ===
+                    "chicken": {"Style": ["Butter Chicken","Tandoori","Tikka","Grilled","Fried","Roasted","Curry","Stir-fry","Biryani Style","Malai","Afghani","Schezwan"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"], "Cooking Method": ["Grilled","Baked","Pan-fried","Deep-fried","Slow-cooked","Air-fried"]},
+                    "mutton": {"Style": ["Rogan Josh","Nihari","Korma","Keema","Biryani Style","Curry","Stew","Bhuna"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "fish": {"Type": ["Salmon","Tuna","Cod","Tilapia","Pomfret","Surmai","Rohu","Bangda"], "Cooking": ["Grilled","Fried","Baked","Curry","Steamed","Tandoori"]},
+                    "egg": {"Style": ["Boiled","Fried","Scrambled","Poached","Omelette","Bhurji","Curry","Akuri"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "tofu": {"Style": ["Stir-fried","Grilled","Scrambled","Curry","Baked","Crispy","Steamed"], "Sauce": ["Teriyaki","Soy Ginger","Thai Basil","Schezwan","Peanut"]},
+                    "mushroom": {"Type": ["Button","Shiitake","Oyster","Portobello","Mixed"], "Style": ["Stir-fried","Curry","Soup","Grilled","Stuffed","Pepper Fry"]},
+                    "prawn": {"Style": ["Butter Garlic","Tandoori","Curry","Stir-fried","Tempura","Koliwada"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === BREAKFAST ===
+                    "pancake": {"Type": ["American Fluffy","French Crêpes","Banana","Blueberry","Dutch Baby","Japanese Soufflé","Chocolate Chip"]},
+                    "waffle": {"Type": ["Classic","Belgian","Chocolate","Berry","Banana","Savory"]},
+                    "omelette": {"Style": ["French","Spanish","Masala","Cheese","Mushroom","Western"], "Filling": ["Plain","Cheese","Veggies","Ham","Mushroom & Spinach","Herbs"]},
+                    "smoothie": {"Flavour": ["Banana","Mango","Berry Mix","Green Detox","Tropical","Chocolate","Peanut Butter","Açaí"]},
+                    
+                    # === RICE DISHES ===
+                    "rice": {"Style": ["Fried Rice","Biryani","Pulao","Risotto","Jeera Rice","Lemon Rice","Coconut Rice","Mexican Rice","Curd Rice"], "Protein": ["Mixed Vegetables","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Mexican","Schezwan","Kimchi"], "Protein": ["Vegetable","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "khichdi": {"Type": ["Moong Dal","Masala","Sabudana","Bajra","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === SNACKS & MISC ===
+                    "maggi": {"Style": ["Classic Masala","Cheese","Vegetable","Schezwan","Soupy"], "Add-on": ["Vegetables","Cheese","Egg","Paneer","Corn"]},
+                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag","Madras","Jalfrezi"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Vegetable","Prawns","Fish"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"]},
+                    "dumpling": {"Type": ["Gyoza","Momo","Wonton","Pierogi","Ravioli","Samosa"], "Method": ["Steamed","Pan-fried","Deep-fried","Boiled"]},
+                    "garlic bread": {"Type": ["Classic","Cheese","Herb Butter","Pesto","Stuffed"], "Style": ["Baked","Grilled","Air-fried"]},
+                    "iced tea": {"Flavour": ["Lemon","Peach","Mango","Mint","Berry","Green Tea","Passion Fruit"]},
+                    "hot chocolate": {"Type": ["Classic","Dark","White","Mexican Spiced","Peppermint","Salted Caramel"]},
+                    "banana bread": {"Add-in": ["Chocolate Chip","Walnut","Blueberry","Cinnamon","Peanut Butter","Plain"]},
+                    "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
+                    "chutney": {"Type": ["Mint","Coriander","Tomato","Coconut","Tamarind","Peanut","Garlic","Onion"]},
+                    
+                    # === BAKED GOODS ===
                     "croissant": {"Type": ["Plain Butter","Chocolate","Almond","Cheese","Spinach & Feta","Cinnamon","Pistachio","Berry"], "Style": ["Classic Flaky","Mini","Stuffed"]},
-                    "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
-                    "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
+                    "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie","Macadamia"]},
+                    "cake": {"Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon Drizzle","Coffee","Black Forest","Banana","Pineapple"]},
+                    "bread": {"Type": ["Sandwich","Focaccia","Sourdough","Banana Bread","Cornbread","Soda Bread","Brioche"]},
+                    "muffin": {"Flavour": ["Blueberry","Chocolate","Banana","Lemon Poppy","Bran","Apple Cinnamon","Cranberry"]},
+                    "brownie": {"Type": ["Classic Fudge","Chewy","Cakey","Blondie","Nutty","Cream Cheese Swirl","Peanut Butter"]},
+                    "pie": {"Type": ["Apple","Pumpkin","Key Lime","Banoffee","Pecan","Cherry","Lemon Meringue"]},
+                    "donut": {"Type": ["Glazed","Chocolate","Jam-filled","Cinnamon Sugar","Sprinkle","Cream-filled","Maple"]},
+                    
+                    # === PARSI ===
+                    "dhansak": {"Protein": ["Chicken","Mutton","Vegetable","Prawn"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "patra ni machhi": {"Fish Type": ["Pomfret","Surmai","Rawas"]},
+                    "salli boti": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "akuri": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === HYDERABADI ===
+                    "haleem": {"Protein": ["Mutton","Chicken","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "double ka meetha": {"Style": ["Classic","Light"]},
+                    "lukhmi": {"Filling": ["Keema","Paneer","Onion"]},
+                    
+                    # === KERALA ===
+                    "sadya": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ada pradhaman": {"Style": ["Classic","Light"]},
+                    "erissery": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "olan": {"Spice Level": ["Mild","Medium"]},
+                    "karimeen pollichathu": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === DRINKS ===
+                    "chai": {"Type": ["Masala","Ginger","Cardamom","Cutting","Irani","Sulaimani","Kashmiri"]},
+                    "coffee": {"Type": ["Filter","Espresso","Latte","Cappuccino","Cold Brew","Mocha","Flat White"]},
+                    "milkshake": {"Flavour": ["Chocolate","Vanilla","Strawberry","Mango","Oreo","Banana","Butterscotch"]},
+                    "juice": {"Flavour": ["Orange","Apple","Watermelon","Pineapple","Mixed Fruit","Pomegranate","Sugarcane","Carrot"]},
                 }
                 options = _FB.get(dish_lower)
 
@@ -1330,9 +1482,11 @@ if dish and dish.strip():
                     # Remove inappropriate categories for simple dishes
                     _simple_dishes = {"idli", "dosa", "uttapam", "upma", "poha", "pongal", "appam", "puttu",
                                       "roti", "naan", "chapati", "paratha", "puri", "bhatura",
+                                      "thepla", "bhakri", "thalipeeth", "akki roti", "jowar roti",
                                       "rice", "jeera rice", "lemon rice", "curd rice", "dal",
-                                      "fries", "chips", "popcorn", "toast", "bread"}
-                    _bad_cats_for_simple = {"protein", "filling", "meat", "non-veg"}
+                                      "fries", "chips", "popcorn", "toast", "bread",
+                                      "khakhra", "papad", "mathri", "murukku", "sev"}
+                    _bad_cats_for_simple = {"protein", "filling", "meat", "non-veg", "spice mix", "cooking fat", "fat"}
                     if any(sd in dish_lower for sd in _simple_dishes):
                         for k in list(valid_options.keys()):
                             if any(bc in k.lower() for bc in _bad_cats_for_simple):
