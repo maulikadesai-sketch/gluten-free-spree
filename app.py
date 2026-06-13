@@ -1090,14 +1090,15 @@ if st.session_state.get("_reset_clicked"):
     st.session_state["_reset_clicked"] = False
     st.session_state["_reset_count"] = st.session_state.get("_reset_count", 0) + 1
     # Clear country, veg, recipe, and all customization
+    # Clear recipe and customizations
     for k in list(st.session_state.keys()):
-        if k in ("country_radio", "veg_radio", "country_select", "recipe", "recipe_country", "base_servings", "current_servings"):
+        if k in ("recipe", "recipe_country", "base_servings", "current_servings"):
             del st.session_state[k]
         if k.startswith("generic_") or k.startswith("protein_") or k.startswith("nonveg_"):
             del st.session_state[k]
 
 _dish_key = f"dish_input_{st.session_state.get('_reset_count', 0)}"
-col_dish, col_reset = st.columns([4, 1], vertical_alignment="bottom")
+col_dish, col_reset = st.columns([3, 1], vertical_alignment="bottom")
 with col_dish:
     dish = st.text_input(
         "🍳 What dish would you like to make gluten-free?",
@@ -1110,10 +1111,7 @@ with col_reset:
         st.session_state["_reset_clicked"] = True
         st.rerun()
 
-# Style the reset button pink
-st.markdown("""<style>
-button[kind="secondary"]:first-of-type { background: #FFE0D6 !important; border-color: #F5B8A8 !important; }
-</style>""", unsafe_allow_html=True)
+
 
 # ─────────────────────────────────────────────
 # Smart sub-options — AI detects vague dishes dynamically
@@ -1156,10 +1154,10 @@ JSON only."""
 # Veg / Non-veg — auto-detect from dish name
 
 # Location — select before customization options
-country_choice = st.radio("📍 Which country are you in?", ["India", "Other"], horizontal=True, index=None, key="country_radio")
+country_choice = st.radio("📍 Which country are you in?", ["India", "Other"], horizontal=True, index=None, key=f"country_radio_{st.session_state.get('_reset_count', 0)}")
 if country_choice == "Other":
     other_countries = [c for c in COUNTRIES if "India" not in c]
-    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key="country_select")
+    country = st.selectbox("Select country", other_countries, index=0, label_visibility="collapsed", key=f"country_select_{st.session_state.get('_reset_count', 0)}")
 elif country_choice == "India":
     country = "India"
 else:
@@ -1211,7 +1209,7 @@ elif _detected_veg == "nonveg":
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🍗 <em>Detected as non-vegetarian from dish name</em></p>", unsafe_allow_html=True)
 else:
     # Not clear from dish name — show selector
-    veg_choice = st.radio("🥗 What is your food preference?", ["🥦 Veg", "🥚 Eggetarian", "🍗 Non-Veg"], horizontal=True, index=None, key="veg_radio")
+    veg_choice = st.radio("🥗 What is your food preference?", ["🥦 Veg", "🥚 Eggetarian", "🍗 Non-Veg"], horizontal=True, index=None, key=f"veg_radio_{st.session_state.get('_reset_count', 0)}")
 
 
 dish_extra = ""
