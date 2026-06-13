@@ -797,7 +797,7 @@ Double-check every single ingredient against ALL restrictions before including i
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"parts": [{"text": f"Create a gluten-free recipe for: {dish}.{serving_note}{dietary_user_note}"}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.4, "max_output_tokens": 8192},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.3, "max_output_tokens": 8192},
     }
 
     # Ensure api_keys is a list
@@ -815,7 +815,7 @@ Double-check every single ingredient against ALL restrictions before including i
             combos_tried += 1
             url = f"{API_BASE}/{m}:generateContent?key={key}"
             try:
-                resp = requests.post(url, json=payload, timeout=30)
+                resp = requests.post(url, json=payload, timeout=20)
             except requests.exceptions.RequestException as e:
                 last_err = RuntimeError(f"Network error: {e}")
                 resp = None
@@ -1109,7 +1109,7 @@ Return customization options as JSON.
 RULE: Single-word dishes are ALWAYS generic and MUST return customization options — never return {{"specific":true}} for a single word. Examples: paneer, chicken, pasta, curry, noodles, rice, soup, salad, etc. Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict) are specific — return {{"specific":true}}.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
-Return ALL meaningful customization choices for this dish (3-5 categories). Include: type/style, filling/protein, sauce, spice level, cooking method, toppings, add-ons, etc. Skip: oil type (part of recipe), serving size, cheese type, garnish, plating. NEVER include "gluten-free" as an option. Provide 6-10 options per category.
+Return 2-4 meaningful customization categories for this dish. Each category must have 6-10 diverse, COMPREHENSIVE options covering all popular variations. Skip: oil, serving size, cheese type, garnish, plating. NEVER include "gluten-free". Make options exhaustive — include every popular variation a home cook would want.
 CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
 - For DESSERTS/SWEETS (brownie, cake, ice cream, cookie, pastry, halwa, barfi, kheer, chocobar): ONLY sweet/dessert-appropriate options: chocolate chips, nuts (walnut, almond, cashew, pistachio), caramel, berries (strawberry, blueberry, raspberry), whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon, coconut, banana, Oreo, cream cheese, fruit, honey, maple. ABSOLUTELY NEVER suggest: chilli, chili, pepper, garlic, onion, ginger, cumin, turmeric, masala, soy sauce, mustard, oregano, basil, sriracha, hot sauce, BBQ, mayo, ketchup, or ANY savory/spicy ingredient.
 - For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
@@ -1280,7 +1280,7 @@ if dish and dish.strip():
             # Fallback: if AI returns nothing for a single common word, use hardcoded
             if not options and word_count <= 2:
                 _FB = {
-                    "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney"]},
+                    "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese","Podi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Coconut Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney","Peanut Chutney","Onion Chutney"]},
                     "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
                     "biryani": {"Type": ["Chicken","Mutton","Veg","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat"]},
@@ -1291,7 +1291,7 @@ if dish and dish.strip():
                     "soup": {"Type": ["Tomato","Mushroom","Chicken","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
                     "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","None"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
                     "burger": {"Patty": ["Beef","Chicken","Veggie","Paneer","Fish","Lamb"], "Style": ["Classic","Smash","BBQ","Spicy"]},
-                    "sandwich": {"Type": ["Club","Grilled Cheese","BLT","Panini","Sub"], "Bread": ["White","Multigrain","Wrap","Sourdough"]},
+                    "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","Cold"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo"], "Bread": ["White","Multigrain","Wrap","Sourdough","Ciabatta","Rye"]},
                     "cake": {"Type": ["Chocolate","Vanilla","Red Velvet","Carrot","Cheesecake","Lemon","Coffee","Black Forest"]},
                     "bread": {"Type": ["Sandwich","Focaccia","Naan","Roti","Pita","Baguette","Sourdough","Banana Bread"]},
                     "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu"]},
@@ -1308,8 +1308,8 @@ if dish and dish.strip():
                     "idli": {"Type": ["Plain Idli","Rava Idli","Mini Idli","Masala Idli","Stuffed Idli","Kanchipuram Idli"]},
                     "uttapam": {"Type": ["Onion","Tomato","Mixed Veg","Cheese","Masala","Plain"]},
                     "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
-                    "paneer": {"Style": ["Butter Paneer","Paneer Tikka","Kadai Paneer","Palak Paneer","Shahi Paneer","Paneer Bhurji","Paneer Makhani","Malai Paneer"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "chicken": {"Style": ["Butter Chicken","Tandoori","Tikka","Grilled","Fried","Roasted","Curry","Stir-fry"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"]},
+                    "paneer": {"Style": ["Butter Paneer","Paneer Tikka","Kadai Paneer","Palak Paneer","Shahi Paneer","Paneer Bhurji","Paneer Makhani","Malai Paneer","Paneer Do Pyaza","Chilli Paneer"], "Spice Level": ["Mild","Medium","Spicy","Extra Spicy"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy"]},
+                    "chicken": {"Style": ["Butter Chicken","Tandoori","Tikka","Grilled","Fried","Roasted","Curry","Stir-fry","Biryani Style","Malai","Afghani","Schezwan"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"], "Cooking Method": ["Grilled","Baked","Pan-fried","Deep-fried","Slow-cooked","Air-fried"]},
                     "mutton": {"Style": ["Rogan Josh","Nihari","Korma","Keema","Biryani Style","Curry","Stew"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "fish": {"Type": ["Salmon","Tuna","Cod","Tilapia","Pomfret","Surmai","Rohu"], "Cooking": ["Grilled","Fried","Baked","Curry","Steamed"]},
                     "egg": {"Style": ["Boiled","Fried","Scrambled","Poached","Omelette","Bhurji","Curry"], "Spice Level": ["Mild","Medium","Spicy"]},
@@ -1464,7 +1464,7 @@ all_dietary = sorted([
     "Salicylate-Free", "MSG-Free / Glutamate-Free",
     "Caffeine-Free", "Alcohol-Free (In Cooking)",
 ])
-dietary = st.multiselect("🥗 Any other dietary needs? (multi-select)", all_dietary, default=[], key="dietary_select", placeholder="Make your selections")
+dietary = st.multiselect("🥗 Any other dietary needs? (multi-select)", all_dietary, default=[], key=f"dietary_select_{st.session_state.get('_reset_count', 0)}", placeholder="Make your selections")
 
 # Add Vegetarian if veg toggle is on, Non-Vegetarian if non-veg
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
