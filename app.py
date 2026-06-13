@@ -640,6 +640,12 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
 
 /* ── Content section spacing ── */
+/* Bottom padding so dropdowns have room to open downward */
+[data-testid="stAppViewBlockContainer"]::after {
+  content: '';
+  display: block;
+  height: 70vh;
+}
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
 .info-box { padding: 20px; margin: 20px 0; line-height: 1.7; font-size: 0.9rem; border-radius: var(--r); background: var(--pastel-blue); border: 1px solid var(--pastel-blue-b); }
 
@@ -1199,13 +1205,13 @@ if dish and dish.strip():
                 _FB = {
                     "dosa": {"Dosa Type": ["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa","Egg Dosa"]},
                     "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
-                    "biryani": {"Type": ["Chicken","Mutton","Veg","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar"]},
+                    "biryani": {"Type": ["Chicken","Mutton","Veg","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Samosa Chaat"]},
                     "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Veg","Prawns"]},
                     "pizza": {"Crust": ["Thin","Thick","Deep Dish","Neapolitan","Stuffed"], "Topping": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Four Cheese"]},
-                    "pasta": {"Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Pink"]},
-                    "noodles": {"Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli"], "Style": ["Stir-fried","Soup","Dry","Spicy"]},
-                    "soup": {"Type": ["Tomato","Mushroom","Chicken","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin"]},
+                    "pasta": {"Pasta Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Pink"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "noodles": {"Noodle Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli"], "Style": ["Stir-fried","Soup","Dry","Schezwan"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "soup": {"Type": ["Tomato","Mushroom","Chicken","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin"], "Texture": ["Smooth/Pureed","Chunky","Brothy"]},
                     "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","None"]},
                     "burger": {"Patty": ["Beef","Chicken","Veggie","Paneer","Fish","Lamb"], "Style": ["Classic","Smash","BBQ","Spicy"]},
                     "sandwich": {"Type": ["Club","Grilled Cheese","BLT","Panini","Sub"], "Bread": ["White","Multigrain","Wrap","Sourdough"]},
@@ -1242,7 +1248,7 @@ if dish and dish.strip():
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
                     # Limit to max 2 AI options (protein may add a 3rd)
-                    valid_options = dict(list(valid_options.items())[:2])
+                    valid_options = dict(list(valid_options.items())[:3])
                     # Filter out non-veg options if veg is selected
                     if veg_choice == "🥦 Veg":
                         _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema"}
@@ -1256,10 +1262,10 @@ if dish and dish.strip():
                         valid_options = {"🥩 Non-Veg Protein": protein_list, **valid_options}
 
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                    cols = st.columns(min(len(valid_options), 3))
+                    cols = st.columns(min(len(valid_options), 4))
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
-                        with cols[idx % 3]:
+                        with cols[idx % 4]:
                             if label == "🥩 Non-Veg Protein":
                                 sel = st.multiselect(f"🍽️ {label} (select all)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
                                 if sel:
