@@ -1036,6 +1036,33 @@ def cached_generate(keys_str, dish, model, country, dietary_str, unit_system):
 st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+# Auto-scroll dropdowns to upper viewport so they open downward
+import streamlit.components.v1 as _scroll_comp
+_scroll_comp.html("""
+<script>
+try {
+  function setupScrollFix() {
+    var selects = window.parent.document.querySelectorAll('[data-baseweb="select"]');
+    selects.forEach(function(sel) {
+      if (!sel._scrollFixed) {
+        sel._scrollFixed = true;
+        sel.addEventListener('click', function() {
+          var rect = this.getBoundingClientRect();
+          var viewH = window.parent.innerHeight;
+          if (rect.top > viewH * 0.4) {
+            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    });
+  }
+  setupScrollFix();
+  setInterval(setupScrollFix, 2000);
+} catch(e) {}
+</script>
+""", height=0)
+
+
 # ─────────────────────────────────────────────
 # API Key — loaded silently in background
 # ─────────────────────────────────────────────
@@ -1132,7 +1159,7 @@ Return customization options as JSON.
 RULE: Single-word dishes (pizza, pasta, curry, dosa, biryani, soup, salad, burger, sushi, noodles, bread, cake, pie, wrap, taco, steak, kebab, paratha, chaat, momos, risotto, crepe, omelette, smoothie, pancake, dumpling, sandwich, etc.) are ALWAYS generic — return options.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
-Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip only truly trivial details (garnish, plating, cheese type). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
+Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip trivial details (garnish, plating, cheese type) and SKIP serving size/portion size (handled separately). If recommending oils, only suggest gluten-free safe oils (olive oil, coconut oil, avocado oil, sunflower oil, vegetable oil — NOT wheat germ oil). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
 Examples:
 "dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa"]}}
