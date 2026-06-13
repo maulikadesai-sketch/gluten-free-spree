@@ -762,41 +762,56 @@ Double-check every single ingredient against ALL restrictions before including i
     api_keys = [k for k in api_keys if k]  # remove empties
 
     models_to_try = [model] + [m for m in FALLBACK_MODELS if m != model]
+    
+    # PARALLEL: Try multiple key×model combos simultaneously, first success wins
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    
+    def _try_generate(key, m):
+        url = f"{API_BASE}/{m}:generateContent?key={key}"
+        try:
+            r = _session.post(url, json=payload, timeout=15)
+            if r.status_code == 200:
+                return r
+        except Exception:
+            pass
+        return None
+    
+    # Build list of (key, model) combos — prioritize fastest model with all keys first
+    combos = []
+    for m in models_to_try[:2]:  # Only try top 2 models in parallel
+        for key in api_keys:
+            combos.append((key, m))
+    
     resp = None
-    last_err = None
-    combos_tried = 0
-
-    for key in api_keys:
-        for m in models_to_try:
-            combos_tried += 1
-            url = f"{API_BASE}/{m}:generateContent?key={key}"
-            try:
-                resp = _session.post(url, json=payload, timeout=15)
-            except requests.exceptions.RequestException as e:
-                last_err = RuntimeError(f"Network error: {e}")
-                resp = None
-                continue
-
-            if resp.status_code == 200:
-                break  # success!
-
-            try:
-                msg = resp.json().get("error", {}).get("message", resp.text)
-            except Exception:
-                msg = resp.text
-
-            last_err = RuntimeError(f"API error ({resp.status_code}): {msg}")
-            resp = None
-            continue  # try next combo
-
-        if resp is not None and resp.status_code == 200:
-            break  # done!
+    with ThreadPoolExecutor(max_workers=min(len(combos), 4)) as executor:
+        futures = {executor.submit(_try_generate, k, m): (k, m) for k, m in combos}
+        for future in as_completed(futures, timeout=18):
+            result = future.result()
+            if result is not None:
+                resp = result
+                # Cancel remaining futures
+                for f in futures:
+                    f.cancel()
+                break
+    
+    # If parallel failed, try remaining models sequentially
+    if resp is None:
+        for m in models_to_try[2:]:
+            for key in api_keys[:1]:  # Just first key for fallback
+                url = f"{API_BASE}/{m}:generateContent?key={key}"
+                try:
+                    resp = _session.post(url, json=payload, timeout=15)
+                    if resp.status_code == 200:
+                        break
+                except Exception:
+                    continue
+            if resp and resp.status_code == 200:
+                break
 
     if resp is None or resp.status_code != 200:
         n_keys = len(api_keys)
         raise RuntimeError(
-            f"Tried {combos_tried} combinations ({n_keys} key(s) × {len(models_to_try)} models) — "
-            f"all at their daily limit. Resets at midnight US Pacific time (1:30 PM IST). "
+            f"All API keys at their daily limit. Resets at midnight US Pacific time (1:30 PM IST). "
             f"Add more free API keys from different Gmail accounts to increase your daily quota."
         )
 
