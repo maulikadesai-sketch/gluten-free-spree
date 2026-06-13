@@ -640,17 +640,6 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
 
 
-/* ── Page bottom padding for dropdown space ── */
-[data-testid="stAppViewBlockContainer"] {
-  padding-bottom: 40vh !important;
-}
-/* Moderate spacing below dropdown widgets */
-[data-testid="stSelectbox"] {
-  padding-bottom: 12px !important;
-}
-[data-testid="stMultiSelect"] {
-  padding-bottom: 12px !important;
-}
 
 /* ── Content section spacing ── */
 .tip-row { padding: 10px 0; line-height: 1.75; font-size: 0.9rem; }
@@ -1036,32 +1025,6 @@ def cached_generate(keys_str, dish, model, country, dietary_str, unit_system):
 st.set_page_config(page_title="Gluten-Free Spree", page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# Auto-scroll dropdowns to upper viewport so they open downward
-import streamlit.components.v1 as _scroll_comp
-_scroll_comp.html("""
-<script>
-try {
-  function setupScrollFix() {
-    var selects = window.parent.document.querySelectorAll('[data-baseweb="select"]');
-    selects.forEach(function(sel) {
-      if (!sel._scrollFixed) {
-        sel._scrollFixed = true;
-        sel.addEventListener('click', function() {
-          var rect = this.getBoundingClientRect();
-          var viewH = window.parent.innerHeight;
-          if (rect.top > viewH * 0.4) {
-            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      }
-    });
-  }
-  setupScrollFix();
-  setInterval(setupScrollFix, 2000);
-} catch(e) {}
-</script>
-""", height=0)
-
 
 # ─────────────────────────────────────────────
 # API Key — loaded silently in background
@@ -1160,6 +1123,11 @@ RULE: Single-word dishes (pizza, pasta, curry, dosa, biryani, soup, salad, burge
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
 Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip trivial details (garnish, plating, cheese type) and SKIP serving size/portion size (handled separately). If recommending oils, only suggest gluten-free safe oils (olive oil, coconut oil, avocado oil, sunflower oil, vegetable oil — NOT wheat germ oil). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
+CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
+- For DESSERTS/SWEETS (brownie, cake, ice cream, cookie): Only sweet add-ons like chocolate chips, nuts, caramel, berries, whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon. NEVER suggest chilli flakes, garlic, onion, soy sauce, or savory items.
+- For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
+- For DRINKS (smoothie, milkshake, lassi): Only drink-appropriate add-ons like honey, protein powder, chia seeds, ice, whipped cream. No pasta, rice, or cooking ingredients.
+Every option in every category must make logical sense for someone actually making this dish.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
 Examples:
 "dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa"]}}
@@ -1376,6 +1344,21 @@ if dish and dish.strip():
                 if valid_options:
                     # Limit to max 2 AI options (protein may add a 3rd)
                     # No cap - show all relevant options
+
+                    # Context-aware filter: remove mismatched options
+                    _dessert_words = {"brownie", "cake", "cookie", "ice cream", "icecream", "chocolate", "fudge", "pudding", "custard", "mousse", "tart", "pie", "muffin", "donut", "cupcake", "pastry", "macaron", "cheesecake", "tiramisu", "kulfi", "gelato", "barfi", "halwa", "ladoo", "kheer", "sundae", "chocobar", "waffle", "pancake", "crepe"}
+                    _savory_bad_for_dessert = {"chilli", "chili", "garlic", "onion", "ginger", "soy sauce", "mustard", "pepper flake", "jalapeno", "wasabi", "horseradish", "vinegar", "pickle", "olive", "anchovy", "bacon", "ham", "salami"}
+                    _sweet_bad_for_savory = {"chocolate chip", "caramel", "marshmallow", "sprinkle", "candy", "whipped cream", "icing", "frosting", "butterscotch", "toffee"}
+                    
+                    _is_dessert_dish = any(d in dish_lower for d in _dessert_words)
+                    for k in list(valid_options.keys()):
+                        if isinstance(valid_options[k], list):
+                            if _is_dessert_dish:
+                                valid_options[k] = [v for v in valid_options[k] if not any(s in v.lower() for s in _savory_bad_for_dessert)]
+                            else:
+                                valid_options[k] = [v for v in valid_options[k] if not any(s in v.lower() for s in _sweet_bad_for_savory)]
+                    valid_options = {k: v for k, v in valid_options.items() if isinstance(v, list) and len(v) > 0}
+
                     # Filter out non-veg options if veg is selected
                     if veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
                         _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema", "pepperoni", "salami"}
