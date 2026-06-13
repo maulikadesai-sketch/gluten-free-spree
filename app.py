@@ -1200,8 +1200,13 @@ _SPECIFIC_PROTEINS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "e
 _has_specific_protein = any(w in _dish_lower for w in _SPECIFIC_PROTEINS)
 _current_country = country
 _detected_veg = None
+# If user explicitly typed "veg" in dish name, it's always veg — skip veg_or_egg question
+_explicit_veg = any(w in _dish_lower.split() for w in ["veg", "vegetarian", "veggie"]) or _dish_lower.startswith("veg ")
+_explicit_nonveg = any(w in _dish_lower for w in _NONVEG_WORDS)
 if _is_always_egg:
     _detected_veg = "always_egg"
+elif _explicit_veg and not _explicit_nonveg:
+    _detected_veg = "veg"
 elif _is_always_veg:
     _detected_veg = "always_veg"
 elif _is_veg_or_egg:
@@ -1302,6 +1307,7 @@ if dish and dish.strip():
                     "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "pav bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Jain","Cheese"]},
+                    "croissant": {"Type": ["Plain Butter","Chocolate","Almond","Cheese","Ham & Cheese","Spinach & Feta","Cinnamon","Pistachio"], "Style": ["Classic Flaky","Mini","Stuffed"]},
                     "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
                     "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
                 }
@@ -1447,10 +1453,7 @@ elif veg_choice == "🍗 Non-Veg" and "Non-Vegetarian" not in dietary:
     dietary = [protein_note] + list(dietary)
 
 # Units stored in session state, configurable near recipe
-# Units preference — stored in session state, shown in recipe area
-if "unit_pref" not in st.session_state:
-    st.session_state["unit_pref"] = "Metric (g, ml, °C)"
-unit_sys = st.session_state["unit_pref"]
+
 
 # Make My Recipe button
 col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
@@ -1470,7 +1473,7 @@ if go:
 
     with st.spinner(f"Recreating recipe for {dish}..."):
         try:
-            unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
+            unit_val = "Metric"
             keys_str = "|".join(all_api_keys)
             dietary_str = "|".join(dietary) if dietary else ""
             full_dish = dish.strip() + dish_extra
@@ -1632,14 +1635,7 @@ if "recipe" in st.session_state:
             )
 
         # Units preference — below ingredients
-        new_unit = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
-                                index=0 if "Metric" in unit_sys else 1, key="unit_change")
-        if new_unit != st.session_state.get("unit_pref"):
-            st.session_state["unit_pref"] = new_unit
-            # Clear cached recipe so it regenerates with new units
-            if "recipe" in st.session_state:
-                del st.session_state["recipe"]
-            st.rerun()
+
 
         # Kitchen Timer — compact, inside left column
         st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
@@ -1828,7 +1824,7 @@ if "recipe" in st.session_state:
         if qd and all_api_keys:
             with st.spinner(f"Recreating recipe for {qd}..."):
                 try:
-                    unit_val = "Metric" if "Metric" in unit_sys else "Imperial"
+                    unit_val = "Metric"
                     keys_str = "|".join(all_api_keys)
                     dietary_str = "|".join(dietary) if dietary else ""
                     recipe = cached_generate(keys_str, qd, model, country, dietary_str, unit_val)
