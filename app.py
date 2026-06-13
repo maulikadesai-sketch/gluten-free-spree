@@ -1227,12 +1227,9 @@ if dish and dish.strip():
     word_count = len(dish_lower.split())
     if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
-        if keys_for_check:
-            options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
-            
-            # Fallback: if AI returns nothing for a single common word, use hardcoded
-            if not options:
-                _FB = {
+        
+        # Check curated fallback FIRST — more reliable than AI for known dishes
+        _FB = {
                     # === SOUTH INDIAN ===
                     "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese","Podi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Coconut Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney","Peanut Chutney","Onion Chutney"]},
                     "idli": {"Type": ["Plain","Rava","Mini","Masala","Stuffed","Kanchipuram"]},
@@ -1439,8 +1436,147 @@ if dish and dish.strip():
                     "coffee": {"Type": ["Filter","Espresso","Latte","Cappuccino","Cold Brew","Mocha","Flat White"]},
                     "milkshake": {"Flavour": ["Chocolate","Vanilla","Strawberry","Mango","Oreo","Banana","Butterscotch"]},
                     "juice": {"Flavour": ["Orange","Apple","Watermelon","Pineapple","Mixed Fruit","Pomegranate","Sugarcane","Carrot"]},
+                    # === MORE SINDHI ===
+                    "dal pakwan": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "koki": {"Type": ["Plain","Pyaaz","Methi","Green Chilli"]},
+                    "seyal mani": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "bhee": {"Style": ["Dry","Curry"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === MORE GUJARATI ===
+                    "gathiya": {"Type": ["Plain","Tikhi","Fafda Style"]},
+                    "patra": {"Style": ["Steamed","Fried"]},
+                    "surti locho": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ghughra": {"Filling": ["Sweet","Savory","Dry Fruit"]},
+                    "mohanthal": {"Style": ["Classic","Besan","With Nuts"]},
+                    "aam shrikhand": {"Style": ["Classic","Light"]},
+                    "lilva kachori": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sev tameta": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ringan no olo": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === MORE MAHARASHTRIAN ===
+                    "zunka": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "usal": {"Type": ["Misal","Matki","Vatana","Chana"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "kothimbir vadi": {"Style": ["Fried","Steamed"]},
+                    "bharli vangi": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "aluchi patal bhaji": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "shevbhaji": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ukdiche modak": {"Filling": ["Coconut Jaggery","Dry Fruit","Chocolate"]},
+                    "basundi": {"Flavour": ["Plain","Kesar","Sitaphal","Rose"]},
+                    
+                    # === MORE SOUTH INDIAN ===
+                    "bisi bele bath": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "vangi bath": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "akki roti": {"Type": ["Plain","Onion","Carrot","Coconut"]},
+                    "ragi mudde": {"Accompaniment": ["Saaru","Bassaaru","Soppu Saaru"]},
+                    "mysore pak": {"Type": ["Soft","Hard","Ghee-rich"]},
+                    "chow chow bath": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "neer dosa": {"Accompaniment": ["Chicken Curry","Veg Curry","Chutney"]},
+                    "maddur vada": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "gojju": {"Type": ["Tomato","Brinjal","Raw Mango","Beetroot"]},
+                    "palya": {"Type": ["Beans","Cabbage","Beetroot","Carrot","Mixed Veg"]},
+                    "rava kesari": {"Style": ["Classic","Pineapple","Dry Fruit"]},
+                    "murukku": {"Type": ["Rice","Urad","Wheat","Multigrain"]},
+                    "sundal": {"Type": ["Chana","Peanut","Green Peas","Black-eyed Pea"]},
+                    "poriyal": {"Type": ["Beans","Cabbage","Carrot","Beetroot","Snake Gourd"]},
+                    "kuzhambu": {"Type": ["Vathal","Puli","Milagu","Ennai Kathirikkai"]},
+                    "thoran": {"Type": ["Cabbage","Beans","Beetroot","Carrot"]},
+                    "puttu": {"Type": ["Rice","Ragi","Wheat","Jackfruit"]},
+                    "unniyappam": {"Style": ["Classic","Banana","Jaggery"]},
+                    "nei appam": {"Style": ["Classic","Cardamom"]},
+                    "pathiri": {"Type": ["Plain","Stuffed"]},
+                    
+                    # === BENGALI (MORE) ===
+                    "shorshe ilish": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "chingri malai curry": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "kosha mangsho": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "aloo posto": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "begun bhaja": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "macher jhol": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "doi maach": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "chhena poda": {"Style": ["Classic","Cardamom"]},
+                    "pantua": {"Style": ["Classic","Nolen Gur"]},
+                    "patishapta": {"Filling": ["Coconut","Kheer","Nolen Gur"]},
+                    
+                    # === KASHMIRI ===
+                    "rogan josh": {"Protein": ["Mutton","Chicken","Paneer"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "dum aloo": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "yakhni": {"Protein": ["Mutton","Chicken"], "Spice Level": ["Mild","Medium"]},
+                    "haak": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "kahwa": {"Style": ["Classic","Saffron","Almond"]},
+                    "phirni": {"Flavour": ["Classic","Kesar","Rose","Pistachio"]},
+                    "modur pulao": {"Style": ["Classic","Light"]},
+                    
+                    # === ASSAMESE / NORTHEAST ===
+                    "masor tenga": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "aloo pitika": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "pitha": {"Type": ["Til Pitha","Ghila Pitha","Sunga Pitha","Narikol Pitha"]},
+                    "bamboo shoot curry": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "axone": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "jadoh": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === GOA ===
+                    "vindaloo": {"Protein": ["Pork","Chicken","Mushroom","Prawn"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "xacuti": {"Protein": ["Chicken","Lamb","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "sorpotel": {"Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "bebinca": {"Style": ["Classic","Light"]},
+                    "fish recheado": {"Fish Type": ["Pomfret","Mackerel","Kingfish"]},
+                    "goan fish curry": {"Fish Type": ["Pomfret","Kingfish","Mackerel","Prawn"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    
+                    # === CHETTINAD ===
+                    "chettinad chicken": {"Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "chettinad fish": {"Fish Type": ["Seer","Pomfret","Prawn"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "kara kuzhambu": {"Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    
+                    # === LUCKNOWI / AWADHI ===
+                    "nihari": {"Protein": ["Mutton","Chicken"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "galawati kebab": {"Protein": ["Mutton","Chicken","Vegetable"]},
+                    "sheermal": {"Style": ["Classic","Kesar"]},
+                    "zarda": {"Style": ["Classic","Dry Fruit","Light"]},
+                    
+                    # === CHETTINAD / HYDERABADI (MORE) ===
+                    "bagara baingan": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "mirchi ka salan": {"Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "qubani ka meetha": {"Style": ["Classic","With Cream"]},
+                    
+                    # === STREET FOOD ===
+                    "pani puri": {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"]},
+                    "sev puri": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "bhel puri": {"Style": ["Dry","Wet/Masala"]},
+                    "ragda pattice": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "kathi roll": {"Filling": ["Paneer","Chicken","Egg","Mixed Veg","Mutton"]},
+                    "frankie": {"Filling": ["Paneer","Chicken","Egg","Veg","Schezwan"]},
+                    "egg roll": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "aloo tikki": {"Topping": ["Chole","Dahi","Chutney","Sev"]},
+                    "jhal muri": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "ghee roast": {"Protein": ["Chicken","Prawn","Mushroom","Paneer"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    
+                    # === GLOBAL (MORE) ===
+                    "paella": {"Type": ["Seafood","Chicken","Vegetable","Mixed"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "bibimbap": {"Protein": ["Beef","Chicken","Tofu","Egg","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "laksa": {"Type": ["Curry","Assam","Sarawak"], "Protein": ["Chicken","Prawn","Tofu"]},
+                    "rendang": {"Protein": ["Beef","Chicken","Mutton"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "nasi goreng": {"Protein": ["Chicken","Prawn","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "satay": {"Protein": ["Chicken","Beef","Lamb","Tofu","Prawn"]},
+                    "tempura": {"Type": ["Prawn","Vegetable","Mixed","Sweet Potato"]},
+                    "teriyaki": {"Protein": ["Chicken","Salmon","Tofu","Beef"]},
+                    "congee": {"Type": ["Plain","Chicken","Pork","Century Egg","Vegetable"]},
+                    "banh mi": {"Filling": ["Pork","Chicken","Tofu","Egg","Vegetable"]},
+                    "shakshuka": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "baba ganoush": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "tabouleh": {"Style": ["Classic","Quinoa"]},
+                    "tzatziki": {"Style": ["Classic","Spicy","Herbed"]},
+                    "dolma": {"Filling": ["Rice","Meat","Vegetable"]},
+                    "borek": {"Filling": ["Cheese","Spinach","Meat","Potato"]},
+                    "pierogi": {"Filling": ["Potato & Cheese","Sauerkraut","Mushroom","Meat","Berry"]},
+                    "arepas": {"Filling": ["Cheese","Black Bean","Chicken","Avocado","Pork"]},
+                    "empanada": {"Filling": ["Beef","Chicken","Cheese","Vegetable","Corn"]},
+                    "ceviche": {"Protein": ["Fish","Shrimp","Mixed Seafood"]},
                 }
-                options = _FB.get(dish_lower)
+        options = _FB.get(dish_lower)
+        
+        # If not in fallback, try AI
+        if not options and keys_for_check:
+            options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
 
             # Remove any "gluten free" options — entire app is GF
             if options and isinstance(options, dict):
