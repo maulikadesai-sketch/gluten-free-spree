@@ -1344,27 +1344,27 @@ if dish and dish.strip():
                         valid_options = {"🥩 Non-Veg Protein": ALL_PROTEINS, **valid_options}
 
                     st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                    cols = st.columns(min(len(valid_options), 5))
                     selections = []
                     for idx, (label, choices) in enumerate(valid_options.items()):
-                        with cols[idx % min(len(valid_options), 5)]:
-                            if label == "🥩 Non-Veg Protein":
+                        if label == "🥩 Non-Veg Protein":
+                            sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
+                            if sel:
+                                selections.extend(sel)
+                                nonveg_proteins.extend(sel)
+                        else:
+                            # Multi-select for categories where multiple choices make sense
+                            _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient"}
+                            _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
+                            if _is_multi:
                                 sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
                                 if sel:
                                     selections.extend(sel)
-                                    nonveg_proteins.extend(sel)
                             else:
-                                # Multi-select for categories where multiple choices make sense
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient"}
-                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS)
-                                if _is_multi:
-                                    sel = st.multiselect(f"🍽️ {label} (select as many)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}")
-                                    if sel:
-                                        selections.extend(sel)
-                                else:
-                                    sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
-                                    if sel != "— Choose (optional) —":
-                                        selections.append(sel)
+                                # Use radio buttons — NEVER opens upward
+                                st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-mid);margin:6px 0 2px;'>🍽️ {label}</p>", unsafe_allow_html=True)
+                                sel = st.radio(label, ["Skip"] + choices[:10], horizontal=True, key=f"generic_{dish_lower}_{idx}", label_visibility="collapsed")
+                                if sel and sel != "Skip":
+                                    selections.append(sel)
                     if selections:
                         dish_extra = " — " + ", ".join(selections)
                 elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein and veg_choice not in ("🥦 Veg", "🥚 Eggetarian"):
