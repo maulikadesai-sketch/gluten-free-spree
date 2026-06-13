@@ -1421,10 +1421,10 @@ if dish and dish.strip():
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
                             else:
-                                _SINGLE_LABELS = {"type", "crust", "base", "size", "cut", "shell", "bun", "broth", "wrap"}
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "spice", "herb", "seasoning", "sauce", "style", "method", "cooking", "flavour", "flavor"}
+                                _SINGLE_LABELS = {"type", "crust", "base", "size", "cut", "shell", "bun", "broth", "wrap", "spice", "level", "style", "method", "cooking", "consistency", "texture", "doneness", "sauce", "broth", "cuisine"}
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "herb", "seasoning"}
                                 _is_single = any(s in label.lower() for s in _SINGLE_LABELS)
-                                _is_multi = not _is_single
+                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS) and not _is_single
                                 if _is_multi:
                                     sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                     if sel:
