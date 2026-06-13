@@ -1119,7 +1119,7 @@ NEVER include chicken, mutton, fish, prawn, egg, pork, beef, ham, bacon, or any 
     prompt = f"""The user typed "{dish_name}" as a dish. {pref_note}
 Return customization options as JSON.
 
-RULE: Single-word dishes (pizza, pasta, curry, dosa, biryani, soup, salad, burger, sushi, noodles, bread, cake, pie, wrap, taco, steak, kebab, paratha, chaat, momos, risotto, crepe, omelette, smoothie, pancake, dumpling, sandwich, etc.) are ALWAYS generic — return options.
+RULE: Single-word dishes are ALWAYS generic and MUST return customization options — never return {"specific":true} for a single word. Examples: paneer, chicken, pasta, curry, noodles, rice, soup, salad, etc. Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict) are specific — return {"specific":true}.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
 Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip trivial details (garnish, plating, cheese type) and SKIP serving size/portion size (handled separately). If recommending oils, only suggest gluten-free safe oils (olive oil, coconut oil, avocado oil, sunflower oil, vegetable oil — NOT wheat germ oil). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
@@ -1317,6 +1317,16 @@ if dish and dish.strip():
                     "idli": {"Type": ["Plain Idli","Rava Idli","Mini Idli","Masala Idli","Stuffed Idli","Kanchipuram Idli"]},
                     "uttapam": {"Type": ["Onion","Tomato","Mixed Veg","Cheese","Masala","Plain"]},
                     "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
+                    "paneer": {"Style": ["Butter Paneer","Paneer Tikka","Kadai Paneer","Palak Paneer","Shahi Paneer","Paneer Bhurji","Paneer Makhani","Malai Paneer"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "chicken": {"Style": ["Butter Chicken","Tandoori","Tikka","Grilled","Fried","Roasted","Curry","Stir-fry"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"]},
+                    "mutton": {"Style": ["Rogan Josh","Nihari","Korma","Keema","Biryani Style","Curry","Stew"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "fish": {"Type": ["Salmon","Tuna","Cod","Tilapia","Pomfret","Surmai","Rohu"], "Cooking": ["Grilled","Fried","Baked","Curry","Steamed"]},
+                    "egg": {"Style": ["Boiled","Fried","Scrambled","Poached","Omelette","Bhurji","Curry"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "tofu": {"Style": ["Stir-fried","Grilled","Scrambled","Curry","Baked","Crispy","Steamed"], "Sauce": ["Teriyaki","Soy Ginger","Thai Basil","Schezwan","Peanut"]},
+                    "mushroom": {"Type": ["Button","Shiitake","Oyster","Portobello","Mixed"], "Style": ["Stir-fried","Curry","Soup","Grilled","Stuffed"]},
+                    "maggi": {"Style": ["Classic Masala","Cheese","Vegetable","Atta","Schezwan","Soupy"], "Add-on": ["Vegetables","Cheese","Egg","Paneer","Corn"]},
+                    "poha": {"Type": ["Kanda Poha","Indori Poha","Batata Poha","Dadpe Pohe","Chivda Poha"]},
+                    "upma": {"Type": ["Rava Upma","Bread Upma","Vermicelli Upma","Oats Upma","Vegetable Upma"]},
                     "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
                     "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
                 }
@@ -1342,7 +1352,6 @@ if dish and dish.strip():
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
-                    # Limit to max 2 AI options (protein may add a 3rd)
                     # Cap at 4 categories max
                     valid_options = dict(list(valid_options.items())[:4])
 
