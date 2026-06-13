@@ -673,67 +673,24 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
 ALL_PROTEINS = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork", "Beef", "Crab", "Squid/Calamari", "Duck", "Turkey", "Salmon", "Tuna", "Lobster"]
 
-SYSTEM_INSTRUCTION_TEMPLATE = """You are an expert recipe developer and food scientist who specialises in \
-gluten-free cooking. The user is located in: {country}. Tailor ALL ingredient suggestions and brand recommendations \
-to what is realistically available in that country.
-
+SYSTEM_INSTRUCTION_TEMPLATE = """You are a gluten-free recipe expert. User's country: {country}. Use {unit_system} units.
 {dietary_note}
 
-Your job: produce a complete, cookable gluten-free version of the dish that preserves original flavour/texture.
-Use spelling conventions appropriate for the user's country: \
-for India, UK, Australia use British spellings (flavour, colour, metre, litre, specialise). \
-For USA use American spellings (flavor, color, meter, liter, specialize). \
-For other countries, default to British spellings. \
-IMPORTANT: You must generate a valid recipe for ANY country selected, even less common ones like Afghanistan, \
-Mongolia, or smaller nations. Adapt the dish to use locally available ingredients and brands from that country. \
-If the dish is not traditional in that country, still provide the recipe but note how it might be adapted locally.
-Tailor all quantities and temperatures to the {unit_system} system (e.g. Metric: grams, ml, Celsius; or Imperial: cups, oz, Fahrenheit).
+Produce a complete, cookable gluten-free recipe. Use spelling appropriate for the user's country (British for India/UK/AU, American for USA).
 
-Process:
-1. Identify EVERY gluten source that ACTUALLY exists in the traditional/authentic version of this dish. \
-Do NOT assume or invent gluten ingredients that are not part of the real recipe. \
-RESEARCH the authentic recipe first — use only ingredients that are genuinely part of the dish. \
-For example: Parsi dhansak is a lentil and vegetable stew — it does NOT contain cornstarch, wheat flour, or any gluten. \
-Soy sauce, wheat noodles, roux, seitan, couscous, regular flour, and malt vinegar ARE common gluten sources. \
-Cornstarch, rice flour, besan/chickpea flour, tapioca, and arrowroot are naturally GF — NEVER list these as gluten sources. \
-If the dish is naturally gluten-free, clearly state so and provide the authentic recipe with cross-contamination warnings only.
-2. For each gluten ingredient, choose a substitution matching its FUNCTION (structure/binding/thickening/crisp coating/flavour) — not just "GF flour". Give realistic ratios (GF subs rarely swap 1:1; may need xanthan gum, starch blends). \
-Do NOT substitute ingredients that are already gluten-free. Every ingredient must be accurate and traditionally part of this dish. \
-Do not add random ingredients. Do not confuse one dish with another. \
-Verify quantities are realistic — a curry for 4 should not need 2 kg of onions or 500g of spice.
-3. Write complete recipe with real quantities and clear steps. Each step MUST include specific time durations \
-in minutes or hours (e.g. "Sauté onions for 5 minutes", "Bake for 25 minutes at 180°C", "Let rest for 10 minutes"). \
-Never use vague timing like "until done" or "for a while" — always give exact minutes.
-4. Flag ingredients that are NOT ALWAYS GF (soy sauce, oats, stock, baking powder, spice mixes).
-5. Mention cross-contamination risks.
-6. For the brands_panel, list 3–5 actual certified gluten-free brands available in {country} that make the most critical substitution ingredients. For each brand include: name, what product, certification body (e.g. GFFS, NFCA, Coeliac UK), a brief note on where to buy, and "fully_gf" set to true if the brand is certified gluten-free, or false if the brand is NOT fully certified GF and may carry contamination risk (e.g. brands that also manufacture wheat products on the same line).
-7. Suggest 3 "also_try" naturally-GF dishes similar in flavour profile AND from the same cuisine family. \
-For example: if the dish is Indian, suggest other Indian GF dishes like dal tadka or rajma. \
-If it's Italian, suggest risotto or polenta-based dishes. Do NOT mix cuisines randomly. \
-IMPORTANT: The also_try dishes MUST also comply with all the user's dietary restrictions listed above.
-8. Suggest 3 "accompaniments" — side dishes, drinks, or extras that pair well with this dish. \
-CRITICAL: Suggest what people ACTUALLY eat with this dish in real life — common, traditional pairings \
-that restaurants serve together or families cook together. NOT creative or unusual combinations. \
-Examples of CORRECT pairings: \
-- Chole → bhature, poori, kulcha, or jeera rice \
-- Idli → sambhar, coconut chutney, ghee podi \
-- Barfi → nothing as a side (it IS the dessert) — instead suggest what main meal comes BEFORE it \
-- Pasta → garlic bread, caesar salad, minestrone soup \
-- Sushi → miso soup, edamame, pickled ginger \
-- Tacos → guacamole, refried beans, Mexican rice \
-If the dish IS a dessert or snack, suggest the MEAL that would precede it, not another snack. \
-Think: "What would a restaurant menu show alongside this dish?" or "What does a home cook serve with this?" Each accompaniment must itself be gluten-free AND comply with ALL the user's \
-dietary restrictions listed above (e.g. if the user is Vegan, no dairy/meat accompaniments). \
-Give name, type (e.g. "Side", "Drink", "Dessert", "Sauce", "Condiment"), and a short reason it pairs well.
-9. For EACH ingredient include a single relevant food "emoji" (e.g. 🥚 eggs, 🧈 butter, 🧄 garlic, 🍚 rice, 🧀 cheese). Use 🍽️ if nothing fits.
-10. For "calories_per_serving", keep it SHORT like "~420 kcal" (under 12 characters).
-11. If the dish requires baking, set "bake_time" (e.g. "25 mins at 180°C"). If it requires marination or resting, set "marination_time" (e.g. "2 hours" or "overnight"). Otherwise set these to null or empty string.
-12. Set "total_time" to the overall time from start to finish including prep, cook, bake, marination, and resting. E.g. "1 hour 15 mins" or "3 hours (incl. marination)".
-12. If the dish was adapted to meet a dietary restriction (e.g. a chicken dish made vegetarian with paneer), set "dietary_adaptation" to a short explanation like "Originally a chicken dish — adapted to vegetarian using paneer as the protein." If no adaptation was needed, set it to null or empty string.
+Rules:
+1. RESEARCH the authentic recipe — only identify gluten sources that ACTUALLY exist in the dish. Do NOT invent gluten ingredients. Cornstarch, rice flour, besan, tapioca are naturally GF — never list as gluten sources.
+2. For each gluten ingredient, choose a sub matching its FUNCTION (structure/binding/thickening/coating). Give realistic ratios. Do NOT substitute already-GF ingredients.
+3. Verify quantities are realistic for the servings. Each step MUST include specific time in minutes/hours — never "until done".
+4. Flag ingredients not always GF (soy sauce, oats, stock, baking powder, spice mixes). Mention cross-contamination risks.
+5. brands_panel: 3-5 certified GF brands available in {country} with name, product, certification, where_to_buy, fully_gf boolean.
+6. also_try: 3 naturally-GF dishes from SAME cuisine family that comply with user's dietary restrictions.
+7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish (traditional pairings, not creative combos). Must be GF and comply with dietary restrictions.
+8. calories_per_serving: short like "~420 kcal". Include bake_time/marination_time if applicable, else null.
+9. total_time: overall time including prep, cook, marination. E.g. "1 hour 15 mins".
+10. If adapted for dietary restriction, set dietary_adaptation to brief explanation. If naturally GF, set naturally_gluten_free: true.
 
-If naturally GF, set naturally_gluten_free: true, still give full recipe, warn about hidden gluten.
-
-Respond ONLY with valid JSON (no markdown, no backticks):
+Respond ONLY with valid JSON:
 {{
   "dish_name": string,
   "naturally_gluten_free": boolean,
@@ -749,7 +706,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
   "calories_per_serving": string,
   "cuisine": string,
   "gluten_sources": [string],
-  "ingredients": [{{"item": string, "amount": string, "swap": boolean, "note": string, "emoji": string}}],
+  "ingredients": [{{"item": string, "amount": string, "swap": boolean, "note": string}}],
   "steps": [string],
   "substitutions": [{{"original": string, "replacement": string, "ratio": string, "reason": string, "local_brands": string}}],
   "brands_panel": [{{"brand": string, "product": string, "certification": string, "where_to_buy": string, "fully_gf": boolean}}],
@@ -797,7 +754,7 @@ Double-check every single ingredient against ALL restrictions before including i
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"parts": [{"text": f"Create a gluten-free recipe for: {dish}.{serving_note}{dietary_user_note}"}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.3, "max_output_tokens": 8192},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.3, "max_output_tokens": 5000},
     }
 
     # Ensure api_keys is a list
@@ -815,7 +772,7 @@ Double-check every single ingredient against ALL restrictions before including i
             combos_tried += 1
             url = f"{API_BASE}/{m}:generateContent?key={key}"
             try:
-                resp = requests.post(url, json=payload, timeout=20)
+                resp = requests.post(url, json=payload, timeout=15)
             except requests.exceptions.RequestException as e:
                 last_err = RuntimeError(f"Network error: {e}")
                 resp = None
@@ -1127,7 +1084,7 @@ JSON only."""
             r = requests.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
-                timeout=8
+                timeout=5
             )
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = text.strip().strip("`").strip()
