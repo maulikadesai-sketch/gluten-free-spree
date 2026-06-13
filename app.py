@@ -875,18 +875,37 @@ Double-check every single ingredient against ALL restrictions before including i
     if text.endswith("```"):
         text = text[:-3]
     text = text.strip()
-    # Fix trailing commas before } or ]
     import re as _re2
-    text = _re2.sub(r',\s*([}\]])', r'\1', text)
     # Try to find JSON object in the text
     brace_start = text.find('{')
     brace_end = text.rfind('}')
     if brace_start >= 0 and brace_end > brace_start:
         text = text[brace_start:brace_end+1]
-    result = json.loads(text)
-    if isinstance(result, str):
-        result = json.loads(result)
-    return result
+    
+    # Multiple attempts to parse
+    for attempt in range(3):
+        try:
+            result = json.loads(text)
+            if isinstance(result, str):
+                result = json.loads(result)
+            return result
+        except json.JSONDecodeError:
+            if attempt == 0:
+                # Fix trailing commas before } or ]
+                text = _re2.sub(r',\s*([}\]])', r'\1', text)
+            elif attempt == 1:
+                # Fix missing commas between properties: }"  → },"  and ]"  → ],"
+                text = _re2.sub(r'(\})\s*\n\s*"', r'},\n"', text)
+                text = _re2.sub(r'(\])\s*\n\s*"', r'],\n"', text)
+                # Fix single quotes to double quotes
+                text = text.replace("'", '"')
+                # Remove any control characters
+                text = _re2.sub(r'[\x00-\x1f]', ' ', text)
+                text = text.replace('\n', ' ')
+                # Re-fix trailing commas
+                text = _re2.sub(r',\s*([}\]])', r'\1', text)
+            else:
+                raise
 
 def scale_amount(amount_str, factor):
     """Scale ingredient amounts to cooking-friendly numbers (whole numbers and halves)."""
