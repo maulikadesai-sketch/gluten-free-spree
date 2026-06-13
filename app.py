@@ -640,28 +640,9 @@ hr { border-color: var(--border) !important; opacity: 0.5 !important; }
 
 
 
-/* ── Dropdown cushioning — forces downward opening ── */
-[data-testid="stSelectbox"],
-[data-testid="stMultiSelect"] {
-  margin-bottom: 30px !important;
-}
-[data-testid="stSelectbox"]::after,
-[data-testid="stMultiSelect"]::after {
-  content: '';
-  display: block;
-  height: 200px;
-  pointer-events: none;
-  position: relative;
-}
-/* Page bottom cushion */
-[data-testid="stAppViewBlockContainer"]::after {
-  content: '';
-  display: block;
-  height: 100vh;
-  pointer-events: none;
-}
+/* ── Page bottom padding for dropdown space ── */
 [data-testid="stAppViewBlockContainer"] {
-  padding-bottom: 50vh !important;
+  padding-bottom: 40vh !important;
 }
 
 /* ── Content section spacing ── */
