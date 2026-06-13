@@ -1122,7 +1122,7 @@ Return customization options as JSON.
 RULE: Single-word dishes are ALWAYS generic and MUST return customization options — never return {{"specific":true}} for a single word. Examples: paneer, chicken, pasta, curry, noodles, rice, soup, salad, etc. Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict) are specific — return {{"specific":true}}.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
-Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip trivial details (garnish, plating, cheese type) and SKIP serving size/portion size (handled separately). If recommending oils, only suggest gluten-free safe oils (olive oil, coconut oil, avocado oil, sunflower oil, vegetable oil — NOT wheat germ oil). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
+Return ALL meaningful customization choices for this dish (3-5 categories). Include: type/style, filling/protein, sauce, spice level, cooking method, toppings, add-ons, etc. Skip: oil type (part of recipe), serving size, cheese type, garnish, plating. NEVER include "gluten-free" as an option. Provide 6-10 options per category.
 CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
 - For DESSERTS/SWEETS (brownie, cake, ice cream, cookie): Only sweet add-ons like chocolate chips, nuts, caramel, berries, whipped cream, sprinkles, marshmallow, peanut butter, vanilla, cinnamon. NEVER suggest chilli flakes, garlic, onion, soy sauce, or savory items.
 - For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
@@ -1352,8 +1352,8 @@ if dish and dish.strip():
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
-                    # Cap at 4 categories max
-                    valid_options = dict(list(valid_options.items())[:4])
+                    # Cap at 5 categories max
+                    valid_options = dict(list(valid_options.items())[:5])
 
                     # Context-aware filter: remove mismatched options
                     _dessert_words = {"brownie", "cake", "cookie", "ice cream", "icecream", "chocolate", "fudge", "pudding", "custard", "mousse", "tart", "pie", "muffin", "donut", "cupcake", "pastry", "macaron", "cheesecake", "tiramisu", "kulfi", "gelato", "barfi", "halwa", "ladoo", "kheer", "sundae", "chocobar", "waffle", "pancake", "crepe"}
@@ -1393,9 +1393,10 @@ if dish and dish.strip():
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
                             else:
-                                _SINGLE_LABELS = {"type", "style", "method", "cooking", "crust", "base", "size", "level", "consistency", "texture", "cut", "shell", "wrap", "bun", "broth", "sauce"}
-                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "spice", "herb", "seasoning", "garnish"}
-                                _is_multi = any(m in label.lower() for m in _MULTI_LABELS) and not any(s in label.lower() for s in _SINGLE_LABELS)
+                                _SINGLE_LABELS = {"type", "crust", "base", "size", "cut", "shell", "bun", "broth", "wrap"}
+                                _MULTI_LABELS = {"topping", "filling", "accompaniment", "protein", "dressing", "salsa", "add-on", "addon", "add on", "extra", "mix-in", "mixin", "vegetable", "ingredient", "spice", "herb", "seasoning", "sauce", "style", "method", "cooking", "flavour", "flavor"}
+                                _is_single = any(s in label.lower() for s in _SINGLE_LABELS)
+                                _is_multi = not _is_single
                                 if _is_multi:
                                     sel = st.multiselect(f"🍽️ {label} (select multiple)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
                                     if sel:
