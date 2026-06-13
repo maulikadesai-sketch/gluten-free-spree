@@ -1317,7 +1317,7 @@ if dish and dish.strip():
             if options and isinstance(options, dict):
                 for _k in list(options.keys()):
                     if isinstance(options.get(_k), list):
-                        options[_k] = [v for v in options[_k] if "gluten" not in v.lower()]
+                        options[_k] = [v for v in options[_k] if isinstance(v, str) and "gluten" not in v.lower()]
                 options = {k: v for k, v in options.items() if isinstance(v, list) and v}
 
             if options and isinstance(options, dict) and veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
