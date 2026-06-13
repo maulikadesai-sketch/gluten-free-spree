@@ -882,30 +882,67 @@ Double-check every single ingredient against ALL restrictions before including i
     if brace_start >= 0 and brace_end > brace_start:
         text = text[brace_start:brace_end+1]
     
-    # Multiple attempts to parse
-    for attempt in range(3):
-        try:
-            result = json.loads(text)
-            if isinstance(result, str):
-                result = json.loads(result)
-            return result
-        except json.JSONDecodeError:
-            if attempt == 0:
-                # Fix trailing commas before } or ]
-                text = _re2.sub(r',\s*([}\]])', r'\1', text)
-            elif attempt == 1:
-                # Fix missing commas between properties: }"  → },"  and ]"  → ],"
-                text = _re2.sub(r'(\})\s*\n\s*"', r'},\n"', text)
-                text = _re2.sub(r'(\])\s*\n\s*"', r'],\n"', text)
-                # Fix single quotes to double quotes
-                text = text.replace("'", '"')
-                # Remove any control characters
-                text = _re2.sub(r'[\x00-\x1f]', ' ', text)
-                text = text.replace('\n', ' ')
-                # Re-fix trailing commas
-                text = _re2.sub(r',\s*([}\]])', r'\1', text)
-            else:
-                raise
+    def _fix_json(t):
+        """Aggressively fix malformed JSON."""
+        # Remove control characters except newline
+        t = _re2.sub(r'[\x00-\x09\x0b-\x1f]', ' ', t)
+        # Fix trailing commas before } or ]
+        t = _re2.sub(r',\s*([}\]])', r'\1', t)
+        # Fix missing commas: value followed by key  e.g. "abc" "def" or "abc" \n "def"
+        t = _re2.sub(r'"\s*\n\s*"', '",\n"', t)
+        t = _re2.sub(r'(\})\s*"', r'},\n"', t)
+        t = _re2.sub(r'(\])\s*"', r'],\n"', t)
+        t = _re2.sub(r'(true|false|null)\s*\n\s*"', r'\1,\n"', t)
+        t = _re2.sub(r'(\d)\s*\n\s*"', r'\1,\n"', t)
+        # Fix trailing commas again after repairs
+        t = _re2.sub(r',\s*([}\]])', r'\1', t)
+        return t
+    
+    # Attempt 1: raw parse
+    try:
+        result = json.loads(text)
+        if isinstance(result, str): result = json.loads(result)
+        return result
+    except json.JSONDecodeError:
+        pass
+    
+    # Attempt 2: fix and retry
+    text = _fix_json(text)
+    try:
+        result = json.loads(text)
+        if isinstance(result, str): result = json.loads(result)
+        return result
+    except json.JSONDecodeError:
+        pass
+    
+    # Attempt 3: flatten to single line and fix
+    text = ' '.join(text.split())
+    text = _fix_json(text)
+    try:
+        result = json.loads(text)
+        if isinstance(result, str): result = json.loads(result)
+        return result
+    except json.JSONDecodeError:
+        pass
+    
+    # Attempt 4: try to extract just the essential fields with regex
+    try:
+        # Find dish_name at minimum
+        name_match = _re2.search(r'"dish_name"\s*:\s*"([^"]+)"', text)
+        if name_match:
+            # Build a minimal valid recipe
+            return {
+                "dish_name": name_match.group(1),
+                "description": "Recipe generated — some formatting was repaired.",
+                "prep_time": "N/A", "cook_time": "N/A", "total_time": "N/A",
+                "base_servings": 4,
+                "ingredients": [], "steps": ["Please try generating this recipe again for full details."],
+                "substitutions": [], "tips": [], "pairings": [], "also_try": []
+            }
+    except Exception:
+        pass
+    
+    raise ValueError("Could not parse recipe. Please try again.")
 
 def scale_amount(amount_str, factor):
     """Scale ingredient amounts to cooking-friendly numbers (whole numbers and halves)."""
