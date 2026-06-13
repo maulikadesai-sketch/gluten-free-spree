@@ -1111,19 +1111,31 @@ with col_reset:
 # Smart sub-options — AI detects vague dishes dynamically
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_dish_options(dish_name, keys_str, _v=3):
-    """Ask Gemini if dish is vague. If yes, return sub-categories. Cached 24hrs."""
+def get_dish_options(dish_name, keys_str, _v=4, food_pref=""):
+    """Ask Gemini for customization options based on food preference. Cached 24hrs."""
     import json as _j
     api_keys = [k for k in keys_str.split("|") if k]
-    prompt = f"""The user typed "{dish_name}" as a dish. Return customization options as JSON.
+    
+    pref_note = ""
+    if "Veg" in food_pref and "Egg" not in food_pref:
+        pref_note = """The user is VEGETARIAN. ALL options must be 100% vegetarian — NO meat, fish, seafood, or eggs anywhere.
+For fillings/proteins, provide DIVERSE veg options like: Paneer, Mushroom, Corn, Spinach, Mixed Vegetables, Potato, Tofu, Jackfruit, Cheese, Bell Pepper, Olives, Broccoli, Sweet Potato, Chickpeas, Beans, Avocado, Artichoke, Zucchini, Caramelized Onion, Pesto Vegetables, Cottage Cheese, etc.
+NEVER include chicken, mutton, fish, prawn, egg, pork, beef, ham, bacon, or any meat/seafood."""
+    elif "Egg" in food_pref:
+        pref_note = "The user is EGGETARIAN. Options can include eggs but NO meat, fish, or seafood. Include diverse options: Egg, Paneer, Mushroom, Cheese, Corn, Spinach, Potato, Tofu, Mixed Veg, Beans, etc."
+    elif "Non-Veg" in food_pref:
+        pref_note = "The user is NON-VEGETARIAN. Include both veg and non-veg options freely."
+    
+    prompt = f"""The user typed "{dish_name}" as a dish. {pref_note}
+Return customization options as JSON.
 
 RULE: Single-word dishes (pizza, pasta, curry, dosa, biryani, soup, salad, burger, sushi, noodles, bread, cake, pie, wrap, taco, steak, kebab, paratha, chaat, momos, risotto, crepe, omelette, smoothie, pancake, dumpling, sandwich, etc.) are ALWAYS generic — return options.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
-For generic dishes: return 1-2 JSON keys with 8-10 variations each.
+Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip only truly trivial details (garnish, plating, cheese type). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
 Examples:
-"dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa","Egg Dosa"]}}
+"dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa"]}}
 "pasta"->{{"Pasta Type":["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle"],"Sauce":["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"]}}
 "chicken tikka masala"->{{"specific":true}}
 JSON only."""
@@ -1277,7 +1289,7 @@ if dish and dish.strip():
     if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
-            options = get_dish_options(dish_lower, keys_for_check, _v=3)
+            options = get_dish_options(dish_lower, keys_for_check, _v=4, food_pref=veg_choice if veg_choice else "")
             
             # Fallback: if AI returns nothing for a single common word, use hardcoded
             if not options and word_count == 1:
