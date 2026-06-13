@@ -1245,10 +1245,7 @@ if dish and dish.strip():
     dish_lower = dish.strip().lower()
     # Only check for vague dishes (1-2 common words, short names)
     word_count = len(dish_lower.split())
-    # Don't show customization until user picks food preference for ambiguous dishes
-    if veg_choice is None and _detected_veg is None:
-        st.caption("☝️ Please select your food preference above to see customization options.")
-    elif word_count <= 2 and len(dish_lower) <= 20:
+    if word_count <= 2 and len(dish_lower) <= 20:
         keys_for_check = "|".join(all_api_keys)
         if keys_for_check:
             options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
