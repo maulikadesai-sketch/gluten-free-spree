@@ -797,7 +797,7 @@ Double-check every single ingredient against ALL restrictions before including i
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"parts": [{"text": f"Create a gluten-free recipe for: {dish}.{serving_note}{dietary_user_note}"}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.4, "max_output_tokens": 4096},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.4, "max_output_tokens": 8192},
     }
 
     # Ensure api_keys is a list
@@ -850,58 +850,30 @@ Double-check every single ingredient against ALL restrictions before including i
     except (KeyError, IndexError):
         raise RuntimeError("No content returned. Try again.")
     
-    # Clean up common JSON issues from AI
+    # Clean up JSON from AI
     text = text.strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[-1] if "\n" in text else text[3:]
     if text.endswith("```"):
         text = text[:-3]
     text = text.strip()
+    if text.startswith("json"):
+        text = text[4:].strip()
     import re as _re2
     brace_start = text.find('{')
     brace_end = text.rfind('}')
     if brace_start >= 0 and brace_end > brace_start:
         text = text[brace_start:brace_end+1]
     
-    # Attempt 1: parse as-is
+    # Fix trailing commas
+    text = _re2.sub(r',\s*([}\]])', r'\1', text)
+    
     try:
         result = json.loads(text)
         if isinstance(result, str): result = json.loads(result)
         return result
-    except json.JSONDecodeError:
-        pass
-    
-    # Attempt 2: safe fixes only — trailing commas
-    fixed = _re2.sub(r',\s*([}\]])', r'\1', text)
-    try:
-        result = json.loads(fixed)
-        if isinstance(result, str): result = json.loads(result)
-        return result
-    except json.JSONDecodeError:
-        pass
-    
-    # Attempt 3: flatten and retry
-    flat = ' '.join(fixed.split())
-    try:
-        result = json.loads(flat)
-        if isinstance(result, str): result = json.loads(result)
-        return result
-    except json.JSONDecodeError:
-        pass
-
-    # Attempt 4: extract dish_name and return minimal recipe
-    name_match = _re2.search(r'"dish_name"\s*:\s*"([^"]+)"', text)
-    if name_match:
-        return {
-            "dish_name": name_match.group(1),
-            "description": "Recipe generated — please try again for full details.",
-            "prep_time": "N/A", "cook_time": "N/A", "total_time": "N/A",
-            "base_servings": 4,
-            "ingredients": [], "steps": ["Please try generating this recipe again."],
-            "substitutions": [], "tips": [], "pairings": [], "also_try": []
-        }
-    
-    raise ValueError("Could not parse recipe. Please try again.")
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Recipe parsing failed: {e}. Please try again.")
 
 def scale_amount(amount_str, factor):
     """Scale ingredient amounts to cooking-friendly numbers (whole numbers and halves)."""
