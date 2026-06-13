@@ -62,7 +62,7 @@ def log_search(dish_name, country, dietary, source="search"):
         pass
 
 COUNTRIES = [
-    "🌍 Choose your country from the dropdown",
+    "🌍 Choose your country",
     "Afghanistan", "Albania", "Algeria", "Andorra",
     "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
     "Australia", "Austria", "Azerbaijan", "Bahamas",
@@ -1128,6 +1128,7 @@ CRITICAL: Options must be CONTEXTUALLY APPROPRIATE for the dish:
 - For SAVORY dishes (curry, noodles, rice, pasta): Savory add-ons only. No chocolate, caramel, berries, or sweet items.
 - For DRINKS (smoothie, milkshake, lassi): Only drink-appropriate add-ons like honey, protein powder, chia seeds, ice, whipped cream. No pasta, rice, or cooking ingredients.
 Every option in every category must make logical sense for someone actually making this dish.
+- For SIMPLE dishes (idli, dosa, roti, naan, fries, toast, poha, upma, dal, rice): Only show Type/Style and Accompaniment. Do NOT add Filling, Protein, or Add-ons — these dishes don't have fillings.
 Noodles=Asian(ramen,udon,soba). Pasta=Italian(penne,spaghetti). Never mix.
 Examples:
 "dosa"->{{"Dosa Type":["Plain Dosa","Masala Dosa","Rava Dosa","Onion Dosa","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese Dosa"]}}
@@ -1382,6 +1383,17 @@ if dish and dish.strip():
                                 valid_options[k] = [v for v in valid_options[k] if not any(s in v.lower() for s in _sweet_bad_for_savory)]
                     valid_options = {k: v for k, v in valid_options.items() if isinstance(v, list) and len(v) > 0}
 
+
+                    # Remove inappropriate categories for simple dishes
+                    _simple_dishes = {"idli", "dosa", "uttapam", "upma", "poha", "pongal", "appam", "puttu",
+                                      "roti", "naan", "chapati", "paratha", "puri", "bhatura",
+                                      "rice", "jeera rice", "lemon rice", "curd rice", "dal",
+                                      "fries", "chips", "popcorn", "toast", "bread"}
+                    _bad_cats_for_simple = {"protein", "filling", "meat", "non-veg"}
+                    if any(sd in dish_lower for sd in _simple_dishes):
+                        for k in list(valid_options.keys()):
+                            if any(bc in k.lower() for bc in _bad_cats_for_simple):
+                                del valid_options[k]
                     # Filter out non-veg options if veg is selected
                     if veg_choice in ("🥦 Veg", "🥚 Eggetarian"):
                         _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema", "pepperoni", "salami", "anchovy", "sardine", "venison", "bison", "goat", "rabbit", "quail"}
@@ -1736,7 +1748,7 @@ if "recipe" in st.session_state:
     brands = recipe.get("brands_panel") or []
     if brands:
         r_country = st.session_state.get("recipe_country", country)
-        c_name = r_country.split(' ', 1)[-1] if r_country != "🌍 Choose your country from the dropdown" else "your region"
+        c_name = r_country.split(' ', 1)[-1] if r_country != "🌍 Choose your country" else "your region"
         st.markdown(f"<div class='sec-hdr'>🏪 Recommended Brands in {c_name}</div>", unsafe_allow_html=True)
         bcols = st.columns(min(len(brands), 3))
         for i, b in enumerate(brands):
