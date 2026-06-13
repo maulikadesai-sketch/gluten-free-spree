@@ -871,6 +871,22 @@ Double-check every single ingredient against ALL restrictions before including i
     if rbrace != -1 and rbrace < len(text) - 1:
         text = text[:rbrace + 1]
     
+    # Clean up common JSON issues from AI
+    text = text.strip()
+    # Remove markdown code blocks
+    if text.startswith("```"):
+        text = text.split("\n", 1)[-1] if "\n" in text else text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    text = text.strip()
+    # Fix trailing commas before } or ]
+    import re as _re2
+    text = _re2.sub(r',\s*([}\]])', r'\1', text)
+    # Try to find JSON object in the text
+    brace_start = text.find('{')
+    brace_end = text.rfind('}')
+    if brace_start >= 0 and brace_end > brace_start:
+        text = text[brace_start:brace_end+1]
     result = json.loads(text)
     if isinstance(result, str):
         result = json.loads(result)
@@ -1140,38 +1156,101 @@ _NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", 
 
 # Dishes that are inherently vegetarian — no veg/non-veg choice needed
 _ALWAYS_VEG = {
-    "ice cream", "icecream", "kulfi", "gelato", "sorbet", "sundae",
-    "cake", "cupcake", "brownie", "cookie", "biscuit", "muffin", "donut", "doughnut",
+    # Items that NEVER contain eggs or meat
+    # Drinks
+    "smoothie", "juice", "lemonade", "sherbet", "sharbat", "iced tea",
+    "lassi", "chai", "tea", "coffee", "matcha", "hot chocolate",
+    # Fruits & simple items  
+    "salad", "hummus", "guacamole", "salsa", "pesto", "chutney", "raita", "pickle",
+    "tzatziki", "baba ganoush", "sorbet", "popsicle", "ice candy", "gola", "slushie",
+    # Dal & inherently veg curries
+    "dal", "sambhar", "rasam", "curd", "yogurt", "paneer", "tofu", "palak paneer", "dal makhani",
+    "chana masala", "rajma", "kadhi", "aloo gobi", "baingan bharta", "bhindi masala",
+    # Rice & grains (plain)
+    "rice", "pulao", "khichdi", "jeera rice", "lemon rice", "coconut rice", "curd rice",
+    "poha", "upma", "pongal",
+    # Veg snacks (no egg)
+    "fries", "chips", "popcorn", "nachos", "corn", "garlic bread",
+    "panipuri", "golgappa", "pani puri", "bhel", "chaat", "dabeli",
+    "dhokla", "kachori", "pav bhaji", "aloo tikki", "sev", "chivda", "murukku",
+    # Breads (simple, no egg)
+    "roti", "chapati", "puri", "naan", "kulcha", "tortilla", "pita", "thepla", "missi roti",
+    # South Indian (no egg)
+    "idli", "dosa", "uttapam", "appam", "puttu", "pesarattu",
+    # Indian sweets (typically no egg)
     "barfi", "halwa", "ladoo", "laddu", "jalebi", "gulab jamun", "rasgulla", "rasmalai",
-    "kheer", "payasam", "pudding", "custard", "mousse", "tiramisu", "cheesecake",
-    "smoothie", "milkshake", "lassi", "juice", "shake", "falooda",
-    "chocolate", "candy", "toffee", "fudge", "macaron", "macaroon", "tart", "pie crust",
+    "peda", "sandesh", "modak", "mysore pak", "kaju katli", "soan papdi",
+    "rabri", "basundi", "shrikhand", "phirni", "gajar halwa", "moong dal halwa", "besan ladoo",
+    "kheer", "payasam",
+}
+
+# Items that could be veg OR contain eggs — show Veg/Eggetarian only, NEVER Non-Veg
+_VEG_OR_EGG = {
+    # Ice cream & frozen (may contain eggs)
+    "ice cream", "icecream", "kulfi", "gelato", "sundae", "chocobar", "choco bar",
+    "frozen yogurt", "froyo",
+    # Baked goods (usually contain eggs)
+    "cake", "cupcake", "brownie", "cookie", "biscuit", "muffin", "donut", "doughnut",
+    "pastry", "croissant", "scone", "danish", "cinnamon roll", "eclair", "cream puff",
+    "churro", "pretzel", "bread", "focaccia", "baguette", "sourdough", "brioche", "ciabatta",
+    # Desserts (may contain eggs)
+    "pudding", "custard", "mousse", "tiramisu", "cheesecake", "panna cotta",
+    "creme brulee", "flan", "baklava", "cannoli", "tres leches", "pavlova", "trifle",
+    "chocolate mousse", "lava cake", "fondant", "truffle", "macaron", "macaroon", "tart",
+    "chocolate", "candy", "toffee", "fudge", "meringue", "malpua",
+    # Breakfast (may contain eggs)
     "pancake", "waffle", "crepe", "french toast",
-    "bread", "naan", "roti", "paratha", "puri", "bhatura", "kulcha", "focaccia", "baguette",
-    "rice", "pulao", "khichdi", "idli", "dosa", "uttapam", "upma", "poha",
-    "salad", "soup", "smoothie bowl", "oatmeal", "porridge", "granola", "muesli",
-    "hummus", "guacamole", "salsa", "pesto", "chutney", "raita", "pickle",
-    "dal", "sambhar", "rasam", "curd", "yogurt", "paneer", "tofu",
-    "fries", "chips", "popcorn", "nachos", "samosa", "pakora", "bhaji", "vada",
+    # Drinks (may contain eggs)
+    "milkshake", "shake", "falooda", "bubble tea", "boba", "smoothie bowl",
+    # Snacks (may contain eggs)
+    "samosa", "pakora", "bhaji", "vada", "spring roll", "bruschetta",
+    "mathri", "risotto",
+    # Other
+    "cereal", "granola", "muesli", "oatmeal", "porridge", "soup",
+}
+
+# Dishes that inherently contain eggs — auto-set to Eggetarian
+_ALWAYS_EGG = {
+    "omelette", "omelet", "scrambled egg", "boiled egg", "poached egg", "fried egg",
+    "egg curry", "egg rice", "egg fried rice", "egg roll", "egg sandwich",
+    "egg bhurji", "anda bhurji", "egg paratha", "egg dosa", "egg toast",
+    "meringue", "souffle", "quiche", "frittata",
+    "egg drop soup", "egg noodle", "egg biryani", "egg masala",
+    "shakshuka", "eggs benedict", "scotch egg", "deviled egg",
 }
 
 _dish_lower = (dish or "").strip().lower()
 _is_always_veg = any(av in _dish_lower for av in _ALWAYS_VEG) and not any(nv in _dish_lower for nv in _NONVEG_WORDS)
+_is_veg_or_egg = any(ve in _dish_lower for ve in _VEG_OR_EGG) and not any(nv in _dish_lower for nv in _NONVEG_WORDS)
+_is_always_egg = any(ae in _dish_lower for ae in _ALWAYS_EGG) and not any(nv in _dish_lower for nv in (_NONVEG_WORDS - {"egg"}))
 _SPECIFIC_PROTEINS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "squid", "calamari", "keema", "seekh"}
 _has_specific_protein = any(w in _dish_lower for w in _SPECIFIC_PROTEINS)
 _current_country = country
 _detected_veg = None
-if _is_always_veg:
+if _is_always_egg:
+    _detected_veg = "always_egg"
+elif _is_always_veg:
     _detected_veg = "always_veg"
+elif _is_veg_or_egg:
+    _detected_veg = "veg_or_egg"
 elif any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
     _detected_veg = "nonveg"
 elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
     _detected_veg = "veg"
 
 nonveg_proteins = []
-if _detected_veg == "always_veg":
+if _detected_veg == "always_egg":
+    veg_choice = "🥚 Eggetarian"
+    # No selector needed — dish inherently contains eggs
+elif _detected_veg == "always_veg":
     veg_choice = "🥦 Veg"
     # No message, no selector — it's obviously vegetarian
+elif _detected_veg == "veg_or_egg":
+    veg_choice = st.radio("🥗 Does your version contain eggs?", ["🥦 Veg (no eggs)", "🥚 Eggetarian (with eggs)"], horizontal=True, index=None, key=f"veg_egg_radio_{st.session_state.get('_reset_count', 0)}")
+    if veg_choice == "🥦 Veg (no eggs)":
+        veg_choice = "🥦 Veg"
+    elif veg_choice == "🥚 Eggetarian (with eggs)":
+        veg_choice = "🥚 Eggetarian"
 elif _detected_veg == "veg":
     veg_choice = "🥦 Veg"
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🥦 <em>Detected as vegetarian from dish name</em></p>", unsafe_allow_html=True)
