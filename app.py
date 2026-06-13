@@ -1119,7 +1119,7 @@ NEVER include chicken, mutton, fish, prawn, egg, pork, beef, ham, bacon, or any 
     prompt = f"""The user typed "{dish_name}" as a dish. {pref_note}
 Return customization options as JSON.
 
-RULE: Single-word dishes are ALWAYS generic and MUST return customization options — never return {"specific":true} for a single word. Examples: paneer, chicken, pasta, curry, noodles, rice, soup, salad, etc. Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict) are specific — return {"specific":true}.
+RULE: Single-word dishes are ALWAYS generic and MUST return customization options — never return {{"specific":true}} for a single word. Examples: paneer, chicken, pasta, curry, noodles, rice, soup, salad, etc. Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict) are specific — return {{"specific":true}}.
 Multi-word specific dishes (chicken tikka masala, pad thai, eggs benedict, etc.) are specific — return {{"specific":true}}.
 
 Return ALL meaningful customization choices the user would want to make for this dish. Include every option that changes the recipe (type, style, protein/filling, sauce, spice level, cooking method, consistency, size, etc.). Skip trivial details (garnish, plating, cheese type) and SKIP serving size/portion size (handled separately). If recommending oils, only suggest gluten-free safe oils (olive oil, coconut oil, avocado oil, sunflower oil, vegetable oil — NOT wheat germ oil). NEVER include "gluten-free" as an option — every recipe on this site is gluten-free by default. Provide 8-12 options per category so users have plenty of choice.
