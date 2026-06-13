@@ -1139,7 +1139,7 @@ JSON only."""
             r = requests.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
-                timeout=5
+                timeout=8
             )
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = text.strip().strip("`").strip()
@@ -1287,7 +1287,7 @@ if dish and dish.strip():
             options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
             
             # Fallback: if AI returns nothing for a single common word, use hardcoded
-            if not options and word_count == 1:
+            if not options and word_count <= 2:
                 _FB = {
                     "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney"]},
                     "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
@@ -1327,6 +1327,19 @@ if dish and dish.strip():
                     "maggi": {"Style": ["Classic Masala","Cheese","Vegetable","Atta","Schezwan","Soupy"], "Add-on": ["Vegetables","Cheese","Egg","Paneer","Corn"]},
                     "poha": {"Type": ["Kanda Poha","Indori Poha","Batata Poha","Dadpe Pohe","Chivda Poha"]},
                     "upma": {"Type": ["Rava Upma","Bread Upma","Vermicelli Upma","Oats Upma","Vegetable Upma"]},
+                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Mexican","Schezwan"], "Protein": ["Veg","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "garlic bread": {"Type": ["Classic","Cheese","Herb Butter","Pesto","Stuffed"], "Style": ["Baked","Grilled","Air-fried"]},
+                    "french fries": {"Cut": ["Thin","Thick","Waffle","Curly","Wedge"], "Seasoning": ["Salt","Peri Peri","Cheese","Truffle","Cajun"]},
+                    "spring roll": {"Type": ["Veg","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
+                    "iced tea": {"Flavour": ["Lemon","Peach","Mango","Mint","Berry","Green Tea","Passion Fruit"]},
+                    "hot chocolate": {"Type": ["Classic","Dark","White","Mexican Spiced","Peppermint","Salted Caramel"]},
+                    "banana bread": {"Add-in": ["Chocolate Chip","Walnut","Blueberry","Cinnamon","Peanut Butter","Plain"]},
+                    "butter chicken": {"Spice Level": ["Mild/Creamy","Medium","Spicy"], "Consistency": ["Thick Gravy","Medium","Thin/Soupy"]},
+                    "palak paneer": {"Spice Level": ["Mild","Medium","Spicy"], "Texture": ["Smooth","Chunky"]},
+                    "dal makhani": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Soupy"]},
+                    "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "pav bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Jain","Cheese"]},
                     "cookie": {"Type": ["Chocolate Chip","Oatmeal","Peanut Butter","Shortbread","Snickerdoodle","Double Chocolate","Sugar Cookie"]},
                     "pie": {"Type": ["Apple","Chicken","Shepherd's","Pumpkin","Key Lime","Banoffee","Meat"]},
                 }
