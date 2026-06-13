@@ -1433,6 +1433,7 @@ elif veg_choice == "🍗 Non-Veg" and "Non-Vegetarian" not in dietary:
     dietary = [protein_note] + list(dietary)
 
 # Units stored in session state, configurable near recipe
+# Units preference — stored in session state, shown in recipe area
 if "unit_pref" not in st.session_state:
     st.session_state["unit_pref"] = "Metric (g, ml, °C)"
 unit_sys = st.session_state["unit_pref"]
@@ -1617,9 +1618,14 @@ if "recipe" in st.session_state:
             )
 
         # Units preference — below ingredients
-        new_unit = st.radio("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"], horizontal=True, key="unit_select")
+        new_unit = st.selectbox("📏 Units", ["Metric (g, ml, °C)", "Imperial (oz, cups, °F)"],
+                                index=0 if "Metric" in unit_sys else 1, key="unit_change")
         if new_unit != st.session_state.get("unit_pref"):
             st.session_state["unit_pref"] = new_unit
+            # Clear cached recipe so it regenerates with new units
+            if "recipe" in st.session_state:
+                del st.session_state["recipe"]
+            st.rerun()
 
         # Kitchen Timer — compact, inside left column
         st.markdown("<div class='sec-hdr'>⏱️ Kitchen Timer</div>", unsafe_allow_html=True)
