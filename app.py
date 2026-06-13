@@ -8,6 +8,7 @@ import json
 import math
 import random
 import requests
+_session = requests.Session()
 import streamlit as st
 import urllib.parse
 import time
@@ -676,15 +677,15 @@ ALL_PROTEINS = ["Chicken", "Mutton/Lamb", "Eggs", "Prawns/Shrimp", "Fish", "Pork
 SYSTEM_INSTRUCTION_TEMPLATE = """You are a gluten-free recipe expert. User's country: {country}. Use {unit_system} units.
 {dietary_note}
 
-Produce a complete, cookable gluten-free recipe. Use spelling appropriate for the user's country (British for India/UK/AU, American for USA).
+Produce a complete, cookable gluten-free recipe. Be concise — short descriptions, practical tips only. Use spelling appropriate for the user's country (British for India/UK/AU, American for USA).
 
 Rules:
 1. RESEARCH the authentic recipe — only identify gluten sources that ACTUALLY exist in the dish. Do NOT invent gluten ingredients. Cornstarch, rice flour, besan, tapioca are naturally GF — never list as gluten sources.
 2. For each gluten ingredient, choose a sub matching its FUNCTION (structure/binding/thickening/coating). Give realistic ratios. Do NOT substitute already-GF ingredients.
 3. Verify quantities are realistic for the servings. Each step MUST include specific time in minutes/hours — never "until done".
 4. Flag ingredients not always GF (soy sauce, oats, stock, baking powder, spice mixes). Mention cross-contamination risks.
-5. brands_panel: 3-5 certified GF brands available in {country} with name, product, certification, where_to_buy, fully_gf boolean.
-6. also_try: 3 naturally-GF dishes from SAME cuisine family that comply with user's dietary restrictions.
+5. brands_panel: 2-3 certified GF brands available in {country} with name, product, certification, where_to_buy, fully_gf boolean.
+6. also_try: 2-3 naturally-GF dishes from SAME cuisine family that comply with user's dietary restrictions.
 7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish (traditional pairings, not creative combos). Must be GF and comply with dietary restrictions.
 8. calories_per_serving: short like "~420 kcal". Include bake_time/marination_time if applicable, else null.
 9. total_time: overall time including prep, cook, marination. E.g. "1 hour 15 mins".
@@ -712,8 +713,6 @@ Respond ONLY with valid JSON:
   "brands_panel": [{{"brand": string, "product": string, "certification": string, "where_to_buy": string, "fully_gf": boolean}}],
   "check_labels": [string],
   "tips": [string],
-  "storage_info": string,
-  "nutrition_notes": string,
   "accompaniments": [{{"name": string, "type": string, "reason": string}}],
   "also_try": [{{"dish": string, "reason": string}}]
 }}
@@ -754,7 +753,7 @@ Double-check every single ingredient against ALL restrictions before including i
     payload = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"parts": [{"text": f"Create a gluten-free recipe for: {dish}.{serving_note}{dietary_user_note}"}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.3, "max_output_tokens": 5000},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.3, "max_output_tokens": 4000},
     }
 
     # Ensure api_keys is a list
@@ -772,7 +771,7 @@ Double-check every single ingredient against ALL restrictions before including i
             combos_tried += 1
             url = f"{API_BASE}/{m}:generateContent?key={key}"
             try:
-                resp = requests.post(url, json=payload, timeout=15)
+                resp = _session.post(url, json=payload, timeout=15)
             except requests.exceptions.RequestException as e:
                 last_err = RuntimeError(f"Network error: {e}")
                 resp = None
@@ -1081,7 +1080,7 @@ Examples:
 JSON only."""
     for key in api_keys[:2]:
         try:
-            r = requests.post(
+            r = _session.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
                 timeout=5
