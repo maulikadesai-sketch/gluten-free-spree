@@ -1095,10 +1095,10 @@ Examples:
 JSON only."""
     for key in api_keys[:2]:
         try:
-            r = _session.post(
+            r = requests.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={key}",
                 json={"contents": [{"parts": [{"text": prompt}]}]},
-                timeout=5
+                timeout=8
             )
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             text = text.strip().strip("`").strip()
@@ -1251,7 +1251,7 @@ if dish and dish.strip():
             options = get_dish_options(dish_lower, keys_for_check, _v=5, food_pref=veg_choice if veg_choice else "")
             
             # Fallback: if AI returns nothing for a single common word, use hardcoded
-            if not options and word_count <= 2:
+            if not options:
                 _FB = {
                     "dosa": {"Dosa Type": ["Plain","Masala","Rava","Onion","Mysore Masala","Set Dosa","Neer Dosa","Paper Dosa","Cheese","Podi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Sambhar & Coconut Chutney","Podi & Ghee","Tomato Chutney","Mint Chutney","Peanut Chutney","Onion Chutney"]},
                     "paratha": {"Paratha Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha"]},
