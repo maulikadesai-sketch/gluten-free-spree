@@ -1139,18 +1139,41 @@ else:
 _VEG_WORDS = {"veg", "vegetarian", "veggie", "paneer", "tofu", "aloo", "gobhi", "palak", "bhindi", "dal", "chana", "rajma", "sabzi", "gobi", "mushroom veg"}
 _NONVEG_WORDS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "meat", "non-veg", "nonveg", "non veg", "keema", "seekh", "butter chicken", "tandoori", "rogan josh", "bacon", "ham", "sausage", "pepperoni", "salami", "squid", "calamari"}
 
+# Dishes that are inherently vegetarian — no veg/non-veg choice needed
+_ALWAYS_VEG = {
+    "ice cream", "icecream", "kulfi", "gelato", "sorbet", "sundae",
+    "cake", "cupcake", "brownie", "cookie", "biscuit", "muffin", "donut", "doughnut",
+    "barfi", "halwa", "ladoo", "laddu", "jalebi", "gulab jamun", "rasgulla", "rasmalai",
+    "kheer", "payasam", "pudding", "custard", "mousse", "tiramisu", "cheesecake",
+    "smoothie", "milkshake", "lassi", "juice", "shake", "falooda",
+    "chocolate", "candy", "toffee", "fudge", "macaron", "macaroon", "tart", "pie crust",
+    "pancake", "waffle", "crepe", "french toast",
+    "bread", "naan", "roti", "paratha", "puri", "bhatura", "kulcha", "focaccia", "baguette",
+    "rice", "pulao", "khichdi", "idli", "dosa", "uttapam", "upma", "poha",
+    "salad", "soup", "smoothie bowl", "oatmeal", "porridge", "granola", "muesli",
+    "hummus", "guacamole", "salsa", "pesto", "chutney", "raita", "pickle",
+    "dal", "sambhar", "rasam", "curd", "yogurt", "paneer", "tofu",
+    "fries", "chips", "popcorn", "nachos", "samosa", "pakora", "bhaji", "vada",
+}
+
 _dish_lower = (dish or "").strip().lower()
+_is_always_veg = any(av in _dish_lower for av in _ALWAYS_VEG) and not any(nv in _dish_lower for nv in _NONVEG_WORDS)
 _SPECIFIC_PROTEINS = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "squid", "calamari", "keema", "seekh"}
 _has_specific_protein = any(w in _dish_lower for w in _SPECIFIC_PROTEINS)
 _current_country = country
 _detected_veg = None
-if any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
+if _is_always_veg:
+    _detected_veg = "always_veg"
+elif any(w in _dish_lower for w in _NONVEG_WORDS) or _dish_lower.startswith("egg "):
     _detected_veg = "nonveg"
 elif any(w in _dish_lower.split() for w in _VEG_WORDS) or _dish_lower.startswith("veg ") or "vegetable" in _dish_lower:
     _detected_veg = "veg"
 
 nonveg_proteins = []
-if _detected_veg == "veg":
+if _detected_veg == "always_veg":
+    veg_choice = "🥦 Veg"
+    # No message, no selector — it's obviously vegetarian
+elif _detected_veg == "veg":
     veg_choice = "🥦 Veg"
     st.markdown("<p style='font-size:0.85rem;color:var(--ink-soft);'>🥦 <em>Detected as vegetarian from dish name</em></p>", unsafe_allow_html=True)
 elif _detected_veg == "nonveg":
@@ -1159,10 +1182,6 @@ elif _detected_veg == "nonveg":
 else:
     # Not clear from dish name — show selector
     veg_choice = st.radio("🥗 What is your food preference?", ["🥦 Veg", "🥚 Eggetarian", "🍗 Non-Veg"], horizontal=True, index=None, key="veg_radio")
-    
-    # Non-veg protein selector moved to customization area
-    if veg_choice == "🍗 Non-Veg" and dish and dish.strip():
-        pass  # Proteins shown in customize section above
 
 
 dish_extra = ""
@@ -1222,6 +1241,8 @@ if dish and dish.strip():
                 # Filter out any non-list values (cleanup AI response)
                 valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
                 if valid_options:
+                    # Limit to max 2 AI options (protein may add a 3rd)
+                    valid_options = dict(list(valid_options.items())[:2])
                     # Filter out non-veg options if veg is selected
                     if veg_choice == "🥦 Veg":
                         _nv_words = {"chicken", "mutton", "lamb", "fish", "prawn", "shrimp", "egg", "pork", "beef", "crab", "lobster", "salmon", "tuna", "duck", "turkey", "bacon", "ham", "sausage", "meat", "seafood", "squid", "calamari", "keema"}
