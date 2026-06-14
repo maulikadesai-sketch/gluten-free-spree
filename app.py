@@ -1308,7 +1308,7 @@ if dish and dish.strip():
                     "vada": {"Type": ["Medu","Masala","Urad Dal","Sabudana","Moong Dal","Dahi Vada","Aloo Bonda"]},
                     "sambhar": {"Style": ["Kerala","Tamil","Karnataka","Andhra"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "rasam": {"Type": ["Tomato","Pepper","Lemon","Garlic","Mysore","Pineapple"]},
-                    "avial": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "avial": {"Spice Level": ["Mild","Medium","Spicy"], "Vegetable": ["Mixed Veg","Drumstick","Raw Banana","Yam","Beans","Carrot","Ash Gourd"], "Accompaniment": ["Rice","Roti"]},
                     "payasam": {"Type": ["Semiya","Ada","Palada","Paruppu","Paal"]},
                     "poriyal": {"Vegetable": ["Beans","Cabbage","Carrot","Beetroot","Snake Gourd","Drumstick"]},
                     "kootu": {"Vegetable": ["Mixed Veg","Chana Dal","Moong Dal","Raw Banana"]},
@@ -1346,11 +1346,11 @@ if dish and dish.strip():
                     "pav bhaji": {"Style": ["Classic","Jain","Cheese","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "aloo": {"Style": ["Jeera","Dum","Matar","Palak","Tikki","Baingan"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "malai kofta": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "malai kofta": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Thin Gravy"], "Accompaniment": ["Naan","Roti","Jeera Rice","Pulao"]},
                     "butter chicken": {"Spice Level": ["Mild/Creamy","Medium","Spicy"], "Consistency": ["Thick","Medium","Thin"]},
                     "palak paneer": {"Spice Level": ["Mild","Medium","Spicy"], "Texture": ["Smooth","Chunky"]},
                     "dal makhani": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Soupy"]},
-                    "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "chole bhature": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Punjabi","Amritsari","Restaurant Style"], "Accompaniment": ["Onion Rings","Pickle","Lassi","Raita"]},
                     "raita": {"Type": ["Boondi","Cucumber","Onion-Tomato","Mint","Mixed Veg","Fruit"]},
                     "kathi roll": {"Filling": ["Paneer","Chicken","Egg","Mixed Veg","Mutton","Soya"]},
                     "aloo tikki": {"Topping": ["Chole","Dahi","Chutney","Sev","Onion"]},
@@ -1362,7 +1362,7 @@ if dish and dish.strip():
                     "dhokla": {"Type": ["Besan","Rava","Khaman","Green Moong","Sandwich"]},
                     "handvo": {"Style": ["Classic","Baked","Pan-fried"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "muthiya": {"Type": ["Methi","Dudhi","Palak","Corn"], "Style": ["Steamed","Fried"]},
-                    "undhiyu": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "undhiyu": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Surti","Kathiawadi","Baked"], "Accompaniment": ["Puri","Shrikhand","Rotli"]},
                     "khandvi": {"Spice Level": ["Mild","Medium"]},
                     "fafda": {"Accompaniment": ["Jalebi","Papaya Chutney","Kadhi","Sambharo"]},
                     "dabeli": {"Spice Level": ["Mild","Medium","Spicy"], "Topping": ["Sev","Pomegranate","Peanuts","Cheese"]},
@@ -1376,19 +1376,19 @@ if dish and dish.strip():
                     "mohanthal": {"Style": ["Classic","With Nuts"]},
 
                     # ══════ MAHARASHTRIAN ══════
-                    "misal pav": {"Spice Level": ["Mild","Medium","Spicy","Kolhapuri"]},
-                    "vada pav": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "misal pav": {"Spice Level": ["Mild","Medium","Spicy","Kolhapuri"], "Topping": ["Farsan","Onion","Lemon","Coriander","Poha"], "Accompaniment": ["Pav","Bread","Papad"]},
+                    "vada pav": {"Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Dry Garlic Chutney","Green Chutney","Fried Chilli"], "Style": ["Classic","Cheese","Schezwan"]},
                     "thalipeeth": {"Type": ["Multigrain","Jowar","Bajra","Nachni"]},
                     "puran poli": {"Filling": ["Chana Dal","Coconut","Dry Fruit"]},
                     "bhakri": {"Type": ["Jowar","Bajra","Nachni","Rice","Multigrain"]},
-                    "sabudana khichdi": {"Spice Level": ["Mild","Medium","Spicy"]},
-                    "pithla": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sabudana khichdi": {"Spice Level": ["Mild","Medium","Spicy"], "Add-in": ["Peanuts","Potato","Coconut","Curry Leaves"], "Accompaniment": ["Curd","Papad","Pickle"]},
+                    "pithla": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Thin"], "Accompaniment": ["Bhakri","Rice","Roti"]},
                     "modak": {"Type": ["Steamed","Fried","Chocolate","Dry Fruit","Coconut"]},
-                    "batata vada": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "batata vada": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Classic","Cheese Stuffed","Schezwan"], "Accompaniment": ["Chutney","Pav","Fried Chilli"]},
                     "usal": {"Type": ["Matki","Vatana","Chana"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "kothimbir vadi": {"Style": ["Fried","Steamed"]},
                     "bharli vangi": {"Spice Level": ["Mild","Medium","Spicy"]},
-                    "zunka": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "zunka": {"Spice Level": ["Mild","Medium","Spicy"], "Style": ["Dry","Semi-moist"], "Accompaniment": ["Bhakri","Rice","Roti"]},
 
                     # ══════ BENGALI ══════
                     "sandesh": {"Flavour": ["Plain","Nolen Gur","Chocolate","Mango","Strawberry"]},
@@ -1403,26 +1403,26 @@ if dish and dish.strip():
                     "patishapta": {"Filling": ["Coconut","Kheer","Nolen Gur"]},
 
                     # ══════ RAJASTHANI ══════
-                    "dal baati": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "dal baati": {"Spice Level": ["Mild","Medium","Spicy"], "Type": ["Plain Baati","Masala Baati","Stuffed Baati"], "Accompaniment": ["Churma","Garlic Chutney","Ghee"]},
                     "gatte ki sabzi": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "ker sangri": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "pyaaz kachori": {"Spice Level": ["Mild","Medium","Spicy"]},
 
                     # ══════ PUNJABI ══════
                     "makki di roti": {"Accompaniment": ["Sarson ka Saag","White Butter","Jaggery"]},
-                    "sarson ka saag": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sarson ka saag": {"Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Makki Roti","Butter","Jaggery","Lassi"], "Consistency": ["Smooth","Chunky"]},
                     "amritsari kulcha": {"Filling": ["Aloo","Paneer","Mixed","Gobhi"]},
 
                     # ══════ SINDHI ══════
-                    "tuk": {"Spice Level": ["Mild","Medium","Spicy"]},
-                    "dal pakwan": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "tuk": {"Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Rice","Dal","Raita","Pickle","Papad"], "Style": ["Classic","Extra Crispy","Masala"]},
+                    "dal pakwan": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick Dal","Medium","Soupy"], "Accompaniment": ["Pickle","Onion","Chutney"]},
                     "koki": {"Type": ["Plain","Pyaaz","Methi","Green Chilli"]},
-                    "sindhi kadhi": {"Spice Level": ["Mild","Medium","Spicy"]},
-                    "sai bhaji": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "sindhi kadhi": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Thin"], "Accompaniment": ["Rice","Papad","Pickle"]},
+                    "sai bhaji": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Dry","Semi-Gravy"], "Accompaniment": ["Rice","Roti","Papad"]},
 
                     # ══════ KASHMIRI ══════
                     "rogan josh": {"Protein": ["Mutton","Chicken","Paneer"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "dum aloo": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "dum aloo": {"Style": ["Kashmiri","Punjabi","Bengali"], "Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy"]},
                     "yakhni": {"Protein": ["Mutton","Chicken"], "Spice Level": ["Mild","Medium"]},
                     "kahwa": {"Style": ["Classic","Saffron","Almond"]},
                     "phirni": {"Flavour": ["Classic","Kesar","Rose","Pistachio"]},
@@ -1491,7 +1491,7 @@ if dish and dish.strip():
                     "falafel": {"Style": ["Classic","Baked","Air-fried","Pan-fried"], "Accompaniment": ["Hummus","Tahini","Pickles","Salad","Pita","Tabbouleh","Baba Ganoush","Labneh"], "Topping": ["Tomato","Cucumber","Onion","Pickled Turnip","Hot Sauce","Parsley"]},
                     "hummus": {"Flavour": ["Classic","Roasted Garlic","Red Pepper","Beetroot","Avocado","Spicy"]},
                     "shawarma": {"Protein": ["Chicken","Lamb","Falafel","Mixed"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "shakshuka": {"Spice Level": ["Mild","Medium","Spicy"]},
+                    "shakshuka": {"Spice Level": ["Mild","Medium","Spicy"], "Add-in": ["Feta Cheese","Spinach","Bell Peppers","Mushrooms","Olives"], "Accompaniment": ["Bread","Pita","Rice"]},
                     "baba ganoush": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "dolma": {"Filling": ["Rice","Meat","Vegetable"]},
                     "borek": {"Filling": ["Cheese","Spinach","Meat","Potato"]},
@@ -1569,9 +1569,28 @@ if dish and dish.strip():
                     "thali": {"Cuisine": ["North Indian","South Indian","Gujarati","Rajasthani","Bengali","Maharashtrian"]},
                     "frankie": {"Filling": ["Paneer","Chicken","Egg","Veg","Schezwan"]},
                     "ghee roast": {"Protein": ["Chicken","Prawn","Mushroom","Paneer"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    # === MORE COMMON DISHES ===
+                    "chila": {"Type": ["Besan","Moong Dal","Rava","Oats","Rice Flour","Ragi"], "Filling": ["Plain","Paneer","Onion","Tomato","Mixed Veg","Cheese","Corn","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "cheela": {"Type": ["Besan","Moong Dal","Rava","Oats","Rice Flour","Ragi"], "Filling": ["Plain","Paneer","Onion","Tomato","Mixed Veg","Cheese","Corn","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "chilla": {"Type": ["Besan","Moong Dal","Rava","Oats","Rice Flour","Ragi"], "Filling": ["Plain","Paneer","Onion","Tomato","Mixed Veg","Cheese","Corn","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "bhurji": {"Type": ["Paneer","Egg","Tofu","Mixed Veg"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "tikki": {"Type": ["Aloo","Bread","Rajma","Mixed Veg","Sweet Potato","Beetroot"], "Topping": ["Chole","Dahi","Chutney","Sev","Onion"], "Style": ["Shallow-fried","Baked","Air-fried"]},
+                    "cutlet": {"Type": ["Veg","Potato","Corn","Paneer","Beetroot","Mixed Veg","Chicken","Fish"], "Style": ["Shallow-fried","Baked","Air-fried"]},
+                    "roll": {"Filling": ["Paneer Tikka","Chicken Tikka","Egg","Mixed Veg","Mushroom","Soya","Aloo"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom","Fish","Soya Chunks","Jackfruit"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur","Thalassery","Dindigul","Sindhi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Raita","Mirchi ka Salan","Boiled Egg","Papad","Onion Salad"]},
+                    "paratha": {"Type": ["Aloo","Gobhi","Paneer","Methi","Mooli","Plain","Laccha","Pyaaz","Sattu","Mixed Veg","Cheese","Mushroom"], "Accompaniment": ["Curd","Pickle","Butter","Raita","Chutney"]},
+                    "sabzi": {"Type": ["Mixed Veg","Aloo Matar","Bhindi","Baingan","Lauki","Tinda","Arbi","Turai","Karela","Sem"], "Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Dry","Semi-Gravy","Gravy"]},
+                    "curry": {"Style": ["Butter","Tikka Masala","Korma","Vindaloo","Thai Green","Thai Red","Rogan Josh","Saag","Madras","Jalfrezi","Dhansak","Chettinad"], "Protein": ["Chicken","Paneer","Tofu","Lamb","Chickpeas","Vegetable","Prawns","Fish","Mushroom","Egg","Jackfruit","Soya"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy","Soupy"]},
+                    "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Broccoli","French Onion","Sweet Potato","Spinach","Miso"], "Texture": ["Smooth/Pureed","Chunky","Brothy","Cream-based"], "Topping": ["Croutons","Herbs","Cream Swirl","Seeds","Cheese","Chilli Oil"]},
+                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf","Fattoush","Kale","Poke","Mediterranean"], "Protein": ["Grilled Chicken","Tofu","Prawns","Boiled Egg","Chickpeas","Paneer","Feta","Cottage Cheese","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon Herb","Thousand Island","Honey Mustard","Balsamic","Greek Yogurt","Pesto"], "Topping": ["Croutons","Nuts","Seeds","Avocado","Dried Cranberries","Olives","Corn","Cherry Tomato","Cucumber","Beetroot"]},
+                    "stir fry": {"Protein": ["Chicken","Tofu","Paneer","Prawns","Mushroom","Mixed Veg","Baby Corn","Broccoli"], "Sauce": ["Soy Garlic","Teriyaki","Black Bean","Oyster","Sweet Chilli","Schezwan","Kung Pao"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "manchurian": {"Protein": ["Veg","Gobi","Paneer","Chicken","Mushroom","Baby Corn","Soya"], "Style": ["Dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "65": {"Protein": ["Chicken","Paneer","Gobi","Mushroom","Baby Corn","Fish"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
+                    "chowmein": {"Protein": ["Veg","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Schezwan","Kimchi"], "Protein": ["Vegetable","Chicken","Egg","Prawn","Paneer","Mushroom","Corn","Mixed"], "Spice Level": ["Mild","Medium","Spicy"], "Topping": ["Spring Onion","Sesame Seeds","Fried Egg","Crispy Noodles","Chilli Oil"]},
                 }
-        # Try exact match, then without trailing 's' (plurals)
-        options = _FB.get(dish_lower) or _FB.get(dish_lower.rstrip('s'))
+        # Try exact match, then common variations
+        options = _FB.get(dish_lower) or _FB.get(dish_lower.rstrip('s')) or _FB.get(dish_lower.rstrip('a')) or _FB.get(dish_lower + 'a') or _FB.get(dish_lower + 's')
         
         # If not in fallback, try AI
         if not options and keys_for_check:
@@ -1593,9 +1612,27 @@ if dish and dish.strip():
                 options = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"]}
 
         if options and isinstance(options, dict) and not options.get("specific"):
-            # Filter out any non-list values (cleanup AI response)
             valid_options = {k: v for k, v in options.items() if isinstance(v, list) and len(v) > 1}
-            if valid_options:
+        else:
+            valid_options = {}
+
+        # Ensure there are ALWAYS at least 3 customization options
+        _sweet_dish2 = any(d in dish_lower for d in {"cake","brownie","cookie","ice cream","kulfi","barfi","halwa","ladoo","kheer","pudding","chocolate","chocobar","jalebi","gulab jamun","rasgulla","rasmalai","sandesh","modak","payasam","peda","pie","tart","fudge","mousse","custard","cheesecake","tiramisu","pastry","muffin","donut","croissant","waffle","pancake","crepe"})
+        _drink2 = any(d in dish_lower for d in {"smoothie","milkshake","lassi","juice","shake","chai","coffee","tea","hot chocolate","lemonade","sherbet","falooda","boba"})
+        if len(valid_options) < 3:
+            if _sweet_dish2:
+                _pad = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee","Coconut","Peanut Butter"], "Topping": ["Nuts","Chocolate Chips","Whipped Cream","Berries","Caramel Drizzle","Sprinkles","Coconut Flakes","Fruit"], "Serving Style": ["Warm","Cold","Room Temperature"]}
+            elif _drink2:
+                _pad = {"Flavour": ["Classic","Chocolate","Vanilla","Mango","Strawberry","Banana","Coffee","Mint","Berry"], "Temperature": ["Chilled","Room Temp","Hot/Warm"], "Sweetness": ["No Sugar","Less Sweet","Regular","Extra Sweet"]}
+            else:
+                _pad = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"], "Accompaniment": ["Rice","Roti","Naan","Salad","Raita","Pickle","Papad","Bread"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy","Soupy"]}
+            for pk, pv in _pad.items():
+                if pk not in valid_options:
+                    valid_options[pk] = pv
+                if len(valid_options) >= 3:
+                    break
+
+        if valid_options:
                 # Cap at 5 categories max
                 valid_options = dict(list(valid_options.items())[:5])
 
@@ -1638,13 +1675,6 @@ if dish and dish.strip():
                         else:
                             del valid_options[k]
                 
-                # Ensure there's always at least one option to show
-                if not valid_options:
-                    _sweet_dish = any(d in dish_lower for d in {"cake","brownie","cookie","ice cream","kulfi","barfi","halwa","ladoo","kheer","pudding","chocolate","chocobar","jalebi","gulab jamun"})
-                    if _sweet_dish:
-                        valid_options = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee"]}
-                    else:
-                        valid_options = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"]}
                 # Add protein selector as first option if non-veg
                 if veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     valid_options = {"🥩 Non-Veg Protein": ALL_PROTEINS, **valid_options}
@@ -1674,20 +1704,6 @@ if dish and dish.strip():
                                         selections.append(sel)
                 if selections:
                     dish_extra = " — " + ", ".join(selections)
-            elif veg_choice == "🍗 Non-Veg" and not _has_specific_protein and veg_choice not in ("🥦 Veg", "🥚 Eggetarian"):
-                st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-                protein_list = ALL_PROTEINS
-                sel = st.multiselect("🥩 Non-Veg Protein (multi-select)", protein_list, default=[], key=f"protein_only_{dish_lower}", placeholder="Make your selections")
-                if sel:
-                    nonveg_proteins.extend(sel)
-                    dish_extra = " — " + ", ".join(sel)
-        elif veg_choice == "🍗 Non-Veg" and word_count <= 2 and not _has_specific_protein:
-            st.markdown(f"<p style='font-size:0.85rem;color:var(--ink-soft);margin:4px 0;'>🎯 Customize your {dish.strip()}:</p>", unsafe_allow_html=True)
-            protein_list = ALL_PROTEINS
-            sel = st.multiselect("🥩 Non-Veg Protein (multi-select)", protein_list, default=[], key=f"protein_spec_{dish_lower}", placeholder="Make your selections")
-            if sel:
-                nonveg_proteins.extend(sel)
-                dish_extra = " — " + ", ".join(sel)
 
 # ─────────────────────────────────────────────
 # Settings Panel — country, units
