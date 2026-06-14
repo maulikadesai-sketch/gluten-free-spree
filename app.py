@@ -688,7 +688,9 @@ Rules:
 6. also_try: 2-3 naturally-GF dishes from SAME cuisine family that comply with user's dietary restrictions.
 7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish (traditional pairings, not creative combos). Must be GF and comply with dietary restrictions.
 8. calories_per_serving: short like "~420 kcal". Include bake_time/marination_time if applicable, else null.
-9. total_time: overall time including prep, cook, marination. E.g. "1 hour 15 mins".
+9. storage_info: SPECIFIC to this dish — how to store leftovers, how long it keeps, reheating method. E.g. "Refrigerate in airtight container for 2 days. Reheat in a pan, not microwave." or "Best eaten fresh, does not store well." Never give generic advice.
+10. nutrition_notes: SPECIFIC to this dish — key nutrients, dietary highlights, health benefits. E.g. "High in protein from chickpeas (~18g per serving). Good source of iron and fibre." Not generic text.
+11. total_time: overall time including prep, cook, marination. E.g. "1 hour 15 mins".
 10. If adapted for dietary restriction, set dietary_adaptation to brief explanation. If naturally GF, set naturally_gluten_free: true.
 
 Respond ONLY with valid JSON:
@@ -713,6 +715,8 @@ Respond ONLY with valid JSON:
   "brands_panel": [{{"brand": string, "product": string, "certification": string, "where_to_buy": string, "fully_gf": boolean}}],
   "check_labels": [string],
   "tips": [string],
+  "storage_info": string,
+  "nutrition_notes": string,
   "accompaniments": [{{"name": string, "type": string, "reason": string}}],
   "also_try": [{{"dish": string, "reason": string}}]
 }}
