@@ -1631,9 +1631,19 @@ if dish and dish.strip():
                     if veg_choice == "🥦 Veg":
                         _nv_words.add("egg")  # Pure veg also blocks eggs
                     for k in list(valid_options.keys()):
-                        valid_options[k] = [v for v in valid_options[k] if not any(nv in v.lower() for nv in _nv_words)]
-                        if not valid_options[k]:
+                        filtered = [v for v in valid_options[k] if not any(nv in v.lower() for nv in _nv_words)]
+                        if filtered:
+                            valid_options[k] = filtered
+                        else:
                             del valid_options[k]
+                
+                # Ensure there's always at least one option to show
+                if not valid_options:
+                    _sweet_dish = any(d in dish_lower for d in {"cake","brownie","cookie","ice cream","kulfi","barfi","halwa","ladoo","kheer","pudding","chocolate","chocobar","jalebi","gulab jamun"})
+                    if _sweet_dish:
+                        valid_options = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee"]}
+                    else:
+                        valid_options = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"]}
                 # Add protein selector as first option if non-veg
                 if veg_choice == "🍗 Non-Veg" and not _has_specific_protein:
                     valid_options = {"🥩 Non-Veg Protein": ALL_PROTEINS, **valid_options}
@@ -1644,7 +1654,7 @@ if dish and dish.strip():
                 for idx, (label, choices) in enumerate(valid_options.items()):
                     with cols[idx % min(len(valid_options), 4)]:
                         if label == "🥩 Non-Veg Protein":
-                            sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                            sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}_{veg_choice or 'x'}", placeholder="Make your selections")
                             if sel:
                                     selections.extend(sel)
                                     nonveg_proteins.extend(sel)
@@ -1654,11 +1664,11 @@ if dish and dish.strip():
                             _is_single = any(s in label.lower() for s in _SINGLE_LABELS)
                             _is_multi = any(m in label.lower() for m in _MULTI_LABELS) and not _is_single
                             if _is_multi:
-                                    sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}", placeholder="Make your selections")
+                                    sel = st.multiselect(f"🍽️ {label} (multi-select)", choices[:12], default=[], key=f"generic_{dish_lower}_{idx}_{veg_choice or 'x'}", placeholder="Make your selections")
                                     if sel:
                                         selections.extend(sel)
                             else:
-                                    sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}")
+                                    sel = st.selectbox(f"🍽️ {label}", ["— Choose (optional) —"] + choices[:12], key=f"generic_{dish_lower}_{idx}_{veg_choice or 'x'}")
                                     if sel != "— Choose (optional) —":
                                         selections.append(sel)
                 if selections:
