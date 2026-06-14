@@ -1158,6 +1158,40 @@ _ALWAYS_VEG = {
     "peda", "sandesh", "modak", "mysore pak", "kaju katli", "soan papdi",
     "rabri", "basundi", "shrikhand", "phirni", "gajar halwa", "moong dal halwa", "besan ladoo",
     "kheer", "payasam",
+    # Gujarati
+    "fafda", "gathiya", "patra", "surti locho", "ghughra", "mohanthal", "khandvi",
+    "undhiyu", "sev tameta", "ringan no olo", "lilva kachori", "handvo", "muthiya",
+    # Maharashtrian
+    "misal", "misal pav", "vada pav", "batata vada", "thalipeeth", "puran poli",
+    "sabudana khichdi", "pithla", "zunka", "usal", "kothimbir vadi", "bharli vangi",
+    "aluchi patal bhaji", "shevbhaji", "ukdiche modak",
+    # More South Indian
+    "bisi bele bath", "vangi bath", "akki roti", "ragi mudde", "mysore pak",
+    "rava kesari", "maddur vada", "sundal", "poriyal", "kootu", "avial",
+    "thoran", "unniyappam", "nei appam", "pathiri", "gojju", "palya", "chow chow bath",
+    # More North Indian
+    "malai kofta", "kofta", "chole bhature", "chole", "dal baati",
+    "gatte ki sabzi", "ker sangri", "pyaaz kachori", "sarson ka saag",
+    "makki di roti", "amritsari kulcha", "dum aloo", "aloo", "pinni",
+    # Sindhi
+    "tuk", "dal pakwan", "koki", "sindhi kadhi", "sai bhaji", "seyal mani", "bhee",
+    # Bengali
+    "aloo posto", "begun bhaja", "luchi", "shukto", "chhena poda",
+    # Kashmiri
+    "haak", "kahwa", "modur pulao",
+    # Street food
+    "sev puri", "bhel puri", "ragda pattice", "jhal muri",
+    # Global veg
+    "falafel", "baba ganoush", "tabouleh", "tzatziki", "dolma",
+    "mac and cheese", "bruschetta", "quesadilla",
+    # More snacks
+    "papad", "sabudana", "vada",
+    # Accompaniments
+    "raita", "pickle",
+    # Drinks
+    "iced tea", "hot chocolate", "lassi", "chai", "coffee",
+    # More sweets
+    "basundi", "rabri", "malpua", "gajar halwa", "moong dal halwa", "besan ladoo",
 }
 
 # Items that could be veg OR contain eggs — show Veg/Eggetarian only, NEVER Non-Veg
