@@ -1338,10 +1338,10 @@ if dish and dish.strip():
                     "pulao": {"Type": ["Veg","Peas","Jeera","Coconut","Kashmiri","Corn"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "korma": {"Protein": ["Chicken","Mutton","Paneer","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Rich"]},
                     "tikka": {"Protein": ["Paneer","Chicken","Fish","Mushroom","Soya"]},
-                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Galouti","Kakori","Doner","Shawarma"], "Protein": ["Chicken","Lamb","Paneer","Fish","Vegetable","Soya"]},
+                    "kebab": {"Type": ["Seekh","Shami","Tikka","Chapli","Galouti","Kakori","Doner","Shawarma","Boti","Reshmi","Malai","Hariyali"], "Protein": ["Chicken","Lamb","Paneer","Fish","Vegetable","Soya","Mushroom","Jackfruit"], "Accompaniment": ["Mint Chutney","Roomali Roti","Onion Rings","Lemon","Raita"]},
                     "kofta": {"Type": ["Malai","Lauki","Paneer","Aloo"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "samosa": {"Filling": ["Aloo & Peas","Onion","Paneer","Mixed Veg","Corn","Cheese"]},
-                    "pakora": {"Ingredient": ["Onion","Potato","Paneer","Spinach","Bread","Mixed Veg","Mirchi","Gobhi"]},
+                    "samosa": {"Filling": ["Aloo & Peas","Onion","Paneer","Mixed Veg","Corn","Cheese","Sweet Corn","Mushroom","Noodle","Chana","Rajma","Spinach & Cheese"], "Style": ["Fried","Baked","Air-fried"], "Accompaniment": ["Mint Chutney","Tamarind Chutney","Tomato Ketchup","Chole"]},
+                    "pakora": {"Ingredient": ["Onion","Potato","Paneer","Spinach","Bread","Mixed Veg","Mirchi","Gobhi","Corn","Baby Corn","Mushroom","Banana","Brinjal","Methi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Mint Chutney","Tomato Ketchup","Tamarind Chutney"]},
                     "chaat": {"Type": ["Pani Puri","Bhel Puri","Sev Puri","Dahi Puri","Aloo Tikki","Papdi Chaat","Dahi Bhalla","Ragda Pattice"]},
                     "pav bhaji": {"Style": ["Classic","Jain","Cheese","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "aloo gobi": {"Style": ["Dry","Semi-dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
@@ -1455,7 +1455,7 @@ if dish and dish.strip():
                     # ══════ NORTHEAST ══════
                     "masor tenga": {"Spice Level": ["Mild","Medium","Spicy"]},
                     "pitha": {"Type": ["Til","Ghila","Sunga","Narikol"]},
-                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
+                    "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried","Jhol","Kurkure"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese","Mushroom","Corn","Mixed Veg","Tofu","Spinach & Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic","Peanut","Sesame","Tomato"]},
 
                     # ══════ ITALIAN ══════
                     "pasta": {"Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle","Farfalle","Orzo","Gnocchi","Ravioli"], "Sauce": ["Tomato Marinara","Alfredo/White","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink/Rosé","Vodka","Mushroom Cream","Lemon Butter"], "Topping": ["Parmesan","Basil","Chilli Flakes","Garlic Bread","Olives","Sun-dried Tomato","Mushroom","Broccoli","Spinach"], "Spice Level": ["Mild","Medium","Spicy"]},
@@ -1470,7 +1470,7 @@ if dish and dish.strip():
                     "ramen": {"Broth": ["Shoyu","Miso","Tonkotsu","Shio","Vegetable","Spicy Miso","Curry"], "Topping": ["Soft-boiled Egg","Corn","Nori","Bamboo Shoots","Mushroom","Spring Onion","Chashu Pork","Bean Sprouts","Spinach","Sesame Seeds","Chilli Oil"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "pad thai": {"Protein": ["Chicken","Prawn","Tofu","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "pho": {"Protein": ["Chicken","Beef","Vegetable","Tofu"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "spring roll": {"Filling": ["Vegetable","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
+                    "spring roll": {"Filling": ["Vegetable","Chicken","Prawn","Paneer","Mushroom","Corn","Noodle","Tofu","Sweet Potato","Bean Sprouts"], "Style": ["Fried","Baked","Fresh/Rice Paper","Air-fried"], "Sauce": ["Sweet Chilli","Soy","Peanut","Plum","Schezwan"]},
                     "dim sum": {"Type": ["Har Gow","Siu Mai","Steamed Buns","Cheung Fun","Crystal Dumpling"]},
                     "fried rice": {"Style": ["Chinese","Indo-Chinese","Thai","Japanese","Schezwan","Kimchi"], "Protein": ["Vegetable","Chicken","Egg","Prawn","Paneer","Mushroom"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "tempura": {"Ingredient": ["Prawn","Vegetable","Sweet Potato","Mushroom","Broccoli"]},
@@ -1481,14 +1481,14 @@ if dish and dish.strip():
                     "nasi goreng": {"Protein": ["Chicken","Prawn","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Spicy"]},
 
                     # ══════ MEXICAN ══════
-                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie","Carnitas","Mushroom","Tofu","Pulled Pork"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Topping": ["Salsa","Guacamole","Sour Cream","Cheese","Jalapeños","Corn","Pico de Gallo","Pickled Onion","Cilantro","Lime","Avocado","Hot Sauce"]},
-                    "burrito": {"Filling": ["Chicken","Beef","Bean","Veggie","Carnitas"], "Topping": ["Cheese","Guacamole","Sour Cream","Salsa","Jalapeños"]},
-                    "quesadilla": {"Filling": ["Cheese","Chicken","Veggie","Mushroom","Spinach","Bean"]},
+                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie","Carnitas","Mushroom","Tofu","Pulled Pork","Potato","Paneer","Jackfruit","Sweet Potato","Corn & Black Bean"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap","Cheese Shell"], "Topping": ["Salsa","Guacamole","Sour Cream","Cheese","Jalapeños","Corn","Pico de Gallo","Pickled Onion","Cilantro","Lime","Avocado","Hot Sauce","Pickled Cabbage","Radish","Chipotle Mayo"], "Spice Level": ["Mild","Medium","Spicy","Extra Hot"]},
+                    "burrito": {"Filling": ["Chicken","Beef","Bean","Veggie","Carnitas","Tofu","Mushroom","Paneer","Sweet Potato","Jackfruit"], "Topping": ["Cheese","Guacamole","Sour Cream","Salsa","Jalapeños","Corn","Lettuce","Rice","Pico de Gallo"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "quesadilla": {"Filling": ["Cheese","Chicken","Veggie","Mushroom","Spinach","Bean","Corn","Paneer","Potato","Sweet Potato","Peppers","Onion"], "Topping": ["Salsa","Guacamole","Sour Cream","Hot Sauce","Pico de Gallo"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "nachos": {"Topping": ["Cheese","Jalapeños","Guacamole","Sour Cream","Beans","Salsa","Corn","Olives","Pico de Gallo","Pickled Onion","Chicken","Beef","Sour Cream","Avocado","Cilantro","Hot Sauce"]},
-                    "enchilada": {"Filling": ["Chicken","Beef","Bean","Cheese","Vegetable"], "Sauce": ["Red","Green","Cream"]},
+                    "enchilada": {"Filling": ["Chicken","Beef","Bean","Cheese","Vegetable","Mushroom","Spinach","Sweet Potato","Tofu"], "Sauce": ["Red Chile","Green Tomatillo","Cream/White","Mole"], "Topping": ["Cheese","Sour Cream","Cilantro","Onion","Avocado"], "Spice Level": ["Mild","Medium","Spicy"]},
 
                     # ══════ MIDDLE EASTERN ══════
-                    "falafel": {"Style": ["Classic","Baked","Air-fried"], "Accompaniment": ["Hummus","Tahini","Pickles","Salad","Pita"]},
+                    "falafel": {"Style": ["Classic","Baked","Air-fried","Pan-fried"], "Accompaniment": ["Hummus","Tahini","Pickles","Salad","Pita","Tabbouleh","Baba Ganoush","Labneh"], "Topping": ["Tomato","Cucumber","Onion","Pickled Turnip","Hot Sauce","Parsley"]},
                     "hummus": {"Flavour": ["Classic","Roasted Garlic","Red Pepper","Beetroot","Avocado","Spicy"]},
                     "shawarma": {"Protein": ["Chicken","Lamb","Falafel","Mixed"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "shakshuka": {"Spice Level": ["Mild","Medium","Spicy"]},
@@ -1499,7 +1499,7 @@ if dish and dish.strip():
                     # ══════ WESTERN ══════
                     "burger": {"Patty": ["Chicken","Veggie","Paneer","Fish","Lamb","Beef","Mushroom","Black Bean","Sweet Potato","Falafel"], "Style": ["Classic","Smash","BBQ","Spicy","Gourmet","Double Stack"], "Bun": ["Regular","Brioche","Lettuce Wrap","Pretzel","Sesame","Potato"], "Topping": ["Lettuce","Tomato","Onion","Pickles","Jalapeños","Cheese","Bacon","Avocado","Egg","Coleslaw","Pineapple"]},
                     "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","BLT"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo","Chicken","Tuna","Avocado","Caprese"], "Topping": ["Lettuce","Tomato","Onion","Pickles","Mayo","Mustard","Hot Sauce","Cheese","Jalapeños"]},
-                    "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg"], "Sauce": ["Mayo","Hummus","Tahini","Hot Sauce","Mint Yogurt"]},
+                    "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg","Tofu","Mushroom","Grilled Veg","Corn & Cheese","Shawarma","Seekh Kebab"], "Topping": ["Lettuce","Onion","Tomato","Pickles","Olives","Jalapeños"], "Sauce": ["Mayo","Hummus","Tahini","Hot Sauce","Mint Yogurt","Chipotle","Ranch","Garlic Sauce"]},
                     "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf","Fattoush","Kale","Poke","Mediterranean"], "Protein": ["Grilled Chicken","Tofu","Prawns","Boiled Egg","Chickpeas","Paneer","Feta","Cottage Cheese","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon Herb","Thousand Island","Honey Mustard","Balsamic","Greek Yogurt","Pesto"], "Topping": ["Croutons","Nuts","Seeds","Avocado","Dried Cranberries","Olives","Corn","Cherry Tomato","Cucumber","Beetroot"]},
                     "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Broccoli","French Onion"], "Texture": ["Smooth","Chunky","Brothy"]},
                     "steak": {"Cut": ["Ribeye","Sirloin","Tenderloin","T-Bone","Flank"]},
@@ -1570,7 +1570,8 @@ if dish and dish.strip():
                     "frankie": {"Filling": ["Paneer","Chicken","Egg","Veg","Schezwan"]},
                     "ghee roast": {"Protein": ["Chicken","Prawn","Mushroom","Paneer"], "Spice Level": ["Medium","Spicy","Extra Hot"]},
                 }
-        options = _FB.get(dish_lower)
+        # Try exact match, then without trailing 's' (plurals)
+        options = _FB.get(dish_lower) or _FB.get(dish_lower.rstrip('s'))
         
         # If not in fallback, try AI
         if not options and keys_for_check:
