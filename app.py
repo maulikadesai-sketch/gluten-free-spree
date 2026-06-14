@@ -1292,7 +1292,7 @@ if dish and dish.strip():
                     "chole": {"Style": ["Punjabi","Amritsari","Dry","Gravy"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "rajma": {"Spice Level": ["Mild","Medium","Spicy"], "Consistency": ["Thick","Medium","Soupy"]},
                     "kadhi": {"Style": ["Punjabi","Gujarati","Rajasthani","Sindhi"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "biryani": {"Protein": ["Chicken","Mutton","Vegetable","Egg","Prawn","Paneer","Mushroom","Fish","Soya Chunks","Jackfruit"], "Style": ["Hyderabadi","Lucknowi","Kolkata","Malabar","Ambur","Thalassery","Dindigul","Sindhi"], "Spice Level": ["Mild","Medium","Spicy"], "Accompaniment": ["Raita","Mirchi ka Salan","Boiled Egg","Papad","Onion Salad"]},
                     "pulao": {"Type": ["Veg","Peas","Jeera","Coconut","Kashmiri","Corn"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "korma": {"Protein": ["Chicken","Mutton","Paneer","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Rich"]},
                     "tikka": {"Protein": ["Paneer","Chicken","Fish","Mushroom","Soya"]},
@@ -1416,16 +1416,16 @@ if dish and dish.strip():
                     "momos": {"Type": ["Steamed","Fried","Tandoori","Gravy","Pan-fried"], "Filling": ["Chicken","Vegetable","Paneer","Pork","Cheese"], "Sauce": ["Spicy Red Chutney","Mayonnaise","Schezwan","Soy Garlic"]},
 
                     # ══════ ITALIAN ══════
-                    "pasta": {"Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle","Farfalle"], "Sauce": ["Tomato","Alfredo","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink"], "Spice Level": ["Mild","Medium","Spicy"]},
-                    "pizza": {"Style": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Hawaiian","Mushroom","Pesto","Meat Feast"], "Crust": ["Thin","Thick","Stuffed","Deep Dish"], "Topping": ["Olives","Jalapeños","Corn","Onion","Capsicum","Mushroom","Extra Cheese"]},
+                    "pasta": {"Type": ["Penne","Spaghetti","Fusilli","Fettuccine","Rigatoni","Macaroni","Lasagne","Tagliatelle","Farfalle","Orzo","Gnocchi","Ravioli"], "Sauce": ["Tomato Marinara","Alfredo/White","Pesto","Carbonara","Arrabbiata","Bolognese","Aglio e Olio","Pink/Rosé","Vodka","Mushroom Cream","Lemon Butter"], "Topping": ["Parmesan","Basil","Chilli Flakes","Garlic Bread","Olives","Sun-dried Tomato","Mushroom","Broccoli","Spinach"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "pizza": {"Style": ["Margherita","Pepperoni","BBQ Chicken","Veggie","Hawaiian","Mushroom","Pesto","Meat Feast","Four Cheese","Paneer Tikka"], "Crust": ["Thin","Thick","Stuffed","Deep Dish","Cauliflower"], "Topping": ["Olives","Jalapeños","Corn","Onion","Capsicum","Mushroom","Extra Cheese","Pineapple","Sun-dried Tomato","Spinach","Artichoke","Peppers","Basil","Garlic","Broccoli","Paneer","Chicken","Pepperoni"]},
                     "risotto": {"Type": ["Mushroom","Asparagus","Pumpkin","Truffle","Lemon","Seafood","Pea & Mint"]},
                     "gnocchi": {"Sauce": ["Tomato","Pesto","Brown Butter & Sage","Cream","Gorgonzola"]},
                     "bruschetta": {"Topping": ["Tomato Basil","Mushroom","Ricotta","Olive Tapenade","Roasted Pepper"]},
 
                     # ══════ ASIAN ══════
-                    "noodles": {"Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli","Glass Noodles"], "Style": ["Stir-fried","Soup","Dry","Schezwan"], "Spice Level": ["Mild","Medium","Spicy"]},
+                    "noodles": {"Type": ["Ramen","Udon","Soba","Rice Noodles","Hakka","Chow Mein","Vermicelli","Glass Noodles","Lo Mein","Pad Thai","Japchae"], "Style": ["Stir-fried","Soup/Broth","Dry Tossed","Schezwan","Teriyaki","Peanut","Sesame"], "Topping": ["Sesame Seeds","Spring Onion","Fried Egg","Crushed Peanuts","Crispy Noodles","Chilli Oil","Nori"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "sushi": {"Style": ["Maki","Nigiri","Hand Roll","Inside-out","Poke Bowl"], "Filling": ["Salmon","Tuna","Prawn","Avocado","Tofu","Cucumber"]},
-                    "ramen": {"Broth": ["Shoyu","Miso","Tonkotsu","Shio","Vegetable"], "Topping": ["Soft Egg","Corn","Nori","Bamboo Shoots","Mushroom","Spring Onion"]},
+                    "ramen": {"Broth": ["Shoyu","Miso","Tonkotsu","Shio","Vegetable","Spicy Miso","Curry"], "Topping": ["Soft-boiled Egg","Corn","Nori","Bamboo Shoots","Mushroom","Spring Onion","Chashu Pork","Bean Sprouts","Spinach","Sesame Seeds","Chilli Oil"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "pad thai": {"Protein": ["Chicken","Prawn","Tofu","Vegetable"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "pho": {"Protein": ["Chicken","Beef","Vegetable","Tofu"], "Spice Level": ["Mild","Medium","Spicy"]},
                     "spring roll": {"Filling": ["Vegetable","Chicken","Prawn","Paneer","Mushroom"], "Style": ["Fried","Baked","Fresh/Rice Paper"]},
@@ -1439,10 +1439,10 @@ if dish and dish.strip():
                     "nasi goreng": {"Protein": ["Chicken","Prawn","Vegetable","Egg"], "Spice Level": ["Mild","Medium","Spicy"]},
 
                     # ══════ MEXICAN ══════
-                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie","Carnitas"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Topping": ["Salsa","Guacamole","Sour Cream","Cheese","Jalapeños","Corn"]},
+                    "taco": {"Filling": ["Chicken","Beef","Fish","Shrimp","Bean","Veggie","Carnitas","Mushroom","Tofu","Pulled Pork"], "Shell": ["Hard Shell","Soft Tortilla","Lettuce Wrap"], "Topping": ["Salsa","Guacamole","Sour Cream","Cheese","Jalapeños","Corn","Pico de Gallo","Pickled Onion","Cilantro","Lime","Avocado","Hot Sauce"]},
                     "burrito": {"Filling": ["Chicken","Beef","Bean","Veggie","Carnitas"], "Topping": ["Cheese","Guacamole","Sour Cream","Salsa","Jalapeños"]},
                     "quesadilla": {"Filling": ["Cheese","Chicken","Veggie","Mushroom","Spinach","Bean"]},
-                    "nachos": {"Topping": ["Cheese","Jalapeños","Guacamole","Sour Cream","Beans","Salsa","Corn","Olives"]},
+                    "nachos": {"Topping": ["Cheese","Jalapeños","Guacamole","Sour Cream","Beans","Salsa","Corn","Olives","Pico de Gallo","Pickled Onion","Chicken","Beef","Sour Cream","Avocado","Cilantro","Hot Sauce"]},
                     "enchilada": {"Filling": ["Chicken","Beef","Bean","Cheese","Vegetable"], "Sauce": ["Red","Green","Cream"]},
 
                     # ══════ MIDDLE EASTERN ══════
@@ -1455,10 +1455,10 @@ if dish and dish.strip():
                     "borek": {"Filling": ["Cheese","Spinach","Meat","Potato"]},
 
                     # ══════ WESTERN ══════
-                    "burger": {"Patty": ["Chicken","Veggie","Paneer","Fish","Lamb","Beef","Mushroom","Black Bean"], "Style": ["Classic","Smash","BBQ","Spicy","Gourmet"], "Bun": ["Regular","Brioche","Lettuce Wrap","Pretzel","Sesame"]},
-                    "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo"]},
+                    "burger": {"Patty": ["Chicken","Veggie","Paneer","Fish","Lamb","Beef","Mushroom","Black Bean","Sweet Potato","Falafel"], "Style": ["Classic","Smash","BBQ","Spicy","Gourmet","Double Stack"], "Bun": ["Regular","Brioche","Lettuce Wrap","Pretzel","Sesame","Potato"], "Topping": ["Lettuce","Tomato","Onion","Pickles","Jalapeños","Cheese","Bacon","Avocado","Egg","Coleslaw","Pineapple"]},
+                    "sandwich": {"Type": ["Club","Grilled Cheese","Panini","Sub","Open-faced","Toasted","BLT"], "Filling": ["Veggie","Paneer Tikka","Cheese","Mushroom","Hummus & Veg","Corn & Cheese","Falafel","Egg Mayo","Chicken","Tuna","Avocado","Caprese"], "Topping": ["Lettuce","Tomato","Onion","Pickles","Mayo","Mustard","Hot Sauce","Cheese","Jalapeños"]},
                     "wrap": {"Filling": ["Chicken Tikka","Falafel","Paneer","Fish","Veggie & Hummus","Egg"], "Sauce": ["Mayo","Hummus","Tahini","Hot Sauce","Mint Yogurt"]},
-                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf"], "Protein": ["Chicken","Tofu","Prawns","Egg","Chickpeas","Paneer","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon","Thousand Island"]},
+                    "salad": {"Type": ["Caesar","Greek","Cobb","Garden","Quinoa","Thai","Caprese","Waldorf","Fattoush","Kale","Poke","Mediterranean"], "Protein": ["Grilled Chicken","Tofu","Prawns","Boiled Egg","Chickpeas","Paneer","Feta","Cottage Cheese","No Protein"], "Dressing": ["Vinaigrette","Ranch","Caesar","Tahini","Lemon Herb","Thousand Island","Honey Mustard","Balsamic","Greek Yogurt","Pesto"], "Topping": ["Croutons","Nuts","Seeds","Avocado","Dried Cranberries","Olives","Corn","Cherry Tomato","Cucumber","Beetroot"]},
                     "soup": {"Type": ["Tomato","Mushroom","Minestrone","Corn Chowder","Hot & Sour","Lentil","Pumpkin","Broccoli","French Onion"], "Texture": ["Smooth","Chunky","Brothy"]},
                     "steak": {"Cut": ["Ribeye","Sirloin","Tenderloin","T-Bone","Flank"]},
                     "mac and cheese": {"Style": ["Classic","Baked","Truffle","Spicy","Loaded"]},
@@ -1981,7 +1981,8 @@ if "recipe" in st.session_state:
     tips = recipe.get("tips") or []
     if tips:
         st.markdown("<div class='sec-hdr'>💡 Tips for Best Results</div>", unsafe_allow_html=True)
-        tips_html = "".join(f"<div class='tip-row'><span>{t}</span></div>" for t in tips)
+        tip_emojis = ["💡","✨","🌿","🔥","⏰","🧂","🍳","❄️","🥄","📝"]
+        tips_html = "".join(f"<div class='tip-row'><span>{tip_emojis[i % len(tip_emojis)]} {t}</span></div>" for i, t in enumerate(tips))
         st.markdown(f"<div style='background:var(--pastel-yellow); border:1px solid var(--pastel-yellow-b); padding:1rem; border-radius:var(--r);'>{tips_html}</div>", unsafe_allow_html=True)
 
     bot1, bot2 = st.columns(2)
