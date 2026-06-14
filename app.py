@@ -1620,11 +1620,23 @@ if dish and dish.strip():
         _drink2 = any(d in dish_lower for d in {"smoothie","milkshake","lassi","juice","shake","chai","coffee","tea","hot chocolate","lemonade","sherbet","falooda","boba"})
         if len(valid_options) < 3:
             if _sweet_dish2:
-                _pad = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee","Coconut","Peanut Butter"], "Topping": ["Nuts","Chocolate Chips","Whipped Cream","Berries","Caramel Drizzle","Sprinkles","Coconut Flakes","Fruit"], "Serving Style": ["Warm","Cold","Room Temperature"]}
+                _pad = {"Flavour": ["Classic","Chocolate","Vanilla","Strawberry","Caramel","Nutty","Fruit","Coffee","Coconut","Peanut Butter"], "Topping": ["Nuts","Chocolate Chips","Whipped Cream","Berries","Caramel Drizzle","Sprinkles","Coconut Flakes","Fruit"]}
             elif _drink2:
                 _pad = {"Flavour": ["Classic","Chocolate","Vanilla","Mango","Strawberry","Banana","Coffee","Mint","Berry"], "Temperature": ["Chilled","Room Temp","Hot/Warm"], "Sweetness": ["No Sugar","Less Sweet","Regular","Extra Sweet"]}
             else:
-                _pad = {"Spice Level": ["Mild","Medium","Spicy","Extra Spicy"], "Cooking Style": ["Pan-fried","Deep-fried","Baked","Steamed","Grilled","Air-fried","Slow-cooked"], "Consistency": ["Dry","Semi-Gravy","Rich Gravy","Soupy"]}
+                _pad = {}
+                # Spice Level — makes sense for almost all savory dishes
+                if "Spice Level" not in valid_options:
+                    _pad["Spice Level"] = ["Mild","Medium","Spicy","Extra Spicy"]
+                # Consistency — only for curries, gravies, dals, soups (not flatbreads, snacks, dry dishes)
+                _gravy_dishes = {"curry","dal","kadhi","korma","nihari","stew","soup","rasam","sambhar","sabzi","kofta","rajma","chole","paneer","chicken","mutton","fish","prawn","haleem","paya","bhaji","saag"}
+                if "Consistency" not in valid_options and any(g in dish_lower for g in _gravy_dishes):
+                    _pad["Consistency"] = ["Dry","Semi-Gravy","Rich Gravy","Soupy"]
+                # Cooking Style — only for proteins, cutlets, tikkis, things that CAN be cooked differently
+                _cookable = {"tikki","cutlet","kebab","tikka","pakora","roll","spring roll","falafel","dumpling","momo","vada","kofta","samosa","croquette","nugget","wing","fry","stir fry","tofu","paneer","chicken","fish","prawn","mushroom","65","manchurian"}
+                if "Cooking Style" not in valid_options and any(c in dish_lower for c in _cookable):
+                    _pad["Cooking Style"] = ["Pan-fried","Deep-fried","Baked","Steamed","Grilled","Air-fried"]
+
             for pk, pv in _pad.items():
                 if pk not in valid_options:
                     valid_options[pk] = pv
