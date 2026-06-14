@@ -1181,6 +1181,10 @@ _VEG_OR_EGG = {
     # Snacks (may contain eggs)
     "samosa", "pakora", "bhaji", "vada", "spring roll", "bruschetta",
     "mathri", "risotto",
+    # Baked items that may contain eggs
+    "banana bread", "granola", "muesli", "cereal",
+    "french fries", "nachos",
+
     # Other
     "cereal", "granola", "muesli", "oatmeal", "porridge", "soup",
 }
