@@ -711,7 +711,15 @@ Rules:
    IMPORTANT: For each brand, set where_to_buy with actual purchase link/store. Set fully_gf=true ONLY for the verified category above. Add note "Verify cross-contamination status before use" for unverified brands.
    Choose 3-5 brands RELEVANT to this dish's ingredients.
    Original instruction: 2-3 certified GF brands with name, product, certification, where_to_buy, fully_gf boolean.
-6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the dish being cooked (NOT the user's country). E.g. pasta → suggest risotto, polenta, gnocchi (Italian). Biryani → suggest pulao, kebab (Indian). Sushi → suggest poke bowl, miso soup (Japanese). NEVER mix cuisines. For flatbreads (paratha, thepla, roti), suggest OTHER flatbreads or snacks — NOT rice dishes. For rice dishes, don't suggest flatbreads. Think: "what would someone who likes THIS dish also enjoy?"
+6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the DISH (ignore user's country for this). 
+   Match the cuisine of what they typed, NOT India:
+   - Sandwich/Burger/Wrap → suggest other Western: Caesar Salad, Soup, Quesadilla, Bruschetta
+   - Pasta/Pizza/Risotto → suggest Italian: Gnocchi, Polenta, Arancini, Focaccia
+   - Sushi/Ramen → suggest Japanese: Poke Bowl, Miso Soup, Edamame, Onigiri  
+   - Tacos/Burrito/Nachos → suggest Mexican: Enchilada, Quesadilla, Churros
+   - Noodles/Stir-fry/Dim Sum → suggest Asian: Spring Rolls, Fried Rice, Dumplings
+   - Indian dishes (dal/biryani/paratha) → suggest Indian: other Indian GF dishes
+   NEVER suggest Indian dishes for non-Indian food. NEVER suggest non-Indian for Indian food.
 7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish. RULES:
    - NEVER suggest water, plain water, or "glass of water" — it is obvious and useless.
    - For flatbreads (paratha, thepla, roti, naan): suggest curries, pickles, curd, raita, chai — NOT rice.
