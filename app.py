@@ -1306,7 +1306,7 @@ else:
 dish_extra = ""
 
 # Other dietary needs
-dietary = st.multiselect("🥗 Any other dietary needs? (select multiple)", all_dietary, default=[], key=f"dietary_select_{st.session_state.get('_reset_count', 0)}", placeholder="Make your selections")
+dietary = st.multiselect("🥗 Any other dietary needs? (select multiple)", DIETARY_TAGS, default=[], key=f"dietary_select_{st.session_state.get('_reset_count', 0)}", placeholder="Make your selections")
 
 # Add Vegetarian if veg toggle is on
 if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
