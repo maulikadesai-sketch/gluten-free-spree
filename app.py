@@ -711,8 +711,13 @@ Rules:
    IMPORTANT: For each brand, set where_to_buy with actual purchase link/store. Set fully_gf=true ONLY for the verified category above. Add note "Verify cross-contamination status before use" for unverified brands.
    Choose 3-5 brands RELEVANT to this dish's ingredients.
    Original instruction: 2-3 certified GF brands with name, product, certification, where_to_buy, fully_gf boolean.
-6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the dish being cooked (NOT the user's country). E.g. pasta → suggest risotto, polenta, gnocchi (Italian). Biryani → suggest pulao, dal tadka (Indian). Sushi → suggest poke bowl, miso soup (Japanese). NEVER mix cuisines — if the dish is Italian, suggest Italian. If Indian, suggest Indian.
-7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish (traditional pairings, not creative combos). Must be GF and comply with dietary restrictions.
+6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the dish being cooked (NOT the user's country). E.g. pasta → suggest risotto, polenta, gnocchi (Italian). Biryani → suggest pulao, kebab (Indian). Sushi → suggest poke bowl, miso soup (Japanese). NEVER mix cuisines. For flatbreads (paratha, thepla, roti), suggest OTHER flatbreads or snacks — NOT rice dishes. For rice dishes, don't suggest flatbreads. Think: "what would someone who likes THIS dish also enjoy?"
+7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish. RULES:
+   - NEVER suggest water, plain water, or "glass of water" — it is obvious and useless.
+   - For flatbreads (paratha, thepla, roti, naan): suggest curries, pickles, curd, raita, chai — NOT rice.
+   - For rice dishes (biryani, pulao): suggest raita, papad, salan, salad — NOT roti/naan.
+   - For pasta/pizza: suggest garlic bread, salad, soup — NOT Indian items.
+   - Think: "what does a restaurant serve alongside this?" Traditional, common pairings only.
 8. calories_per_serving: short like "~420 kcal". Include bake_time/marination_time if applicable, else null.
 9. storage_info: SPECIFIC to this dish — how to store leftovers, how long it keeps, reheating method. E.g. "Refrigerate in airtight container for 2 days. Reheat in a pan, not microwave." or "Best eaten fresh, does not store well." Never give generic advice.
 10. nutrition_notes: SPECIFIC to this dish — key nutrients, dietary highlights, health benefits. E.g. "High in protein from chickpeas (~18g per serving). Good source of iron and fibre." Not generic text.
