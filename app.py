@@ -711,15 +711,18 @@ Rules:
    IMPORTANT: For each brand, set where_to_buy with actual purchase link/store. Set fully_gf=true ONLY for the verified category above. Add note "Verify cross-contamination status before use" for unverified brands.
    Choose 3-5 brands RELEVANT to this dish's ingredients.
    Original instruction: 2-3 certified GF brands with name, product, certification, where_to_buy, fully_gf boolean.
-6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the DISH (ignore user's country for this). 
-   Match the cuisine of what they typed, NOT India:
-   - Sandwich/Burger/Wrap → suggest other Western: Caesar Salad, Soup, Quesadilla, Bruschetta
-   - Pasta/Pizza/Risotto → suggest Italian: Gnocchi, Polenta, Arancini, Focaccia
-   - Sushi/Ramen → suggest Japanese: Poke Bowl, Miso Soup, Edamame, Onigiri  
-   - Tacos/Burrito/Nachos → suggest Mexican: Enchilada, Quesadilla, Churros
-   - Noodles/Stir-fry/Dim Sum → suggest Asian: Spring Rolls, Fried Rice, Dumplings
-   - Indian dishes (dal/biryani/paratha) → suggest Indian: other Indian GF dishes
-   NEVER suggest Indian dishes for non-Indian food. NEVER suggest non-Indian for Indian food.
+6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the DISH TYPE (the base dish determines cuisine, NOT the protein/ingredient).
+   "Paneer sandwich" is a SANDWICH (Western) — suggest other sandwiches/wraps/salads, NOT Indian curries.
+   "Chicken biryani" is a BIRYANI (Indian) — suggest Indian dishes.
+   "Tofu stir fry" is a STIR FRY (Asian) — suggest Asian dishes.
+   Rules:
+   - Sandwich/Burger/Wrap/Salad/Fries → Western: other sandwiches, wraps, salads, soups, bruschetta
+   - Pasta/Pizza/Risotto/Gnocchi → Italian: other Italian GF dishes
+   - Sushi/Ramen/Poke → Japanese: other Japanese GF dishes
+   - Tacos/Burrito/Nachos/Quesadilla → Mexican: other Mexican GF dishes
+   - Noodles/Stir-fry/Dim Sum/Spring Roll → Asian: other Asian GF dishes
+   - Dosa/Biryani/Paratha/Dal/Curry/Chaat/Tikka → Indian: other Indian GF dishes
+   NEVER suggest Indian dishes for non-Indian food types. NEVER suggest non-Indian for Indian food types.
 7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish. RULES:
    - NEVER suggest water, plain water, or "glass of water" — it is obvious and useless.
    - For flatbreads (paratha, thepla, roti, naan): suggest curries, pickles, curd, raita, chai — NOT rice.
