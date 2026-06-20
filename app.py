@@ -711,7 +711,7 @@ Rules:
    IMPORTANT: For each brand, set where_to_buy with actual purchase link/store. Set fully_gf=true ONLY for the verified category above. Add note "Verify cross-contamination status before use" for unverified brands.
    Choose 3-5 brands RELEVANT to this dish's ingredients.
    Original instruction: 2-3 certified GF brands with name, product, certification, where_to_buy, fully_gf boolean.
-6. also_try: 2-3 naturally-GF dishes from SAME cuisine family that comply with user's dietary restrictions.
+6. also_try: 2-3 naturally-GF dishes from the SAME CUISINE as the dish being cooked (NOT the user's country). E.g. pasta → suggest risotto, polenta, gnocchi (Italian). Biryani → suggest pulao, dal tadka (Indian). Sushi → suggest poke bowl, miso soup (Japanese). NEVER mix cuisines — if the dish is Italian, suggest Italian. If Indian, suggest Indian.
 7. accompaniments: 3 sides/drinks that people ACTUALLY eat with this dish (traditional pairings, not creative combos). Must be GF and comply with dietary restrictions.
 8. calories_per_serving: short like "~420 kcal". Include bake_time/marination_time if applicable, else null.
 9. storage_info: SPECIFIC to this dish — how to store leftovers, how long it keeps, reheating method. E.g. "Refrigerate in airtight container for 2 days. Reheat in a pan, not microwave." or "Best eaten fresh, does not store well." Never give generic advice.
