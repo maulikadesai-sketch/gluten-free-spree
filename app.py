@@ -1305,6 +1305,19 @@ else:
 
 dish_extra = ""
 
+# Other dietary needs
+dietary = st.multiselect("🥗 Any other dietary needs? (select multiple)", all_dietary, default=[], key=f"dietary_select_{st.session_state.get('_reset_count', 0)}", placeholder="Make your selections")
+
+# Add Vegetarian if veg toggle is on
+if veg_choice == "🥦 Veg" and "Vegetarian" not in dietary:
+    dietary = ["Vegetarian"] + list(dietary)
+elif veg_choice == "🥚 Eggetarian":
+    dietary = ["Eggetarian (vegetarian + eggs only, no meat/fish)"] + list(dietary)
+elif veg_choice == "🍗 Non-Veg" and "Non-Vegetarian" not in dietary:
+    protein_note = f"Non-Vegetarian (use these proteins: {', '.join(nonveg_proteins)})" if nonveg_proteins else "Non-Vegetarian (must include meat/seafood/eggs)"
+    dietary = [protein_note] + list(dietary)
+# If veg_choice is None, no dietary addition
+
 # Make My Recipe button
 col_btn_l, col_btn_m, col_btn_r = st.columns([2, 1, 2])
 with col_btn_m:
